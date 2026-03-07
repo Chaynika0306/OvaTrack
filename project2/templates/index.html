@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OvaTrack – Smart PCOS & Cycle Predictor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #e3f2fd, #f8f9fa);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        h1 {
+            text-align: center;
+            color: #1565c0;
+        }
+        p {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .button-group {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .button-group button {
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        .button-group button:hover {
+            background: #0d47a1;
+        }
+        form {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        label {
+            font-weight: 600;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            border-color: #1565c0;
+            outline: none;
+            box-shadow: 0 0 5px rgba(21, 101, 192, 0.2);
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+        button.submit-btn {
+            grid-column: span 2;
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .note {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #b71c1c;
+            margin-top: 15px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌸 OvaTrack</h1>
+    <p><b>Smart Prediction System for PCOS and Menstrual Cycle Health</b></p>
+
+    <div class="button-group">
+        <button onclick="showForm('pcosForm')">👉 Go For PCOS</button>
+        <button onclick="showForm('cycleForm')">👉 Check your Next Cycle Length</button>
+    </div>
+
+    <!-- PCOS FORM -->
+    <form id="pcosForm" action="/predict_pcos" method="POST" onsubmit="return validateAge('pcosForm')">
+        <div><label>Age (years)</label><input type="number" name="age" required min="9" placeholder="Enter age"></div>
+        <div><label>Weight (kg)</label><input type="number" name="weight" required step="0.1" placeholder="Enter weight"></div>
+        <div><label>Height (cm)</label><input type="number" name="height" required step="0.1" placeholder="Enter height"></div>
+        <div><label>Cycle Length (days)</label><input type="number" name="cycle_length" required placeholder="e.g. 28"></div>
+        <div><label>Hirsutism (Facial Hair Growth)</label>
+            <select name="hirsutism" required><option value="0">No</option><option value="1">Yes</option></select>
+        </div>
+        <div><label>Acne</label>
+            <select name="acne" required><option value="0">No</option><option value="1">Yes</option></select>
+        </div>
+        <div><label>Hair Thinning</label>
+            <select name="hair_thinning" required><option value="0">No</option><option value="1">Yes</option></select>
+        </div>
+        <div><label>Fast Food Consumption (days/week)</label>
+            <input type="number" name="fast_food" min="0" max="7" required placeholder="0–7"></div>
+        <div><label>Regular Exercise (days/week)</label>
+            <input type="number" name="exercise" min="0" max="7" required placeholder="0–7"></div>
+        <button type="submit" class="submit-btn">Analyze PCOS</button>
+    </form>
+
+    <!-- CYCLE LENGTH FORM -->
+    <form id="cycleForm" action="/predict_cycle" method="POST" onsubmit="return validateAge('cycleForm')">
+        <div><label>Age (years)</label><input type="number" name="age" required min="9" placeholder="Enter age"></div>
+        <div><label>Cycle Number (e.g., 1 for first, 2 for second, etc.)</label>
+            <input type="number" name="cycle_number" min="1" required></div>
+        <div><label>Conception Cycle (Was conception planned this cycle?)</label>
+            <select name="conception_cycle" required>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+        </div>
+        <button type="submit" class="submit-btn">Predict Cycle Length</button>
+    </form>
+
+    <div id="ageWarning" class="note" style="display:none;">⚠️ Age must be 9 or above to continue.</div>
+
+    {% if prediction_text %}
+        <div class="note">{{ prediction_text }}</div>
+    {% endif %}
+
+    <div class="footer">
+        <p>Developed for PCOS Awareness Project | © 2025</p>
+    </div>
+</div>
+
+<script>
+    function showForm(formId) {
+        document.getElementById("pcosForm").style.display = "none";
+        document.getElementById("cycleForm").style.display = "none";
+        document.getElementById(formId).style.display = "grid";
+        document.getElementById("ageWarning").style.display = "none";
+    }
+
+    // ✅ Validate age before submitting
+    function validateAge(formId) {
+        const form = document.getElementById(formId);
+        const ageInput = form.querySelector('input[name="age"]');
+        const warning = document.getElementById("ageWarning");
+
+        if (ageInput.value && parseFloat(ageInput.value) < 9) {
+            warning.style.display = "block";
+            return false; // prevent form submission
+        }
+        warning.style.display = "none";
+        return true;
+    }
+</script>
+
+</body>
+</html>

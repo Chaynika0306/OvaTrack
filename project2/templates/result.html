@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCOS & Menstrual Cycle Result</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #f8f9fa);
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      margin: 50px auto;
+      max-width: 700px;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #1565c0;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #2e7d32;
+      margin-top: 20px;
+    }
+    .error {
+      color: #c62828;
+    }
+    .sub-result {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      background: #f1f8e9;
+      padding: 15px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .suggestions {
+      text-align: left;
+      margin-top: 25px;
+      padding: 0 25px;
+    }
+    ul {
+      list-style-type: disc;
+      padding-left: 25px;
+    }
+    li {
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: #444;
+    }
+    a.button {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #1565c0;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    a.button:hover {
+      background: #0d47a1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🩺 Prediction Result</h1>
+
+    {% if age is defined and age < 9 %}
+      <h2 class="error">⚠️ Age must be 9 or above to use this system.</h2>
+
+    {% elif "Error" in prediction_text or "⚠️" in prediction_text or "❌" in prediction_text %}
+      <h2 class="error">{{ prediction_text }}</h2>
+
+    {% else %}
+      <h2>{{ prediction_text }}</h2>
+    {% endif %}
+
+    {% if age is defined and age >= 9 %}
+      {% if cycle_result %}
+        <div class="sub-result">
+          🌙 <b>Predicted Menstrual Cycle Length:</b> {{ cycle_result }} days
+        </div>
+      {% endif %}
+
+      {% if bmi %}
+        <p><strong>Your BMI:</strong> {{ bmi }}</p>
+      {% endif %}
+
+      {% if suggestions %}
+        <div class="suggestions">
+          <h3>Lifestyle Recommendations:</h3>
+          <ul>
+            {% for tip in suggestions %}
+              <li>{{ tip }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <a href="/" class="button">🔙 Back to Home</a>
+  </div>
+
+</body>
+</html>
