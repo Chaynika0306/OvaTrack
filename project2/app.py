@@ -152,6 +152,13 @@ def logout():
 
 # ── HOME ──────────────────────────────────────────────────────────────────────────
 @app.route('/')
+def landing():
+    # If already logged in, go straight to app
+    if session.get('user_id'):
+        return redirect(url_for('home'))
+    return render_template('landing.html')
+
+@app.route('/app')
 @login_required
 def home():
     return render_template('index.html', user_name=session.get('user_name',''))
@@ -367,6 +374,9 @@ Guidelines:
 - Never diagnose — only inform and support.
 - Respond in the same language as the user (Hindi or English)."""
 
+    import os
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+
     payload = json.dumps({
         "model": "claude-sonnet-4-20250514",
         "max_tokens": 300,
@@ -379,18 +389,26 @@ Guidelines:
         data=payload,
         headers={
             "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01"
+            "anthropic-version": "2023-06-01",
+            "x-api-key": api_key
         }
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read())
-            reply = data['content'][0]['text']
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            result = json.loads(resp.read())
+            reply  = result["content"][0]["text"]
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode()
+        if e.code == 401 or "authentication" in err_body.lower():
+            reply = "Chat unavailable: API key not configured. Set ANTHROPIC_API_KEY environment variable."
+        else:
+            reply = f"Server error ({e.code}). Please try again shortly."
     except Exception as e:
-        reply = "I'm having trouble connecting right now. Please try again in a moment. For urgent concerns, please consult a healthcare provider."
+        reply = "Connection issue. Please try again."
 
-    return jsonify({'reply': reply})
+    return jsonify({"reply": reply})
+
 
 
 # ── NOTIFICATIONS API ─────────────────────────────────────────────────────────────
