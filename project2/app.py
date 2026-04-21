@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import joblib
 import numpy as np
 import sqlite3
@@ -328,6 +328,158 @@ def symptoms():
     return render_template('symptoms.html', logs=logs, message=message,
                            today=datetime.today().strftime('%Y-%m-%d'),
                            user_name=session.get('user_name',''))
+
+# ── AI CHATBOT (Claude-powered via Anthropic API) ────────────────────────────────
+@app.route('/chat', methods=['POST'])
+@login_required
+def chat():
+    import json, urllib.request, urllib.error
+
+    user_msg = request.json.get('message', '').strip()
+    if not user_msg:
+        return jsonify({'reply': 'Please type a message.'})
+
+    uid = session['user_id']
+    # Build context from user's latest prediction
+    dash = session.get('dash', {})
+    ctx_parts = []
+    if dash.get('type') == 'pcos':
+        ctx_parts.append(f"User's PCOS risk: {dash.get('risk')}% ({dash.get('risk_level')} risk).")
+        ctx_parts.append(f"BMI: {dash.get('bmi')}, Age: {dash.get('age')}, Cycle: {dash.get('cycle_length')} days.")
+    elif dash.get('type') == 'cycle':
+        ctx_parts.append(f"User's predicted cycle length: {dash.get('cycle_days')} days ({dash.get('cycle_status')}).")
+
+    notif = get_notification(uid)
+    if notif:
+        ctx_parts.append(f"Period notification: {notif['message']}")
+
+    user_context = ' '.join(ctx_parts) if ctx_parts else 'No recent prediction data.'
+
+    system_prompt = f"""You are OvaTrack AI — a warm, knowledgeable women's health assistant specializing in PCOS, menstrual cycles, hormonal health, nutrition, and lifestyle. 
+
+User health context: {user_context}
+
+Guidelines:
+- Answer health questions clearly, warmly, and concisely (2-4 sentences max per response).
+- Always recommend consulting a doctor for medical decisions.
+- Focus on: PCOS symptoms, diet, exercise, cycle tracking, hormonal balance, stress, sleep.
+- If asked something outside women's health, gently redirect to your specialty.
+- Never diagnose — only inform and support.
+- Respond in the same language as the user (Hindi or English)."""
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 300,
+        "system": system_prompt,
+        "messages": [{"role": "user", "content": user_msg}]
+    }).encode()
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "anthropic-version": "2023-06-01"
+        }
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read())
+            reply = data['content'][0]['text']
+    except Exception as e:
+        reply = "I'm having trouble connecting right now. Please try again in a moment. For urgent concerns, please consult a healthcare provider."
+
+    return jsonify({'reply': reply})
+
+
+# ── NOTIFICATIONS API ─────────────────────────────────────────────────────────────
+@app.route('/api/notifications')
+@login_required
+def api_notifications():
+    uid   = session['user_id']
+    notifs = []
+
+    with get_db() as db:
+        cycle = db.execute(
+            "SELECT * FROM cycle_log WHERE user_id=? ORDER BY created DESC LIMIT 1", (uid,)
+        ).fetchone()
+
+    if cycle and cycle['next_period']:
+        today      = datetime.today().date()
+        next_p     = datetime.strptime(cycle['next_period'], '%Y-%m-%d').date()
+        last_p     = datetime.strptime(cycle['last_period'], '%Y-%m-%d').date()
+        cycle_len  = int(cycle['cycle_length'])
+        delta      = (next_p - today).days
+
+        # ── Period reminder
+        if delta < 0:
+            notifs.append({
+                'type': 'period', 'level': 'danger',
+                'icon': '🔴', 'title': 'Period Overdue',
+                'body': f"Your period was expected {abs(delta)} day(s) ago ({cycle['next_period']}). If significantly late, consult a doctor.",
+                'days': abs(delta)
+            })
+        elif delta == 0:
+            notifs.append({
+                'type': 'period', 'level': 'warning',
+                'icon': '🩸', 'title': 'Period Expected Today',
+                'body': "Your period is expected today. Stock up on supplies and take it easy!",
+                'days': 0
+            })
+        elif delta <= 3:
+            notifs.append({
+                'type': 'period', 'level': 'warning',
+                'icon': '⏰', 'title': f'Period in {delta} Day(s)',
+                'body': f"Your next period is due on {cycle['next_period']}. Prepare in advance.",
+                'days': delta
+            })
+        elif delta <= 7:
+            notifs.append({
+                'type': 'period', 'level': 'info',
+                'icon': '📅', 'title': f'Period in {delta} Days',
+                'body': f"Upcoming period on {cycle['next_period']}. Stay hydrated and manage stress.",
+                'days': delta
+            })
+
+        # ── Ovulation alert (approx. day 14 from last period = cycle_len - 14 days before next)
+        ovulation_date = last_p + timedelta(days=14)
+        ov_delta = (ovulation_date - today).days
+        if -1 <= ov_delta <= 3:
+            notifs.append({
+                'type': 'ovulation', 'level': 'success',
+                'icon': '🌕', 'title': 'Ovulation Window',
+                'body': f"You are {'in' if ov_delta <= 0 else 'approaching'} your estimated ovulation window ({ovulation_date.strftime('%b %d')}). This is your most fertile period.",
+                'days': max(0, ov_delta)
+            })
+        elif 4 <= ov_delta <= 7:
+            notifs.append({
+                'type': 'ovulation', 'level': 'info',
+                'icon': '🌖', 'title': f'Ovulation in ~{ov_delta} Days',
+                'body': f"Estimated ovulation around {ovulation_date.strftime('%b %d')}. Your fertile window is approaching.",
+                'days': ov_delta
+            })
+
+        # ── Luteal phase tip (7 days before period)
+        if 5 <= delta <= 10:
+            notifs.append({
+                'type': 'tip', 'level': 'tip',
+                'icon': '💆', 'title': 'Luteal Phase — Self Care Week',
+                'body': "You're in the luteal phase. Common PMS symptoms may appear. Prioritize rest, magnesium-rich foods, and gentle exercise.",
+                'days': delta
+            })
+
+    # ── Health tip if no cycle data
+    if not notifs:
+        notifs.append({
+            'type': 'tip', 'level': 'info',
+            'icon': '💡', 'title': 'Track Your Cycle',
+            'body': "Enter your last period date in the PCOS or Cycle form to get personalized period reminders and ovulation alerts.",
+            'days': None
+        })
+
+    return jsonify(notifs)
+
 
 if __name__ == '__main__':
     import webbrowser, threading
