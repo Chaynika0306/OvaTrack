@@ -161,8 +161,28 @@
     <div class="logo-text">OvaTrack</div>
   </div>
   <div class="header-right">
+    <!-- Go to Landing Page -->
+    <a href="/" class="nav-link" title="Home">🏠 Home</a>
+    <!-- Symptoms -->
     <a href="/symptoms" class="nav-link">📋 Symptoms</a>
-    <a href="/" class="nav-link primary"><span>✦ New Analysis</span></a>
+    <!-- New Analysis -->
+    <a href="/app" class="nav-link primary"><span>✦ New Analysis</span></a>
+    <!-- Chatbot Icon — scrolls to chat -->
+    <button onclick="openChatFromNav()" title="AI Health Assistant"
+      style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);
+      background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      font-size:18px;transition:all .2s;color:var(--text)">💬</button>
+    <!-- Notification Bell Icon -->
+    <button onclick="openNotif()" title="Reminders"
+      id="bell-nav-btn"
+      style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);
+      background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      font-size:18px;position:relative;transition:all .2s;">
+      🔔
+      <span id="bell-nav-badge" style="display:none;position:absolute;top:4px;right:4px;
+        width:9px;height:9px;background:#e8537a;border-radius:50%;border:2px solid white"></span>
+    </button>
+    <!-- Sign Out -->
     <a href="/logout" class="nav-link">Sign Out</a>
   </div>
 </header>
@@ -614,6 +634,8 @@ async function loadNotifications(){
     const urgent = data.filter(n=>n.level==='danger'||n.level==='warning');
     if(urgent.length>0){
       document.getElementById('bell-badge').style.display='block';
+      const nb = document.getElementById('bell-nav-badge');
+      if(nb) nb.style.display='block';
     }
 
     data.forEach(n=>{
@@ -714,6 +736,19 @@ async function sendMsg(){
 function sendQuick(text){
   document.getElementById('chat-input').value = text;
   sendMsg();
+}
+
+// Open chat from navbar icon
+function openChatFromNav(){
+  chatOpen = true;
+  const box = document.getElementById('chat-box');
+  box.style.display = 'flex';
+  box.style.flexDirection = 'column';
+  document.getElementById('chat-input').focus();
+  // Scroll to bottom-right
+  setTimeout(()=>{
+    box.scrollIntoView({behavior:'smooth', block:'end'});
+  }, 100);
 }
 
 // Load notification badge on page load

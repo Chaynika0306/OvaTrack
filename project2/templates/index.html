@@ -126,6 +126,10 @@
   <div class="header-right">
     <span class="user-chip">👤 {{ user_name }}</span>
     <a href="/symptoms" class="nav-link sym" data-en="📋 Symptoms" data-hi="📋 लक्षण">📋 Symptoms</a>
+    <!-- Chatbot quick access -->
+    <a href="/dashboard" title="AI Chatbot" style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='var(--rose)'" onmouseout="this.style.borderColor='var(--border)'">💬</a>
+    <!-- Notification bell -->
+    <a href="/dashboard" title="Reminders" style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none;position:relative;transition:all .2s" onmouseover="this.style.borderColor='var(--rose)'" onmouseout="this.style.borderColor='var(--border)'">🔔</a>
     <a href="/logout" class="nav-link" data-en="Sign Out" data-hi="साइन आउट">Sign Out</a>
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>

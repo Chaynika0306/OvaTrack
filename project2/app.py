@@ -336,78 +336,118 @@ def symptoms():
                            today=datetime.today().strftime('%Y-%m-%d'),
                            user_name=session.get('user_name',''))
 
-# ── AI CHATBOT (Claude-powered via Anthropic API) ────────────────────────────────
+# ── AI CHATBOT — Smart rule-based responses (no API key needed) ─────────────────
 @app.route('/chat', methods=['POST'])
 @login_required
 def chat():
-    import json, urllib.request, urllib.error
+    import re, random
 
-    user_msg = request.json.get('message', '').strip()
+    user_msg = request.json.get('message', '').strip().lower()
     if not user_msg:
         return jsonify({'reply': 'Please type a message.'})
 
-    uid = session['user_id']
-    # Build context from user's latest prediction
+    uid  = session['user_id']
     dash = session.get('dash', {})
-    ctx_parts = []
-    if dash.get('type') == 'pcos':
-        ctx_parts.append(f"User's PCOS risk: {dash.get('risk')}% ({dash.get('risk_level')} risk).")
-        ctx_parts.append(f"BMI: {dash.get('bmi')}, Age: {dash.get('age')}, Cycle: {dash.get('cycle_length')} days.")
-    elif dash.get('type') == 'cycle':
-        ctx_parts.append(f"User's predicted cycle length: {dash.get('cycle_days')} days ({dash.get('cycle_status')}).")
 
-    notif = get_notification(uid)
-    if notif:
-        ctx_parts.append(f"Period notification: {notif['message']}")
+    # ── Build personalised context prefix ────────────────────────────────
+    ctx = ""
+    if dash.get('type') == 'pcos' and dash.get('risk'):
+        r = dash['risk']
+        rl = dash.get('risk_level','')
+        ctx = f"(Based on your {r}% {rl} PCOS risk) "
 
-    user_context = ' '.join(ctx_parts) if ctx_parts else 'No recent prediction data.'
+    # ── Keyword → response bank ───────────────────────────────────────────
+    responses = [
+        # Diet / food
+        (r'diet|food|eat|khaana|khana|nutrition|glycemic',
+         [ctx + "For PCOS, focus on low-glycemic foods — oats, lentils, vegetables, fruits, and lean proteins 🥗 Avoid refined sugar, white bread, and processed snacks. Small frequent meals help stabilise blood sugar and hormones.",
+          ctx + "The best PCOS diet includes: fibre-rich foods (vegetables, legumes), lean proteins (eggs, chicken, tofu), healthy fats (nuts, avocado), and complex carbs (brown rice, millets) 🌿 Cut back on sugary drinks and fast food.",
+          ctx + "Eating anti-inflammatory foods helps PCOS — think turmeric, leafy greens, berries, and fish. Cutting sugar and processed carbs is one of the most impactful dietary changes you can make 💚"]),
 
-    system_prompt = f"""You are OvaTrack AI — a warm, knowledgeable women's health assistant specializing in PCOS, menstrual cycles, hormonal health, nutrition, and lifestyle. 
+        # Exercise / workout
+        (r'exercise|workout|gym|yoga|walk|physical|fit|active|vyayaam',
+         [ctx + "For PCOS, aim for 30 minutes of moderate exercise 5 days a week 🏃‍♀️ Walking, yoga, cycling, and swimming are all excellent. Resistance training also helps improve insulin sensitivity.",
+          ctx + "Yoga is especially beneficial for PCOS — poses like Butterfly, Cobra, and Child's pose help regulate hormones and reduce stress 🧘‍♀️ Even a 20-minute daily walk makes a meaningful difference.",
+          ctx + "Exercise helps lower insulin levels, reduce androgens, and regulate your cycle 💪 Combine cardio with light strength training 3-4 times a week for the best hormonal results."]),
 
-User health context: {user_context}
+        # Stress / anxiety / mental health
+        (r'stress|anxiety|mental|mood|sad|depressed|overwhelm|tension|pareshan',
+         [ctx + "Stress raises cortisol, which directly worsens PCOS symptoms 😔 Try 10 minutes of deep breathing or meditation daily. Apps like Headspace can help if you're just starting out.",
+          ctx + "High stress disrupts the hormonal balance that regulates your cycle 💆‍♀️ Prioritise 7-8 hours of sleep, reduce screen time before bed, and try journaling to process emotions.",
+          ctx + "You're not alone — anxiety and mood swings are very common with PCOS due to hormonal imbalance 💙 Gentle yoga, walks in nature, and talking to someone you trust can make a real difference."]),
 
-Guidelines:
-- Answer health questions clearly, warmly, and concisely (2-4 sentences max per response).
-- Always recommend consulting a doctor for medical decisions.
-- Focus on: PCOS symptoms, diet, exercise, cycle tracking, hormonal balance, stress, sleep.
-- If asked something outside women's health, gently redirect to your specialty.
-- Never diagnose — only inform and support.
-- Respond in the same language as the user (Hindi or English)."""
+        # Sleep
+        (r'sleep|nind|neend|rest|tired|thakaan|fatigue|insomnia',
+         [ctx + "Sleep is critical for hormone regulation 😴 Aim for 7-9 hours per night. Poor sleep increases cortisol and insulin resistance — both of which worsen PCOS symptoms.",
+          ctx + "For better sleep with PCOS, try keeping a consistent bedtime, avoiding screens 1 hour before bed, and keeping your room cool and dark 🌙 Magnesium supplements can also help some people.",
+          ctx + "PCOS fatigue is very real — your body is working harder due to hormonal imbalance 💤 Prioritise sleep hygiene, stay hydrated, and consider a gentle 10-minute walk after meals to boost energy."]),
 
-    import os
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        # Irregular periods / cycle
+        (r'period|cycle|irregular|late|miss|menstrual|menses|mahavari|masik',
+         [ctx + "Irregular periods are the most common PCOS symptom 🌊 Lifestyle changes — diet, exercise, and stress reduction — can help regulate cycles naturally. Consult a gynecologist if periods are missing for 3+ months.",
+          ctx + "Tracking your cycle with OvaTrack can reveal patterns even when cycles seem irregular 📅 Use our Cycle Predictor to get an AI estimate of your next period based on your history.",
+          ctx + "Hormonal balance takes time to restore 🌸 Many women see cycle improvements within 3-6 months of consistent lifestyle changes. Inositol supplements are also commonly recommended — ask your doctor."]),
 
-    payload = json.dumps({
-        "model": "claude-sonnet-4-20250514",
-        "max_tokens": 300,
-        "system": system_prompt,
-        "messages": [{"role": "user", "content": user_msg}]
-    }).encode()
+        # Weight / BMI
+        (r'weight|bmi|fat|obesity|slim|lose weight|vajan|mota',
+         [ctx + "Weight management with PCOS is harder because of insulin resistance — but it's possible ⚖️ Even a 5-10% reduction in body weight can significantly improve hormonal balance and cycle regularity.",
+          ctx + "Focus on sustainable changes rather than crash diets 🥗 Reducing sugar, increasing protein and fibre, and exercising regularly is more effective long-term than restrictive dieting for PCOS.",
+          ctx + "PCOS makes it harder to lose weight due to elevated insulin levels 💪 A combination of low-glycemic eating + regular movement + stress management works better than dieting alone."]),
 
-    req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
-        data=payload,
-        headers={
-            "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01",
-            "x-api-key": api_key
-        }
-    )
+        # Acne / skin / hair
+        (r'acne|pimple|skin|hair|thinning|facial hair|hirsutism|daag|baal',
+         [ctx + "Acne and excess hair growth in PCOS are caused by high androgen levels 😣 Spearmint tea has been shown to reduce androgens naturally. A dermatologist can also recommend targeted treatments.",
+          ctx + "For hormonal acne, avoid high-glycemic foods (sugar, white bread) which spike insulin and androgens 💆 Keep skin clean, use non-comedogenic products, and stay hydrated.",
+          ctx + "Hair thinning with PCOS is linked to DHT — a type of androgen 💇 Iron and Vitamin D deficiency can worsen it. Get blood tests done and discuss options like minoxidil with your doctor."]),
 
-    try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            result = json.loads(resp.read())
-            reply  = result["content"][0]["text"]
-    except urllib.error.HTTPError as e:
-        err_body = e.read().decode()
-        if e.code == 401 or "authentication" in err_body.lower():
-            reply = "Chat unavailable: API key not configured. Set ANTHROPIC_API_KEY environment variable."
-        else:
-            reply = f"Server error ({e.code}). Please try again shortly."
-    except Exception as e:
-        reply = "Connection issue. Please try again."
+        # PCOS general / what is
+        (r'what is pcos|pcos kya|pcos ke baare|polycystic|ovary|symptoms of',
+         [ctx + "PCOS (Polycystic Ovary Syndrome) is a hormonal disorder affecting 1 in 10 women 🌸 It causes irregular periods, excess androgens, and small ovarian cysts. It's manageable with lifestyle changes and medical support.",
+          ctx + "PCOS symptoms include irregular cycles, acne, hair thinning, weight gain, fatigue, and mood changes 📋 Not every woman has all symptoms. OvaTrack's AI analyses your specific pattern to estimate your risk.",
+          ctx + "PCOS is the most common cause of female infertility — but it's very treatable 💚 Early detection and lifestyle changes make a huge difference. You're already taking the right step by tracking your health!"]),
 
-    return jsonify({"reply": reply})
+        # Ovulation / fertility
+        (r'ovulation|fertile|fertility|pregnant|baby|conceive|garbh',
+         [ctx + "With PCOS, ovulation can be irregular or absent 🌕 Tracking basal body temperature and using OvulationTrack can help identify your fertile window. Consult a doctor if you're trying to conceive.",
+          ctx + "Improving insulin sensitivity through diet and exercise often restores ovulation naturally in PCOS 💪 Many women with PCOS conceive naturally after lifestyle changes. Medical options like Clomid are also effective.",
+          ctx + "Your fertile window is typically around Day 14 of your cycle 📅 With PCOS, this can shift. OvaTrack's notification system estimates your ovulation window based on your cycle data."]),
+
+        # Vitamin / supplements
+        (r'vitamin|supplement|inositol|zinc|magnesium|omega|vitamin d',
+         [ctx + "For PCOS, commonly recommended supplements include: Inositol (improves insulin sensitivity), Vitamin D (often deficient), Omega-3 (reduces inflammation), and Zinc (helps with acne and hair loss) 💊 Always consult a doctor before starting.",
+          ctx + "Myo-inositol is one of the most researched supplements for PCOS 🌿 It improves insulin sensitivity, reduces androgen levels, and can help regulate cycles. A typical dose is 2-4g daily.",
+          ctx + "Vitamin D deficiency is extremely common in PCOS women 🌞 Get your levels tested — many doctors recommend supplementation. It plays a key role in insulin regulation and hormonal balance."]),
+
+        # Doctor / medication / treatment
+        (r'doctor|medication|medicine|treatment|gynecologist|metformin|pill|dawai',
+         [ctx + "Please consult a gynecologist or endocrinologist for medical treatment of PCOS 👩‍⚕️ Common medical options include Metformin (insulin sensitizer), oral contraceptives (cycle regulation), and anti-androgens.",
+          ctx + "OvaTrack gives you a risk assessment to start the conversation with your doctor 📋 Bring your OvaTrack report to your appointment — it shows risk percentage, BMI, cycle data, and symptom history.",
+          ctx + "A comprehensive PCOS workup usually includes blood tests (FSH, LH, testosterone, insulin, thyroid) and an ultrasound 🩺 Your OvaTrack data can guide your doctor to the right tests."]),
+    ]
+
+    # ── Greeting special case ──────────────────────────────────────────────
+    if re.search(r'^(hi|hello|hey|namaste|hii|helo|good morning|good evening)', user_msg):
+        notif = get_notification(uid)
+        notif_msg = f" {notif['message']}" if notif and notif.get('message') else ""
+        greetings = [
+            f"Hi! I'm OvaTrack AI 🌸 I'm here to help with anything about PCOS, your cycle, diet, or hormonal health.{notif_msg} What would you like to know?",
+            f"Hello! Great to see you 😊 I'm your OvaTrack health assistant. I can answer questions about PCOS, nutrition, cycle tracking, or general women's health.{notif_msg}",
+            f"Namaste! 🙏 I'm here to support your health journey. Ask me anything about PCOS, diet, exercise, or your menstrual cycle!{notif_msg}"
+        ]
+        return jsonify({'reply': random.choice(greetings)})
+
+    # ── Match keywords ─────────────────────────────────────────────────────
+    for pattern, replies in responses:
+        if re.search(pattern, user_msg):
+            return jsonify({'reply': random.choice(replies)})
+
+    # ── Personalised default with context ──────────────────────────────────
+    defaults = [
+        ctx + "That's a great question! For personalised advice, I recommend discussing this with your gynecologist. In general, managing PCOS involves balanced diet, regular exercise, stress reduction, and good sleep 🌸",
+        ctx + "I may not have a specific answer for that, but I'm here to help with PCOS, cycle tracking, diet, hormones, and lifestyle questions 💚 Could you rephrase or ask something more specific?",
+        ctx + "For women's health questions I'm fully equipped to help! Try asking about PCOS symptoms, diet tips, exercise recommendations, period irregularities, or stress management 🌿",
+    ]
+    return jsonify({'reply': random.choice(defaults)})
 
 
 
@@ -498,6 +538,15 @@ def api_notifications():
 
     return jsonify(notifs)
 
+
+
+# ── LEARN ABOUT PCOS ─────────────────────────────────────────────────────────────
+@app.route('/learn-pcos')
+def learn_pcos():
+    logged_in = bool(session.get('user_id'))
+    return render_template('learn_pcos.html',
+                           user_name=session.get('user_name',''),
+                           logged_in=logged_in)
 
 if __name__ == '__main__':
     import webbrowser, threading

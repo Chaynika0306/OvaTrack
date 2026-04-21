@@ -158,8 +158,8 @@
       padding: 66px 5% 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 40px;
+      align-items: stretch;
+      gap: 0;
       background: var(--bg);
       position: relative;
       overflow: hidden;
@@ -277,7 +277,8 @@
     /* Hero Image */
     .hero-img-side {
       position: relative; z-index: 2;
-      display: flex; align-items: center; justify-content: flex-end;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 5% 40px 0;
     }
 
     .hero-photo-wrap {
@@ -797,6 +798,17 @@
     .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); }
 
     /* ═══ RESPONSIVE ══════════════════════════════════════════════════════ */
+    .step-card {
+      text-align: center;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 20px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s;
+    }
+    .step-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.10); }
+
     @media (max-width: 860px) {
       .hero { grid-template-columns: 1fr; text-align: center; }
       .hero p, .hero-desc { margin-left: auto; margin-right: auto; }
@@ -838,6 +850,7 @@
     <li><a href="#features" data-en="Features" data-hi="फीचर्स">Features</a></li>
     <li><a href="#chatbot" data-en="AI Chatbot" data-hi="AI चैटबॉट">AI Chatbot</a></li>
     <li><a href="#faq" data-en="FAQ" data-hi="सवाल">FAQ</a></li>
+    <li><a href="/learn-pcos" data-en="Learn About PCOS" data-hi="PCOS के बारे में जानें">Learn About PCOS</a></li>
   </ul>
 
   <div class="nav-right">
@@ -850,8 +863,7 @@
     <!-- Dark/Light Mode Toggle -->
     <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
 
-    <!-- Get Started -->
-    <a href="/register" class="nav-start-btn" data-en="Get Started Free" data-hi="मुफ्त शुरू करें">Get Started Free</a>
+
   </div>
 </nav>
 
@@ -860,7 +872,7 @@
   <div class="hero-bg-blob blob1"></div>
   <div class="hero-bg-blob blob2"></div>
 
-  <div class="hero-content">
+  <div class="hero-content" style="padding: 80px 0 80px 5%;">
     <div class="hero-badge">
       <div class="badge-dot"></div>
       <span data-en="🔬 Clinically-Backed AI Platform" data-hi="🔬 क्लिनिकली-समर्थित AI प्लेटफॉर्म">🔬 Clinically-Backed AI Platform</span>
@@ -879,7 +891,7 @@
 
     <div class="hero-btns">
       <a href="/register" class="btn-primary" data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
-      <a href="/login" class="btn-outline" data-en="Sign In" data-hi="साइन इन करें">Sign In</a>
+      <a href="#how-it-works" class="btn-outline" data-en="How It Works" data-hi="यह कैसे काम करता है">How It Works</a>
     </div>
 
     <div class="hero-trust">
@@ -1094,7 +1106,7 @@
         </div>
       </div>
 
-      <a href="/register" class="btn-primary" data-en="Create Account to Access Chatbot" data-hi="चैटबॉट एक्सेस के लिए अकाउंट बनाएं">Create Account to Access Chatbot</a>
+      <a id="chatbot-action-btn" href="/register" class="btn-primary" data-en="Create Account to Access Chatbot" data-hi="चैटबॉट एक्सेस के लिए अकाउंट बनाएं">Create Account to Access Chatbot</a>
     </div>
   </div>
 </section>
@@ -1342,6 +1354,7 @@
     <li><a href="#features" data-en="Features" data-hi="फीचर्स">Features</a></li>
     <li><a href="#chatbot" data-en="AI Chatbot" data-hi="AI चैटबॉट">AI Chatbot</a></li>
     <li><a href="#faq" data-en="FAQ" data-hi="सवाल">FAQ</a></li>
+    <li><a href="/learn-pcos" data-en="Learn About PCOS" data-hi="PCOS के बारे में जानें">Learn About PCOS</a></li>
     <li><a href="/login" data-en="Log In" data-hi="लॉगिन">Log In</a></li>
     <li><a href="/register" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></li>
   </ul>
@@ -1428,6 +1441,29 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+// ── Detect login state from cookie/session for footer & chatbot btn ──
+(function(){
+  // Simple: try fetching /api/notifications — only works if logged in
+  fetch('/api/notifications', {credentials: 'same-origin'})
+    .then(r => {
+      if(r.ok) {
+        // User is logged in
+        const el = document.getElementById('footer-login');
+        const el2 = document.getElementById('footer-signup');
+        const el3 = document.getElementById('footer-logout');
+        if(el) el.style.display = 'none';
+        if(el2) el2.style.display = 'none';
+        if(el3) el3.style.display = 'list-item';
+
+        const chatBtn = document.getElementById('chatbot-action-btn');
+        if(chatBtn) {
+          chatBtn.href = '/dashboard';
+          chatBtn.textContent = 'Open AI Chatbot on Dashboard';
+        }
+      }
+    }).catch(()=>{});
+})();
 
 // Navbar scroll shadow
 window.addEventListener('scroll', () => {
