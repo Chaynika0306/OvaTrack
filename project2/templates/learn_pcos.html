@@ -117,7 +117,48 @@
     .bottom-cta a:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.28)}
 
     @media(max-width:480px){.cards{grid-template-columns:1fr 1fr}.toc{justify-content:center}}
-  </style>
+  
+    [data-theme="dark"] {
+      --teal-light: #0d3d35;
+      background: #111827 !important;
+      color: #f3f4f6 !important;
+    }
+    [data-theme="dark"] .page-hero { background: linear-gradient(135deg,#1a2332,#1f2937) !important; }
+    [data-theme="dark"] .info-card, [data-theme="dark"] .col-card,
+    [data-theme="dark"] .fact-box, [data-theme="dark"] .toc-link,
+    [data-theme="dark"] .learn-section { background: #1f2937 !important; border-color: #374151 !important; }
+    [data-theme="dark"] .learn-section h2, [data-theme="dark"] h1, [data-theme="dark"] h3 { color: #f3f4f6 !important; }
+    [data-theme="dark"] p, [data-theme="dark"] .info-card p, [data-theme="dark"] .col-card p { color: #9ca3af !important; }
+    [data-theme="dark"] nav { background: rgba(17,24,39,.95) !important; border-color: #374151 !important; }
+    [data-theme="dark"] .logo-text { color: #f3f4f6 !important; }
+    [data-theme="dark"] .nav-btn { color: #9ca3af !important; border-color: #374151 !important; }
+    [data-theme="dark"] .toc { border-color: #374151 !important; }
+    [data-theme="dark"] .toc-link { color: #9ca3af !important; border-color: #374151 !important; }
+    [data-theme="dark"] .highlight-box { background: #0d3d35 !important; }
+    [data-theme="dark"] .styled-list li { color: #9ca3af !important; }
+    [data-theme="dark"] footer { background: #0f172a !important; }
+</style>
+<script>
+// ── Global Theme & Language Persistence (OvaTrack) ─────────────────────
+(function(){
+  // Theme
+  var th = localStorage.getItem('ova-theme');
+  if(th) document.documentElement.setAttribute('data-theme', th);
+
+  // Language — apply after DOM loads
+  document.addEventListener('DOMContentLoaded', function(){
+    var lang = localStorage.getItem('ova-lang') || 'en';
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      var txt = el.getAttribute('data-'+lang);
+      if(txt) el.innerHTML = txt;
+    });
+    // Sync lang buttons if they exist
+    document.querySelectorAll('.lang-btn').forEach(function(b, i){
+      b.classList.toggle('active', (lang==='en' && i===0)||(lang==='hi' && i===1));
+    });
+  });
+})();
+</script>
 </head>
 <body>
 

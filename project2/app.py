@@ -60,6 +60,13 @@ def init_db():
             notes      TEXT,
             created    TEXT DEFAULT (datetime('now'))
         );
+        CREATE TABLE IF NOT EXISTS otp_store (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            email     TEXT NOT NULL,
+            otp       TEXT NOT NULL,
+            expires   TEXT NOT NULL,
+            used      INTEGER DEFAULT 0
+        );
         CREATE TABLE IF NOT EXISTS cycle_log (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id      INTEGER NOT NULL,
@@ -539,6 +546,126 @@ def api_notifications():
     return jsonify(notifs)
 
 
+
+
+# ── FORGOT PASSWORD ────────────────────────────────────────────────────────────
+@app.route('/forgot-password', methods=['GET','POST'])
+def forgot_password():
+    import smtplib, random, string
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    msg_sent = None
+    error    = None
+
+    if request.method == 'POST':
+        email = request.form.get('email','').strip().lower()
+        with get_db() as db:
+            user = db.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
+
+        if not user:
+            error = "No account found with that email address."
+        else:
+            # Generate 6-digit OTP
+            otp = ''.join(random.choices(string.digits, k=6))
+            expires = (datetime.now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
+
+            with get_db() as db:
+                db.execute("DELETE FROM otp_store WHERE email=?", (email,))
+                db.execute("INSERT INTO otp_store (email,otp,expires) VALUES (?,?,?)",
+                           (email, otp, expires))
+
+            # Send email via Gmail
+            try:
+                sender    = "ovatrack9903@gmail.com"
+                app_pass  = "xvvy ithm wrdx yxck"   # Gmail App Password
+                recipient = email
+
+                mail_msg = MIMEMultipart("alternative")
+                mail_msg['Subject'] = "OvaTrack — Password Reset OTP"
+                mail_msg['From']    = sender
+                mail_msg['To']      = recipient
+
+                html_body = f"""
+                <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px;
+                             background:#fdf7f2;border-radius:16px;border:1px solid #e8ddef">
+                  <div style="text-align:center;margin-bottom:24px">
+                    <div style="font-size:36px">🌸</div>
+                    <h2 style="font-family:Georgia,serif;color:#3d1f4e;margin:8px 0">OvaTrack</h2>
+                  </div>
+                  <h3 style="color:#2a1a30;margin-bottom:8px">Password Reset Request</h3>
+                  <p style="color:#7a6882;line-height:1.6">
+                    We received a request to reset your OvaTrack password.
+                    Use the OTP below — it expires in <strong>10 minutes</strong>.
+                  </p>
+                  <div style="background:#fff;border:2px dashed #e8537a;border-radius:12px;
+                               padding:24px;text-align:center;margin:24px 0">
+                    <div style="font-size:36px;font-weight:700;letter-spacing:8px;color:#3d1f4e">{otp}</div>
+                    <div style="color:#7a6882;font-size:12px;margin-top:6px">One-Time Password</div>
+                  </div>
+                  <p style="color:#9ca3af;font-size:12px">
+                    If you didn't request this, please ignore this email.
+                    Your account is safe.
+                  </p>
+                  <hr style="border:none;border-top:1px solid #e8ddef;margin:20px 0">
+                  <p style="color:#c4b8cc;font-size:11px;text-align:center">
+                    OvaTrack — AI Women's Health Platform
+                  </p>
+                </div>"""
+
+                mail_msg.attach(MIMEText(html_body, 'html'))
+
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+                    server.login(sender, app_pass)
+                    server.sendmail(sender, recipient, mail_msg.as_string())
+
+                session['reset_email'] = email
+                return redirect(url_for('verify_otp'))
+
+            except Exception as e:
+                error = f"Could not send email. Please try again. ({str(e)[:60]})"
+
+    return render_template('forgot_password.html', error=error, msg_sent=msg_sent)
+
+
+@app.route('/verify-otp', methods=['GET','POST'])
+def verify_otp():
+    email = session.get('reset_email','')
+    if not email:
+        return redirect(url_for('forgot_password'))
+
+    error = None
+
+    if request.method == 'POST':
+        otp_input = request.form.get('otp','').strip()
+        new_pw    = request.form.get('new_password','')
+        confirm   = request.form.get('confirm_password','')
+
+        if len(new_pw) < 6:
+            error = "Password must be at least 6 characters."
+        elif new_pw != confirm:
+            error = "Passwords do not match."
+        else:
+            with get_db() as db:
+                record = db.execute(
+                    "SELECT * FROM otp_store WHERE email=? AND otp=? AND used=0 ORDER BY id DESC LIMIT 1",
+                    (email, otp_input)
+                ).fetchone()
+
+            if not record:
+                error = "Invalid OTP. Please check and try again."
+            elif datetime.strptime(record['expires'], '%Y-%m-%d %H:%M:%S') < datetime.now():
+                error = "OTP has expired. Please request a new one."
+            else:
+                with get_db() as db:
+                    db.execute("UPDATE users SET password=? WHERE email=?",
+                               (hash_pw(new_pw), email))
+                    db.execute("UPDATE otp_store SET used=1 WHERE email=?", (email,))
+
+                session.pop('reset_email', None)
+                return redirect(url_for('login', reset=1))
+
+    return render_template('verify_otp.html', email=email, error=error)
 
 # ── LEARN ABOUT PCOS ─────────────────────────────────────────────────────────────
 @app.route('/learn-pcos')
