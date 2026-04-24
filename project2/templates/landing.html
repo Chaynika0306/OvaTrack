@@ -966,7 +966,6 @@
         <div class="relate-chip">😢 <span data-en='"I struggle to lose weight"' data-hi='"मेरा वजन कम नहीं होता"'>"I struggle to lose weight"</span></div>
       </div>
 
-      <a href="/register" class="btn-primary" data-en="Check My PCOS Risk — It's Free" data-hi="मेरा PCOS जोखिम जांचें — मुफ्त में">Check My PCOS Risk — It's Free</a>
     </div>
 
     <div class="symptoms-grid">
@@ -1106,7 +1105,6 @@
         </div>
       </div>
 
-      <a id="chatbot-action-btn" href="/register" class="btn-primary" data-en="Create Account to Access Chatbot" data-hi="चैटबॉट एक्सेस के लिए अकाउंट बनाएं">Create Account to Access Chatbot</a>
     </div>
   </div>
 </section>
@@ -1328,9 +1326,6 @@
     </div>
   </div>
 
-  <div style="text-align:center;margin-top:40px">
-    <a href="/register" class="btn-primary" data-en="Start Your Journey Free →" data-hi="मुफ्त में शुरू करें →">Start Your Journey Free →</a>
-  </div>
 </section>
 
 <!-- ══════ FAQ ══════════════════════════════════════════════════════ -->
@@ -1408,10 +1403,10 @@
 <footer>
   <div class="footer-logo">🌸 OvaTrack</div>
   <ul class="footer-links" id="footer-links">
-    <li id="footer-login"><a href="/login" data-en="Log In" data-hi="लॉगिन">Log In</a></li>
-    <li id="footer-signup"><a href="/register" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></li>
+    <li id="footer-login" style="display:list-item"><a href="/login" data-en="Log In" data-hi="लॉगिन">Log In</a></li>
+    <li id="footer-signup" style="display:list-item"><a href="/register" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></li>
     <li id="footer-logout" style="display:none"><a href="/logout" data-en="Log Out" data-hi="लॉग आउट">Log Out</a></li>
-    <li><a href="mailto:ovatrack9903@gmail.com" data-en="📧 Contact Us" data-hi="📧 संपर्क करें">📧 Contact Us</a></li>
+    <li><a href="mailto:ovatrack9903@gmail.com" style="display:flex;align-items:center;gap:6px" data-en="✉️ ovatrack9903@gmail.com" data-hi="✉️ ovatrack9903@gmail.com">✉️ ovatrack9903@gmail.com</a></li>
   </ul>
   <div class="footer-copy">© 2025 OvaTrack. Built for PCOS Awareness.</div>
 </footer>
@@ -1452,8 +1447,10 @@ function applyLang(lang) {
 }
 
 
-// setLang is now an alias for applyLang
-
+// setLang — called by buttons onclick
+function setLang(lang) {
+  applyLang(lang);
+}
 
 // Apply saved language on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -1504,21 +1501,27 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   fetch('/api/notifications', {credentials: 'same-origin'})
     .then(r => {
       if(r.ok) {
-        // User is logged in
-        const el = document.getElementById('footer-login');
-        const el2 = document.getElementById('footer-signup');
-        const el3 = document.getElementById('footer-logout');
-        if(el) el.style.display = 'none';
-        if(el2) el2.style.display = 'none';
-        if(el3) el3.style.display = 'list-item';
-
-        const chatBtn = document.getElementById('chatbot-action-btn');
-        if(chatBtn) {
-          chatBtn.href = '/dashboard';
-          chatBtn.textContent = 'Open AI Chatbot on Dashboard';
-        }
+        // Logged in — show Logout, hide Login/Signup
+        const li = document.getElementById('footer-login');
+        const ls = document.getElementById('footer-signup');
+        const lo = document.getElementById('footer-logout');
+        if(li) li.style.display = 'none';
+        if(ls) ls.style.display = 'none';
+        if(lo) lo.style.display = 'list-item';
+      } else {
+        // Not logged in — show Login/Signup, hide Logout
+        const li = document.getElementById('footer-login');
+        const ls = document.getElementById('footer-signup');
+        const lo = document.getElementById('footer-logout');
+        if(li) li.style.display = 'list-item';
+        if(ls) ls.style.display = 'list-item';
+        if(lo) lo.style.display = 'none';
       }
-    }).catch(()=>{});
+    }).catch(()=>{
+      // Error = not logged in
+      const lo = document.getElementById('footer-logout');
+      if(lo) lo.style.display = 'none';
+    });
 })();
 
 // Navbar scroll shadow
