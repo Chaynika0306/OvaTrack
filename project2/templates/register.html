@@ -6,41 +6,101 @@
   <title>OvaTrack – Create Account</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* ── DARK MODE VARIABLES ── */
+    :root {
+      --rose:#e8537a; --rose-light:#f9dde5; --plum:#3d1f4e; --plum-mid:#5c3272;
+      --bg:#fdf7f2; --bg2:#ffffff; --text:#2a1a30; --muted:#7a6882;
+      --border:#e8ddef; --input-bg:#fff9f5;
+      --card-shadow: 0 8px 40px rgba(61,31,78,.10);
+      --blob1: rgba(232,83,122,.12); --blob2: rgba(92,50,114,.10);
+      --card-top-bg: linear-gradient(135deg,rgba(232,83,122,.06),rgba(92,50,114,.06));
+    }
+    [data-theme="dark"] {
+      --bg:#111827; --bg2:#1f2937; --text:#f3f4f6; --muted:#9ca3af;
+      --border:#374151; --input-bg:#111827;
+      --rose-light:#4a1525;
+      --card-shadow: 0 8px 40px rgba(0,0,0,.4);
+      --blob1: rgba(232,83,122,.06); --blob2: rgba(92,50,114,.06);
+      --card-top-bg: linear-gradient(135deg,rgba(232,83,122,.12),rgba(92,50,114,.12));
+    }
+
     *{box-sizing:border-box;margin:0;padding:0}
-    :root{--rose:#e8537a;--rose-light:#f9dde5;--plum:#3d1f4e;--plum-mid:#5c3272;
-      --cream:#fdf7f2;--text:#2a1a30;--muted:#7a6882;--border:#e8ddef}
-    body{font-family:'DM Sans',sans-serif;background:var(--cream);min-height:100vh;
-      display:flex;align-items:center;justify-content:center;padding:20px}
+    body {
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;align-items:center;justify-content:center;padding:20px;
+      transition:background .3s,color .3s;
+    }
     body::before{content:'';position:fixed;top:-200px;right:-200px;width:600px;height:600px;
-      background:radial-gradient(circle,rgba(232,83,122,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
-    .card{position:relative;z-index:5;width:100%;max-width:420px;background:#fff;
-      border-radius:24px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(61,31,78,.10);overflow:hidden}
-    .card-top{padding:32px 36px 24px;background:linear-gradient(135deg,rgba(232,83,122,.06),rgba(92,50,114,.06));
-      border-bottom:1px solid var(--border);text-align:center}
+      background:radial-gradient(circle,var(--blob1) 0%,transparent 70%);pointer-events:none;z-index:0}
+    body::after{content:'';position:fixed;bottom:-150px;left:-150px;width:500px;height:500px;
+      background:radial-gradient(circle,var(--blob2) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+    .card {
+      position:relative;z-index:5;width:100%;max-width:420px;
+      background:var(--bg2);
+      border-radius:24px;border:1px solid var(--border);
+      box-shadow:var(--card-shadow);overflow:hidden;
+      transition:background .3s,border-color .3s,box-shadow .3s;
+    }
+    .card-top {
+      padding:32px 36px 24px;
+      background:var(--card-top-bg);
+      border-bottom:1px solid var(--border);text-align:center;
+      transition:border-color .3s;
+    }
     .logo-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
       border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px}
-    h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--plum);margin-bottom:4px}
-    .sub{font-size:13px;color:var(--muted)}
+    h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:4px;transition:color .3s}
+    .sub{font-size:13px;color:var(--muted);transition:color .3s}
     .card-body{padding:28px 36px 36px}
+
     .error-msg{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:10px;
       padding:12px 16px;font-size:13px;margin-bottom:16px;text-align:center}
+    [data-theme="dark"] .error-msg{background:#3b0d0d;color:#fca5a5;border-color:#7f1d1d}
+
     .field{margin-bottom:18px}
     label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;
-      letter-spacing:.6px;color:var(--muted);margin-bottom:6px}
+      letter-spacing:.6px;color:var(--muted);margin-bottom:6px;transition:color .3s}
     input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;
-      font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:#fff9f5;
+      font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--input-bg);
       outline:none;transition:all .2s}
-    input:focus{border-color:var(--rose);background:#fff;box-shadow:0 0 0 3px rgba(232,83,122,.1)}
-    .hint{font-size:11px;color:var(--muted);margin-top:4px}
+    input:focus{border-color:var(--rose);background:var(--bg2);box-shadow:0 0 0 3px rgba(232,83,122,.1)}
+    input::placeholder{color:var(--muted);opacity:.6}
+    .hint{font-size:11px;color:var(--muted);margin-top:4px;transition:color .3s}
     .btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
       color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;
       font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(232,83,122,.3)}
     .btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,83,122,.4)}
     .footer-link{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
     .footer-link a{color:var(--rose);text-decoration:none;font-weight:500}
+    .footer-link a:hover{text-decoration:underline}
+
+    /* Theme toggle button in corner */
+    .theme-toggle {
+      position:fixed;top:16px;right:16px;z-index:999;
+      width:40px;height:40px;border-radius:50%;
+      border:1.5px solid var(--border);background:var(--bg2);
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      font-size:18px;transition:all .25s;box-shadow:0 2px 10px rgba(0,0,0,.1);
+    }
+    .theme-toggle:hover{border-color:var(--rose);transform:scale(1.1)}
   </style>
+  <script>
+    // Apply theme BEFORE render to prevent flash
+    (function(){
+      var th = localStorage.getItem('ova-theme');
+      if(th) document.documentElement.setAttribute('data-theme', th);
+    })();
+  </script>
 </head>
 <body>
+
+<!-- Theme toggle -->
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
+
 <div class="card">
   <div class="card-top">
     <div class="logo-icon">🌸</div>
@@ -72,5 +132,23 @@
     </div>
   </div>
 </div>
+
+<script>
+  let isDark = (localStorage.getItem('ova-theme') === 'dark');
+
+  function applyTheme() {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  }
+
+  function toggleTheme() {
+    isDark = !isDark;
+    localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
+    applyTheme();
+  }
+
+  applyTheme();
+</script>
 </body>
 </html>

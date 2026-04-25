@@ -578,7 +578,7 @@ def forgot_password():
             # Send email via Gmail
             try:
                 sender    = "ovatrack9903@gmail.com"
-                app_pass  = "xvvy ithm wrdx yxck"   # Gmail App Password
+                app_pass  = "meka njvg zopu kbhr"   # Gmail App Password
                 recipient = email
 
                 mail_msg = MIMEMultipart("alternative")
