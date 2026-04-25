@@ -155,7 +155,15 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('landing'))
+@app.route('/go-home')
+def go_home():
+    """Always renders the landing page — regardless of login state."""
+    return render_template('landing.html')
+@app.route('/signout')
+def signout():
+    session.clear()
+    return redirect(url_for('landing'))
 
 # ── HOME ──────────────────────────────────────────────────────────────────────────
 @app.route('/')

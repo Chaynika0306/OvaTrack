@@ -1,77 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OvaTrack – Smart PCOS & Cycle Predictor</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --rose:#e8537a;--rose-light:#f9dde5;--rose-dark:#c23d62;
-      --plum:#3d1f4e;--plum-mid:#5c3272;
-      --cream:#fdf7f2;--warm-white:#fff9f5;
-      --text:#2a1a30;--muted:#7a6882;--border:#e8ddef;
-      --success:#2e9e6b;
+      --rose:#e8537a; --rose-light:#f9dde5; --rose-dark:#c23d62;
+      --plum:#3d1f4e; --plum-mid:#5c3272;
+      --bg:#fdf7f2; --bg2:#ffffff; --warm-white:#fff9f5;
+      --text:#2a1a30; --muted:#7a6882; --border:#e8ddef;
+      --input-bg:#fff9f5;
+      --header-bg:rgba(253,247,242,.88);
+      --blob:rgba(232,83,122,.12);
+      --form-hdr-bg:linear-gradient(135deg,rgba(232,83,122,.04),rgba(92,50,114,.04));
+      --binary-bg:#fff9f5;
+      --card-shadow:0 4px 32px rgba(61,31,78,.09);
     }
-    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden}
+    [data-theme="dark"]{
+      --bg:#111827; --bg2:#1f2937; --warm-white:#1a2332;
+      --text:#f3f4f6; --muted:#9ca3af; --border:#374151;
+      --input-bg:#111827;
+      --header-bg:rgba(17,24,39,.95);
+      --blob:rgba(232,83,122,.05);
+      --rose-light:#4a1525;
+      --form-hdr-bg:linear-gradient(135deg,rgba(232,83,122,.10),rgba(92,50,114,.10));
+      --binary-bg:#111827;
+      --card-shadow:0 4px 32px rgba(0,0,0,.35);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
+      min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
     body::before{content:'';position:fixed;top:-200px;right:-200px;width:600px;height:600px;
-      background:radial-gradient(circle,rgba(232,83,122,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+      background:radial-gradient(circle,var(--blob) 0%,transparent 70%);pointer-events:none;z-index:0}
 
     /* HEADER */
     header{position:relative;z-index:10;padding:20px 32px;display:flex;align-items:center;
       justify-content:space-between;border-bottom:1px solid var(--border);
-      background:rgba(253,247,242,.88);backdrop-filter:blur(8px)}
+      background:var(--header-bg);backdrop-filter:blur(8px);
+      transition:background .3s,border-color .3s}
     .logo{display:flex;align-items:center;gap:10px}
     .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
       border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
-    .logo-text{font-family:'DM Serif Display',serif;font-size:22px;color:var(--plum)}
-    .header-right{display:flex;align-items:center;gap:12px}
+    .logo-text{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);transition:color .3s}
+    .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .user-chip{font-size:13px;color:var(--muted);background:var(--rose-light);
-      padding:5px 14px;border-radius:20px;font-weight:500}
+      padding:5px 14px;border-radius:20px;font-weight:500;transition:all .3s}
+    [data-theme="dark"] .user-chip{color:#f9a8c2}
     .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;
-      padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
+      padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+      transition:all .2s;cursor:pointer;background:transparent;font-family:'DM Sans',sans-serif}
     .nav-link:hover{border-color:var(--rose);color:var(--rose)}
-    .nav-link.sym{background:white}
+    .icon-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);
+      background:var(--bg2);display:flex;align-items:center;justify-content:center;
+      font-size:17px;text-decoration:none;transition:all .2s;cursor:pointer;color:var(--text)}
+    .icon-btn:hover{border-color:var(--rose)}
+    .theme-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);
+      background:var(--bg2);cursor:pointer;display:flex;align-items:center;
+      justify-content:center;font-size:16px;transition:all .25s}
+    .theme-btn:hover{border-color:var(--rose)}
     .lang-toggle{display:flex;gap:4px}
     .lang-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);
       background:transparent;color:var(--muted);font-size:12px;cursor:pointer;
-      font-family:'DM Sans',sans-serif;transition:all .2s}
+      font-family:'DM Sans',sans-serif;font-weight:600;transition:all .2s}
     .lang-btn.active{background:var(--plum);color:#fff;border-color:var(--plum)}
 
     /* HERO */
     .hero{position:relative;z-index:5;text-align:center;padding:52px 20px 36px}
     .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--rose-light);
       color:var(--rose-dark);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;
-      letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+      letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;transition:background .3s}
+    [data-theme="dark"] .hero-badge{color:#f9a8c2}
     .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,48px);
-      color:var(--plum);line-height:1.15;margin-bottom:12px}
+      color:var(--text);line-height:1.15;margin-bottom:12px;transition:color .3s}
     .hero h1 em{color:var(--rose);font-style:italic}
     .hero p{color:var(--muted);font-size:15px;max-width:460px;margin:0 auto 28px;line-height:1.6}
-
-    /* ERROR */
     .error-bar{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:12px;
       padding:12px 20px;margin:0 auto 20px;max-width:760px;font-size:13px;text-align:center}
+    [data-theme="dark"] .error-bar{background:#3b0d0d;color:#fca5a5;border-color:#7f1d1d}
 
     /* TABS */
     .tab-row{display:flex;gap:10px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
-    .tab-btn{padding:11px 26px;border-radius:50px;border:2px solid var(--border);background:#fff;
-      color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
-      cursor:pointer;transition:all .25s;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .tab-btn{padding:11px 26px;border-radius:50px;border:2px solid var(--border);
+      background:var(--bg2);color:var(--muted);font-family:'DM Sans',sans-serif;
+      font-size:14px;font-weight:500;cursor:pointer;transition:all .25s;
+      box-shadow:0 2px 10px rgba(0,0,0,.05)}
     .tab-btn.active{background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      color:#fff;border-color:transparent;box-shadow:0 4px 20px rgba(232,83,122,.35);transform:translateY(-1px)}
+      color:#fff;border-color:transparent;box-shadow:0 4px 20px rgba(232,83,122,.35);
+      transform:translateY(-1px)}
     .tab-btn:not(.active):hover{border-color:var(--rose);color:var(--rose)}
 
-    /* CARD */
+    /* FORM CARD */
     .form-wrapper{position:relative;z-index:5;max-width:760px;margin:0 auto;padding:0 16px 56px}
-    .form-card{background:#fff;border-radius:22px;box-shadow:0 4px 32px rgba(61,31,78,.09);
-      border:1px solid var(--border);overflow:hidden}
+    .form-card{background:var(--bg2);border-radius:22px;box-shadow:var(--card-shadow);
+      border:1px solid var(--border);overflow:hidden;transition:background .3s,border-color .3s}
     .form-section{display:none}
     .form-section.active{display:block}
     .form-header{padding:24px 32px 18px;border-bottom:1px solid var(--border);
-      background:linear-gradient(135deg,rgba(232,83,122,.04),rgba(92,50,114,.04))}
-    .form-header h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--plum);margin-bottom:3px}
+      background:var(--form-hdr-bg);transition:border-color .3s}
+    .form-header h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);
+      margin-bottom:3px;transition:color .3s}
     .form-header p{font-size:13px;color:var(--muted)}
     .form-body{padding:24px 32px 28px}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -79,12 +108,14 @@
     .field{display:flex;flex-direction:column;gap:5px}
     .field.full{grid-column:span 2}
     @media(max-width:560px){.field.full{grid-column:span 1}}
-    label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+    label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;
+      letter-spacing:.6px;transition:color .3s}
     input,select{padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;
-      font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--warm-white);
-      transition:all .2s;outline:none;width:100%}
-    input:focus,select:focus{border-color:var(--rose);background:#fff;box-shadow:0 0 0 3px rgba(232,83,122,.1)}
-    input::placeholder{color:#c4b8cc}
+      font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);
+      background:var(--input-bg);transition:all .2s;outline:none;width:100%}
+    input:focus,select:focus{border-color:var(--rose);background:var(--bg2);
+      box-shadow:0 0 0 3px rgba(232,83,122,.1)}
+    input::placeholder{color:var(--muted);opacity:.6}
     .sec-label{font-size:10px;font-weight:700;color:var(--rose);text-transform:uppercase;
       letter-spacing:1px;padding-bottom:3px;border-bottom:1px solid var(--rose-light);
       grid-column:span 2;margin-top:6px}
@@ -93,51 +124,36 @@
     .binary-group input[type=radio]{display:none}
     .binary-label{flex:1;text-align:center;padding:10px 6px;border:1.5px solid var(--border);
       border-radius:10px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;
-      transition:all .2s;background:var(--warm-white)}
+      transition:all .2s;background:var(--binary-bg)}
     .binary-group input[type=radio]:checked+.binary-label{background:var(--rose-light);
       border-color:var(--rose);color:var(--rose-dark);font-weight:600}
+    [data-theme="dark"] .binary-group input[type=radio]:checked+.binary-label{color:#f9a8c2}
     .age-warn{display:none;margin:0 32px 12px;padding:10px 16px;background:var(--rose-light);
       color:var(--rose-dark);border-radius:10px;font-size:13px;text-align:center}
+    [data-theme="dark"] .age-warn{color:#f9a8c2}
     .submit-wrap{padding:0 32px 32px}
     .submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
       color:#fff;border:none;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:15px;
       font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(232,83,122,.3)}
     .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,83,122,.4)}
 
-    /* RESPONSIVE */
     @media(max-width:480px){
       header{padding:14px 16px}
       .hero{padding:36px 14px 24px}
       .form-header{padding:20px 20px 14px}
       .form-body{padding:18px 20px 20px}
       .submit-wrap{padding:0 20px 24px}
-      .age-warn{margin:0 20px 10px}
-      .header-right{gap:6px}
       .user-chip{display:none}
     }
-    
   </style>
-<script>
-// ── Global Theme & Language Persistence (OvaTrack) ─────────────────────
-(function(){
-  // Theme
-  var th = localStorage.getItem('ova-theme');
-  if(th) document.documentElement.setAttribute('data-theme', th);
 
-  // Language — apply after DOM loads
-  document.addEventListener('DOMContentLoaded', function(){
-    var lang = localStorage.getItem('ova-lang') || 'en';
-    document.querySelectorAll('[data-en]').forEach(function(el){
-      var txt = el.getAttribute('data-'+lang);
-      if(txt) el.innerHTML = txt;
-    });
-    // Sync lang buttons if they exist
-    document.querySelectorAll('.lang-btn').forEach(function(b, i){
-      b.classList.toggle('active', (lang==='en' && i===0)||(lang==='hi' && i===1));
-    });
-  });
-})();
-</script>
+  <!-- Prevent theme flash -->
+  <script>
+    (function(){
+      var th = localStorage.getItem('ova-theme');
+      if(th) document.documentElement.setAttribute('data-theme', th);
+    })();
+  </script>
 </head>
 <body>
 
@@ -148,33 +164,35 @@
   </div>
   <div class="header-right">
     <span class="user-chip">👤 {{ user_name }}</span>
-    <a href="/symptoms" class="nav-link sym" data-en="📋 Symptoms" data-hi="📋 लक्षण">📋 Symptoms</a>
-    <!-- Chatbot — goes to dashboard where chatbot panel lives -->
-    <a href="/dashboard#chat" id="chat-nav-btn" title="AI Health Assistant"
-       style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);
-       background:white;display:flex;align-items:center;justify-content:center;font-size:17px;
-       text-decoration:none;transition:all .2s;cursor:pointer"
-       onmouseover="this.style.borderColor='var(--rose)'"
-       onmouseout="this.style.borderColor='var(--border)'">💬</a>
-    <!-- Notification bell — goes to dashboard where notification panel lives -->
-    <a href="/dashboard#notif" id="bell-nav-btn" title="Period Reminders"
-       style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);
-       background:white;display:flex;align-items:center;justify-content:center;font-size:17px;
-       text-decoration:none;position:relative;transition:all .2s"
-       onmouseover="this.style.borderColor='var(--rose)'"
-       onmouseout="this.style.borderColor='var(--border)'">🔔</a>
-    <!-- Home — back to landing page without sign out -->
-    <a href="/" class="nav-link" data-en="🏠 Home" data-hi="🏠 होम">🏠 Home</a>
-    <a href="/logout" class="nav-link" data-en="Sign Out" data-hi="साइन आउट">Sign Out</a>
+
+    <a href="/symptoms" class="nav-link"
+       data-en="📋 Symptoms" data-hi="📋 लक्षण">📋 Symptoms</a>
+
+    <a href="/dashboard#chat" class="icon-btn" title="AI Health Assistant">💬</a>
+    <a href="/dashboard#notif" class="icon-btn" title="Period Reminders">🔔</a>
+
+    <!-- ✅ FIX: /go-home is a new Flask route that always shows landing 
+         regardless of login state -->
+    <a href="/go-home" class="nav-link"
+       data-en="🏠 Home" data-hi="🏠 होम">🏠 Home</a>
+
+    <!-- ✅ FIX: Sign Out goes to landing page -->
+    <a href="/signout" class="nav-link"
+       data-en="Sign Out" data-hi="साइन आउट">Sign Out</a>
+
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
+
     <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('hi')">हिं</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-hi" onclick="setLang('hi')">हिं</button>
     </div>
   </div>
 </header>
 
 <div class="hero">
-  <div class="hero-badge">✦ AI-Powered Health Insights</div>
+  <div class="hero-badge"
+       data-en="✦ AI-Powered Health Insights"
+       data-hi="✦ AI-संचालित स्वास्थ्य जानकारी">✦ AI-Powered Health Insights</div>
   <h1 data-en="Know Your <em>Cycle</em>,<br>Protect Your Health"
       data-hi="अपना <em>चक्र</em> जानें,<br>स्वास्थ्य की रक्षा करें">
     Know Your <em>Cycle</em>,<br>Protect Your Health
@@ -189,8 +207,10 @@
   {% endif %}
 
   <div class="tab-row">
-    <button class="tab-btn active" onclick="switchTab('pcos',this)" data-en="🔬 PCOS Analysis" data-hi="🔬 PCOS विश्लेषण">🔬 PCOS Analysis</button>
-    <button class="tab-btn" onclick="switchTab('cycle',this)" data-en="🩸 Cycle Predictor" data-hi="🩸 चक्र भविष्यवक्ता">🩸 Cycle Predictor</button>
+    <button class="tab-btn active" onclick="switchTab('pcos',this)"
+            data-en="🔬 PCOS Analysis" data-hi="🔬 PCOS विश्लेषण">🔬 PCOS Analysis</button>
+    <button class="tab-btn" onclick="switchTab('cycle',this)"
+            data-en="🩸 Cycle Predictor" data-hi="🩸 चक्र भविष्यवक्ता">🩸 Cycle Predictor</button>
   </div>
 </div>
 
@@ -212,28 +232,34 @@
             <div class="sec-label" data-en="Basic Info" data-hi="बुनियादी जानकारी">Basic Info</div>
             <div class="field">
               <label data-en="Age (years)" data-hi="आयु (वर्ष)">Age (years)</label>
-              <input type="number" id="p-age" name="age" required min="9" max="60" placeholder="e.g. 26">
+              <input type="number" id="p-age" name="age" required min="9" max="60"
+                     placeholder="e.g. 26" data-ph-en="e.g. 26" data-ph-hi="जैसे 26">
             </div>
             <div class="field">
               <label data-en="Cycle Length (days)" data-hi="चक्र लंबाई (दिन)">Cycle Length (days)</label>
-              <input type="number" name="cycle_length" required min="10" max="90" placeholder="e.g. 28">
+              <input type="number" name="cycle_length" required min="10" max="90"
+                     placeholder="e.g. 28" data-ph-en="e.g. 28" data-ph-hi="जैसे 28">
             </div>
             <div class="field">
               <label data-en="Weight (kg)" data-hi="वजन (किग्रा)">Weight (kg)</label>
-              <input type="number" name="weight" required step="0.1" placeholder="e.g. 58">
+              <input type="number" name="weight" required step="0.1"
+                     placeholder="e.g. 58" data-ph-en="e.g. 58" data-ph-hi="जैसे 58">
             </div>
             <div class="field">
               <label data-en="Height (cm)" data-hi="ऊंचाई (सेमी)">Height (cm)</label>
-              <input type="number" name="height" required step="0.1" placeholder="e.g. 160">
+              <input type="number" name="height" required step="0.1"
+                     placeholder="e.g. 160" data-ph-en="e.g. 160" data-ph-hi="जैसे 160">
             </div>
             <div class="field full">
-              <label data-en="Last Period Date (for reminders)" data-hi="अंतिम मासिक धर्म की तारीख">Last Period Date (for reminders)</label>
-              <input type="date" name="last_period" max="{{ '' }}">
+              <label data-en="Last Period Date (for reminders)"
+                     data-hi="अंतिम मासिक धर्म की तारीख">Last Period Date (for reminders)</label>
+              <input type="date" name="last_period">
             </div>
 
             <div class="sec-label" data-en="Symptoms" data-hi="लक्षण">Symptoms</div>
             <div class="field">
-              <label data-en="Facial / Body Hair Growth" data-hi="चेहरे पर अनचाहे बाल">Facial / Body Hair Growth</label>
+              <label data-en="Facial / Body Hair Growth"
+                     data-hi="चेहरे पर अनचाहे बाल">Facial / Body Hair Growth</label>
               <div class="binary-group">
                 <input type="radio" name="hirsutism" id="h0" value="0" required>
                 <label class="binary-label" for="h0" data-en="No" data-hi="नहीं">No</label>
@@ -262,18 +288,26 @@
 
             <div class="sec-label" data-en="Lifestyle" data-hi="जीवनशैली">Lifestyle</div>
             <div class="field">
-              <label data-en="Fast Food Days / Week" data-hi="फास्ट फूड (दिन/सप्ताह)">Fast Food Days / Week</label>
-              <input type="number" name="fast_food" required min="0" max="7" placeholder="0–7">
+              <label data-en="Fast Food Days / Week"
+                     data-hi="फास्ट फूड (दिन/सप्ताह)">Fast Food Days / Week</label>
+              <input type="number" name="fast_food" required min="0" max="7"
+                     placeholder="0–7" data-ph-en="0–7" data-ph-hi="0–7">
             </div>
             <div class="field">
-              <label data-en="Exercise Days / Week" data-hi="व्यायाम (दिन/सप्ताह)">Exercise Days / Week</label>
-              <input type="number" name="exercise" required min="0" max="7" placeholder="0–7">
+              <label data-en="Exercise Days / Week"
+                     data-hi="व्यायाम (दिन/सप्ताह)">Exercise Days / Week</label>
+              <input type="number" name="exercise" required min="0" max="7"
+                     placeholder="0–7" data-ph-en="0–7" data-ph-hi="0–7">
             </div>
           </div>
         </div>
-        <div class="age-warn" id="p-warn" data-en="⚠️ Age must be 9 or above." data-hi="⚠️ आयु 9+ होनी चाहिए।">⚠️ Age must be 9 or above.</div>
+        <div class="age-warn" id="p-warn"
+             data-en="⚠️ Age must be 9 or above."
+             data-hi="⚠️ आयु 9 या उससे अधिक होनी चाहिए।">⚠️ Age must be 9 or above.</div>
         <div class="submit-wrap">
-          <button type="submit" class="submit-btn" data-en="✦ Analyse PCOS Risk" data-hi="✦ PCOS जोखिम विश्लेषण करें">✦ Analyse PCOS Risk</button>
+          <button type="submit" class="submit-btn"
+                  data-en="✦ Analyse PCOS Risk"
+                  data-hi="✦ PCOS जोखिम विश्लेषण करें">✦ Analyse PCOS Risk</button>
         </div>
       </form>
     </div>
@@ -281,7 +315,8 @@
     <!-- CYCLE FORM -->
     <div id="cycle-section" class="form-section">
       <div class="form-header">
-        <h2 data-en="Cycle Length Predictor" data-hi="चक्र लंबाई भविष्यवक्ता">Cycle Length Predictor</h2>
+        <h2 data-en="Cycle Length Predictor"
+            data-hi="चक्र लंबाई भविष्यवक्ता">Cycle Length Predictor</h2>
         <p data-en="Predict your next menstrual cycle length using AI."
            data-hi="AI का उपयोग करके अगले चक्र की लंबाई का अनुमान लगाएं।">
           Predict your next menstrual cycle length using AI.
@@ -292,11 +327,13 @@
           <div class="form-grid">
             <div class="field">
               <label data-en="Age (years)" data-hi="आयु (वर्ष)">Age (years)</label>
-              <input type="number" id="c-age" name="age" required min="9" max="60" placeholder="e.g. 26">
+              <input type="number" id="c-age" name="age" required min="9" max="60"
+                     placeholder="e.g. 26" data-ph-en="e.g. 26" data-ph-hi="जैसे 26">
             </div>
             <div class="field">
               <label data-en="Cycle Number (1st, 2nd…)" data-hi="चक्र संख्या">Cycle Number</label>
-              <input type="number" name="cycle_number" required min="1" placeholder="e.g. 3">
+              <input type="number" name="cycle_number" required min="1"
+                     placeholder="e.g. 3" data-ph-en="e.g. 3" data-ph-hi="जैसे 3">
             </div>
             <div class="field">
               <label data-en="Conception Cycle?" data-hi="गर्भाधान चक्र?">Conception Cycle?</label>
@@ -313,9 +350,13 @@
             </div>
           </div>
         </div>
-        <div class="age-warn" id="c-warn" data-en="⚠️ Age must be 9 or above." data-hi="⚠️ आयु 9+ होनी चाहिए।">⚠️ Age must be 9 or above.</div>
+        <div class="age-warn" id="c-warn"
+             data-en="⚠️ Age must be 9 or above."
+             data-hi="⚠️ आयु 9 या उससे अधिक होनी चाहिए।">⚠️ Age must be 9 or above.</div>
         <div class="submit-wrap">
-          <button type="submit" class="submit-btn" data-en="✦ Predict Cycle Length" data-hi="✦ चक्र लंबाई का अनुमान करें">✦ Predict Cycle Length</button>
+          <button type="submit" class="submit-btn"
+                  data-en="✦ Predict Cycle Length"
+                  data-hi="✦ चक्र लंबाई का अनुमान करें">✦ Predict Cycle Length</button>
         </div>
       </form>
     </div>
@@ -324,27 +365,56 @@
 </div>
 
 <script>
-function switchTab(tab, btn){
-  document.querySelectorAll('.form-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(tab+'-section').classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+// ── THEME ─────────────────────────────────────────────────────────────
+let isDark = localStorage.getItem('ova-theme') === 'dark';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
 }
-function checkAge(inputId, warnId){
-  const v = parseFloat(document.getElementById(inputId).value);
-  if(v < 9){ document.getElementById(warnId).style.display='block'; return false; }
-  document.getElementById(warnId).style.display='none';
-  return true;
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
+  applyTheme();
 }
-function setLang(lang){
-  document.querySelectorAll('.lang-btn').forEach((b,i)=>b.classList.toggle('active', i===(lang==='en'?0:1)));
-  document.querySelectorAll('[data-en]').forEach(el=>{
-    const t = el.getAttribute('data-'+lang);
-    if(!t) return;
-    if(el.tagName==='INPUT'||el.tagName==='BUTTON') el.value=t;
-    else el.innerHTML=t;
+applyTheme();
+
+// ── LANGUAGE ──────────────────────────────────────────────────────────
+function setLang(lang) {
+  localStorage.setItem('ova-lang', lang);
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-hi').classList.toggle('active', lang === 'hi');
+
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    var val = el.getAttribute('data-' + lang);
+    if (!val) return;
+    if (el.tagName === 'BUTTON') el.textContent = val;
+    else el.innerHTML = val;
+  });
+
+  document.querySelectorAll('[data-ph-en]').forEach(function(el) {
+    var ph = el.getAttribute('data-ph-' + lang);
+    if (ph) el.placeholder = ph;
   });
 }
+
+// ── TABS ──────────────────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(tab + '-section').classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── AGE VALIDATION ────────────────────────────────────────────────────
+function checkAge(inputId, warnId) {
+  const v = parseFloat(document.getElementById(inputId).value);
+  if (v < 9) { document.getElementById(warnId).style.display = 'block'; return false; }
+  document.getElementById(warnId).style.display = 'none';
+  return true;
+}
+
+// ── APPLY SAVED LANG ON LOAD ──────────────────────────────────────────
+setLang(localStorage.getItem('ova-lang') || 'en');
 </script>
 </body>
 </html>

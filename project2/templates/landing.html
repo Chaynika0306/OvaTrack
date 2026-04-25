@@ -862,7 +862,12 @@
 
     <!-- Dark/Light Mode Toggle -->
     <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
-
+      
+    {% if logged_in %}
+      <a href="/app" class="nav-start-btn" data-en="Go to App →" data-hi="ऐप पर जाएं →">Go to App →</a>
+    {% else %}
+      <a href="/register" class="nav-start-btn" data-en="Get Started Free" data-hi="मुफ्त शुरू करें">Get Started Free</a>
+    {% endif %}
 
   </div>
 </nav>
@@ -890,9 +895,20 @@
     </p>
 
     <div class="hero-btns">
-      <a href="/register" class="btn-primary" data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
+      {% if logged_in %}
+        <a href="/app" class="btn-primary"
+           data-en="Go to My Dashboard →" data-hi="मेरे डैशबोर्ड पर जाएं →">Go to My Dashboard →</a>
+      {% else %}
+        <a href="/register" class="btn-primary"
+           data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
+      {% endif %}
       <a href="#how-it-works" class="btn-outline" data-en="How It Works" data-hi="यह कैसे काम करता है">How It Works</a>
     </div>
+
+    <!--<div class="hero-btns">
+      <a href="/register" class="btn-primary" data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
+      <a href="#how-it-works" class="btn-outline" data-en="How It Works" data-hi="यह कैसे काम करता है">How It Works</a>
+    </div>-->
 
     <div class="hero-trust">
       <div class="trust-chip">🔒 <span data-en="Private & Encrypted" data-hi="निजी और एन्क्रिप्टेड">Private & Encrypted</span></div>
@@ -1389,8 +1405,44 @@
   </div>
 </section>
 
-<!-- ══════ FINAL CTA ════════════════════════════════════════════════ -->
 <section class="cta-section">
+  <h2 data-en="Ready to Take Control of Your Health?" data-hi="अपने स्वास्थ्य की जिम्मेदारी लेने के लिए तैयार हैं?">Ready to Take Control of Your Health?</h2>
+  <p data-en="Join OvaTrack. Get your PCOS assessment, track your cycle, chat with AI, and understand your body better — all free." data-hi="आज OvaTrack से जुड़ें। PCOS जोखिम मूल्यांकन करें, चक्र ट्रैक करें, AI से चैट करें — सब मुफ्त।">Join OvaTrack. Get your PCOS assessment, track your cycle, chat with AI, and understand your body better — all free.</p>
+  {% if logged_in %}
+    <a href="/app" class="cta-btn"
+       data-en="Go to My Dashboard →" data-hi="मेरे डैशबोर्ड पर जाएं →">Go to My Dashboard →</a>
+  {% else %}
+    <a href="/register" class="cta-btn"
+       data-en="Create Free Account →" data-hi="मुफ्त अकाउंट बनाएं →">Create Free Account →</a>
+  {% endif %}
+</section>
+
+<footer>
+  <div class="footer-logo">🌸 OvaTrack</div>
+ 
+  <ul class="footer-links">
+    {% if logged_in %}
+      <!-- User is logged in: show their name, Go to App, Log Out -->
+      <li><span>👤 {{ user_name }}</span></li>
+      <li><a href="/app" data-en="Go to App" data-hi="ऐप पर जाएं">Go to App</a></li>
+      <li><a href="/logout" data-en="Log Out" data-hi="लॉग आउट">Log Out</a></li>
+    {% else %}
+      <!-- User is NOT logged in: show Log In and Sign Up -->
+      <li><a href="/login" data-en="Log In" data-hi="लॉगिन">Log In</a></li>
+      <li><a href="/register" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></li>
+    {% endif %}
+    <li>
+      <a href="mailto:ovatrack9903@gmail.com" style="display:flex;align-items:center;gap:6px">
+        ✉️ ovatrack9903@gmail.com
+      </a>
+    </li>
+  </ul>
+ 
+  <div class="footer-copy">© 2025 OvaTrack. Built for PCOS Awareness.</div>
+</footer>
+
+<!-- ══════ FINAL CTA ════════════════════════════════════════════════ -->
+<!--<section class="cta-section">
   <h2 data-en="Ready to Take Control of Your Health?" data-hi="अपने स्वास्थ्य की जिम्मेदारी लेने के लिए तैयार हैं?">Ready to Take Control of Your Health?</h2>
   <p data-en="Join OvaTrack today. Get your PCOS risk assessment, track your cycle, chat with AI, and start understanding your body better — all for free."
      data-hi="आज OvaTrack से जुड़ें। PCOS जोखिम मूल्यांकन करें, चक्र ट्रैक करें, AI से चैट करें — सब मुफ्त।">
@@ -1399,8 +1451,8 @@
   <a href="/register" class="cta-btn" data-en="Create Free Account →" data-hi="मुफ्त अकाउंट बनाएं →">Create Free Account →</a>
 </section>
 
-<!-- ══════ FOOTER ═══════════════════════════════════════════════════ -->
-<footer>
+ ══════ FOOTER ═══════════════════════════════════════════════════ -->
+<!--<footer>
   <div class="footer-logo">🌸 OvaTrack</div>
   <ul class="footer-links" id="footer-links">
     <li id="footer-login" style="display:list-item"><a href="/login" data-en="Log In" data-hi="लॉगिन">Log In</a></li>
@@ -1409,7 +1461,7 @@
     <li><a href="mailto:ovatrack9903@gmail.com" style="display:flex;align-items:center;gap:6px" data-en="✉️ ovatrack9903@gmail.com" data-hi="✉️ ovatrack9903@gmail.com">✉️ ovatrack9903@gmail.com</a></li>
   </ul>
   <div class="footer-copy">© 2025 OvaTrack. Built for PCOS Awareness.</div>
-</footer>
+</footer>-->
 
 <script>
 // ══ GLOBAL THEME & LANGUAGE PERSISTENCE ════════════════════════════════

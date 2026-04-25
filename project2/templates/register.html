@@ -6,90 +6,74 @@
   <title>OvaTrack – Create Account</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ── DARK MODE VARIABLES ── */
     :root {
       --rose:#e8537a; --rose-light:#f9dde5; --plum:#3d1f4e; --plum-mid:#5c3272;
       --bg:#fdf7f2; --bg2:#ffffff; --text:#2a1a30; --muted:#7a6882;
       --border:#e8ddef; --input-bg:#fff9f5;
-      --card-shadow: 0 8px 40px rgba(61,31,78,.10);
-      --blob1: rgba(232,83,122,.12); --blob2: rgba(92,50,114,.10);
-      --card-top-bg: linear-gradient(135deg,rgba(232,83,122,.06),rgba(92,50,114,.06));
+      --card-shadow:0 8px 40px rgba(61,31,78,.10);
+      --blob1:rgba(232,83,122,.12); --blob2:rgba(92,50,114,.10);
+      --card-top-bg:linear-gradient(135deg,rgba(232,83,122,.06),rgba(92,50,114,.06));
     }
     [data-theme="dark"] {
       --bg:#111827; --bg2:#1f2937; --text:#f3f4f6; --muted:#9ca3af;
-      --border:#374151; --input-bg:#111827;
-      --rose-light:#4a1525;
-      --card-shadow: 0 8px 40px rgba(0,0,0,.4);
-      --blob1: rgba(232,83,122,.06); --blob2: rgba(92,50,114,.06);
-      --card-top-bg: linear-gradient(135deg,rgba(232,83,122,.12),rgba(92,50,114,.12));
+      --border:#374151; --input-bg:#111827; --rose-light:#4a1525;
+      --card-shadow:0 8px 40px rgba(0,0,0,.4);
+      --blob1:rgba(232,83,122,.06); --blob2:rgba(92,50,114,.06);
+      --card-top-bg:linear-gradient(135deg,rgba(232,83,122,.12),rgba(92,50,114,.12));
     }
-
     *{box-sizing:border-box;margin:0;padding:0}
-    body {
-      font-family:'DM Sans',sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;align-items:center;justify-content:center;padding:20px;
-      transition:background .3s,color .3s;
-    }
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      padding:20px;transition:background .3s,color .3s}
     body::before{content:'';position:fixed;top:-200px;right:-200px;width:600px;height:600px;
       background:radial-gradient(circle,var(--blob1) 0%,transparent 70%);pointer-events:none;z-index:0}
     body::after{content:'';position:fixed;bottom:-150px;left:-150px;width:500px;height:500px;
       background:radial-gradient(circle,var(--blob2) 0%,transparent 70%);pointer-events:none;z-index:0}
-
-    .card {
-      position:relative;z-index:5;width:100%;max-width:420px;
-      background:var(--bg2);
-      border-radius:24px;border:1px solid var(--border);
-      box-shadow:var(--card-shadow);overflow:hidden;
-      transition:background .3s,border-color .3s,box-shadow .3s;
-    }
-    .card-top {
-      padding:32px 36px 24px;
-      background:var(--card-top-bg);
-      border-bottom:1px solid var(--border);text-align:center;
-      transition:border-color .3s;
-    }
+    .card{position:relative;z-index:5;width:100%;max-width:420px;background:var(--bg2);
+      border-radius:24px;border:1px solid var(--border);box-shadow:var(--card-shadow);
+      overflow:hidden;transition:background .3s,border-color .3s}
+    .card-top{padding:32px 36px 24px;background:var(--card-top-bg);
+      border-bottom:1px solid var(--border);text-align:center;transition:border-color .3s}
     .logo-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px}
-    h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:4px;transition:color .3s}
+      border-radius:16px;display:flex;align-items:center;justify-content:center;
+      font-size:24px;margin:0 auto 14px}
+    h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);
+      margin-bottom:4px;transition:color .3s}
     .sub{font-size:13px;color:var(--muted);transition:color .3s}
+    .lang-row{display:flex;justify-content:center;gap:6px;margin-top:14px}
+    .lang-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);
+      background:transparent;color:var(--muted);font-size:12px;cursor:pointer;
+      font-family:'DM Sans',sans-serif;font-weight:600;transition:all .2s}
+    .lang-btn.active{background:var(--plum);color:#fff;border-color:var(--plum)}
     .card-body{padding:28px 36px 36px}
-
-    .error-msg{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:10px;
-      padding:12px 16px;font-size:13px;margin-bottom:16px;text-align:center}
+    .error-msg{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;
+      border-radius:10px;padding:12px 16px;font-size:13px;margin-bottom:16px;text-align:center}
     [data-theme="dark"] .error-msg{background:#3b0d0d;color:#fca5a5;border-color:#7f1d1d}
-
     .field{margin-bottom:18px}
     label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;
       letter-spacing:.6px;color:var(--muted);margin-bottom:6px;transition:color .3s}
     input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;
-      font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--input-bg);
-      outline:none;transition:all .2s}
-    input:focus{border-color:var(--rose);background:var(--bg2);box-shadow:0 0 0 3px rgba(232,83,122,.1)}
-    input::placeholder{color:var(--muted);opacity:.6}
+      font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);
+      background:var(--input-bg);outline:none;transition:all .2s}
+    input:focus{border-color:var(--rose);background:var(--bg2);
+      box-shadow:0 0 0 3px rgba(232,83,122,.1)}
+    input::placeholder{color:var(--muted);opacity:.7}
     .hint{font-size:11px;color:var(--muted);margin-top:4px;transition:color .3s}
     .btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;
-      font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(232,83,122,.3)}
+      color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;
+      font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;
+      box-shadow:0 4px 20px rgba(232,83,122,.3)}
     .btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,83,122,.4)}
     .footer-link{text-align:center;margin-top:20px;font-size:13px;color:var(--muted)}
     .footer-link a{color:var(--rose);text-decoration:none;font-weight:500}
-    .footer-link a:hover{text-decoration:underline}
-
-    /* Theme toggle button in corner */
-    .theme-toggle {
-      position:fixed;top:16px;right:16px;z-index:999;
-      width:40px;height:40px;border-radius:50%;
-      border:1.5px solid var(--border);background:var(--bg2);
+    .theme-toggle{position:fixed;top:16px;right:16px;z-index:999;width:40px;height:40px;
+      border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);
       cursor:pointer;display:flex;align-items:center;justify-content:center;
-      font-size:18px;transition:all .25s;box-shadow:0 2px 10px rgba(0,0,0,.1);
-    }
+      font-size:18px;transition:all .25s;box-shadow:0 2px 10px rgba(0,0,0,.1)}
     .theme-toggle:hover{border-color:var(--rose);transform:scale(1.1)}
   </style>
   <script>
-    // Apply theme BEFORE render to prevent flash
+    // Prevent theme flash — runs before render
     (function(){
       var th = localStorage.getItem('ova-theme');
       if(th) document.documentElement.setAttribute('data-theme', th);
@@ -97,15 +81,21 @@
   </script>
 </head>
 <body>
-
-<!-- Theme toggle -->
-<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
+<button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
 
 <div class="card">
   <div class="card-top">
     <div class="logo-icon">🌸</div>
-    <h1>Create Account</h1>
-    <p class="sub">Join OvaTrack — your AI health companion</p>
+    <h1 data-en="Create Account" data-hi="अकाउंट बनाएं">Create Account</h1>
+    <p class="sub"
+       data-en="Join OvaTrack — your AI health companion"
+       data-hi="OvaTrack से जुड़ें — आपका AI स्वास्थ्य साथी">
+      Join OvaTrack — your AI health companion
+    </p>
+    <div class="lang-row">
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-hi" onclick="setLang('hi')">हिं</button>
+    </div>
   </div>
   <div class="card-body">
     {% if error %}
@@ -113,42 +103,79 @@
     {% endif %}
     <form method="POST">
       <div class="field">
-        <label>Full Name</label>
-        <input type="text" name="name" required placeholder="Your name">
+        <label data-en="Full Name" data-hi="पूरा नाम">Full Name</label>
+        <input type="text" name="name" required
+               placeholder="Your name"
+               data-ph-en="Your name"
+               data-ph-hi="आपका नाम">
       </div>
       <div class="field">
-        <label>Email Address</label>
-        <input type="email" name="email" required placeholder="you@example.com">
+        <label data-en="Email Address" data-hi="ईमेल पता">Email Address</label>
+        <input type="email" name="email" required
+               placeholder="you@example.com"
+               data-ph-en="you@example.com"
+               data-ph-hi="you@example.com">
       </div>
       <div class="field">
-        <label>Password</label>
-        <input type="password" name="password" required placeholder="Min. 6 characters">
-        <div class="hint">At least 6 characters</div>
+        <label data-en="Password" data-hi="पासवर्ड">Password</label>
+        <input type="password" name="password" required
+               placeholder="Min. 6 characters"
+               data-ph-en="Min. 6 characters"
+               data-ph-hi="न्यूनतम 6 अक्षर">
+        <div class="hint"
+             data-en="At least 6 characters"
+             data-hi="कम से कम 6 अक्षर">At least 6 characters</div>
       </div>
-      <button type="submit" class="btn">Create Account →</button>
+      <button type="submit" class="btn"
+              data-en="Create Account →"
+              data-hi="अकाउंट बनाएं →">Create Account →</button>
     </form>
     <div class="footer-link">
-      Already have an account? <a href="/login">Sign in</a>
+      <span data-en="Already have an account?" data-hi="पहले से अकाउंट है?">Already have an account?</span>
+      <a href="/login" data-en=" Sign in" data-hi=" साइन इन करें"> Sign in</a>
     </div>
   </div>
 </div>
 
 <script>
-  let isDark = (localStorage.getItem('ova-theme') === 'dark');
-
-  function applyTheme() {
-    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-    const btn = document.getElementById('theme-btn');
-    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
-  }
-
-  function toggleTheme() {
-    isDark = !isDark;
-    localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
-    applyTheme();
-  }
-
+// ── THEME ──────────────────────────────────────────────────────────────
+let isDark = localStorage.getItem('ova-theme') === 'dark';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
   applyTheme();
+}
+applyTheme();
+
+// ── LANGUAGE ───────────────────────────────────────────────────────────
+function setLang(lang) {
+  localStorage.setItem('ova-lang', lang);
+
+  // Active button highlight
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-hi').classList.toggle('active', lang === 'hi');
+
+  // Translate text content
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    var val = el.getAttribute('data-' + lang);
+    if (!val) return;
+    if (el.tagName === 'BUTTON') el.textContent = val;
+    else el.innerHTML = val;
+  });
+
+  // Translate placeholders
+  document.querySelectorAll('[data-ph-en]').forEach(function(el) {
+    var ph = el.getAttribute('data-ph-' + lang);
+    if (ph) el.placeholder = ph;
+  });
+}
+
+// Auto-apply saved language on load
+setLang(localStorage.getItem('ova-lang') || 'en');
 </script>
 </body>
 </html>
