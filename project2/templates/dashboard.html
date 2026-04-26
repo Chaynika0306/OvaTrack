@@ -1,777 +1,577 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OvaTrack – Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    /* SYNCHRONOUS — runs before ANY HTML renders, zero flash */
+    (function(){
+      var th = localStorage.getItem('ova-theme') || 'light';
+      var lang = localStorage.getItem('ova-lang') || 'en';
+      document.documentElement.setAttribute('data-theme', th);
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    /* ── DARK / LIGHT VARIABLES ── */
     :root{
-      --rose:#e8537a;--rose-light:#f9dde5;--rose-dark:#c23d62;
-      --plum:#3d1f4e;--plum-mid:#5c3272;
-      --cream:#fdf7f2;--warm-white:#fff9f5;
-      --text:#2a1a30;--muted:#7a6882;--border:#e8ddef;
-      --success:#2e9e6b;--success-light:#d4f0e5;
-      --warn:#d97706;--warn-light:#fef3c7;
-      --danger:#dc2626;--danger-light:#fee2e2;
+      --rose:#e8537a;--rose-light:#f9dde5;--rose-dark:#c23d62;--plum:#3d1f4e;--plum-mid:#5c3272;
+      --bg:#fdf7f2;--bg2:#ffffff;--warm-white:#fff9f5;--text:#2a1a30;--muted:#7a6882;--border:#e8ddef;
+      --success:#2e9e6b;--success-light:#d4f0e5;--warn:#d97706;--warn-light:#fef3c7;
+      --danger:#dc2626;--danger-light:#fee2e2;--input-bg:#fff9f5;
+      --header-bg:rgba(253,247,242,.92);--card-shadow:0 3px 20px rgba(61,31,78,.07);
+      --blob:rgba(232,83,122,.10);--notif-bg:#ffffff;--chat-bg:#fdf7f2;
     }
-    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
-    body::before{content:'';position:fixed;top:-150px;right:-150px;width:500px;height:500px;
-      background:radial-gradient(circle,rgba(232,83,122,.10) 0%,transparent 70%);pointer-events:none;z-index:0}
+    [data-theme="dark"]{
+      --bg:#111827;--bg2:#1f2937;--warm-white:#1a2332;--text:#f3f4f6;--muted:#9ca3af;
+      --border:#374151;--input-bg:#111827;--rose-light:#4a1525;
+      --success-light:#052e16;--warn-light:#1c1003;--danger-light:#3b0d0d;
+      --header-bg:rgba(17,24,39,.95);--card-shadow:0 3px 20px rgba(0,0,0,.35);
+      --blob:rgba(232,83,122,.05);--notif-bg:#1f2937;--chat-bg:#111827;
+    }
 
-    /* HEADER */
-    header{position:sticky;top:0;z-index:100;padding:16px 32px;display:flex;align-items:center;
-      justify-content:space-between;background:rgba(253,247,242,.92);backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--border)}
+    /* ── LANGUAGE CSS SWITCHING — zero flash, no JS needed ── */
+    .lang-en, .lang-hi { display: none !important; }
+    html[data-lang="en"] .lang-en { display: inline !important; }
+    html[data-lang="hi"] .lang-hi { display: inline !important; }
+    html[data-lang="en"] .lang-en-block { display: block !important; }
+    html[data-lang="hi"] .lang-hi-block { display: block !important; }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+    body::before{content:'';position:fixed;top:-150px;right:-150px;width:500px;height:500px;background:radial-gradient(circle,var(--blob) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+    header{position:sticky;top:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
     .logo{display:flex;align-items:center;gap:10px}
-    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
-    .logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:var(--plum)}
+    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);transition:color .3s}
     .header-right{display:flex;align-items:center;gap:10px}
-    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;
-      padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
+    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
     .nav-link:hover{border-color:var(--rose);color:var(--rose)}
-    .nav-link.primary{background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      color:#fff;border-color:transparent}
+    .nav-link.primary{background:linear-gradient(135deg,var(--rose),var(--plum-mid));color:#fff;border-color:transparent}
+    .icon-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;color:var(--text);position:relative;text-decoration:none}
+    .icon-btn:hover{border-color:var(--rose)}
+    .theme-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .25s}
+    .theme-btn:hover{border-color:var(--rose)}
 
-    /* NOTIFICATION BANNER */
-    .notif{padding:14px 32px;display:flex;align-items:center;gap:12px;font-size:14px;
-      font-weight:500;border-bottom:1px solid transparent;animation:slideDown .4s ease}
+    .notif-banner{padding:14px 32px;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500;border-bottom:1px solid transparent;animation:slideDown .4s ease}
     @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-    .notif.overdue{background:var(--danger-light);color:#991b1b;border-color:#fca5a5}
-    .notif.soon   {background:var(--warn-light);color:#92400e;border-color:#fcd34d}
-    .notif.upcoming{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
-    .notif.normal {background:var(--success-light);color:#166534;border-color:#86efac}
+    .notif-banner.overdue{background:var(--danger-light);color:#fca5a5}
+    .notif-banner.soon{background:var(--warn-light);color:#fcd34d}
+    .notif-banner.upcoming{background:#1e3a5f;color:#93c5fd}
+    .notif-banner.normal{background:var(--success-light);color:#86efac}
+    [data-theme="light"] .notif-banner.overdue{color:#991b1b}
+    [data-theme="light"] .notif-banner.soon{color:#92400e}
+    [data-theme="light"] .notif-banner.upcoming{background:#dbeafe;color:#1e40af}
+    [data-theme="light"] .notif-banner.normal{color:#166534}
     .notif-icon{font-size:20px;flex-shrink:0}
     .notif-days{margin-left:auto;font-size:12px;opacity:.7}
 
-    /* PAGE */
     .page{position:relative;z-index:5;max-width:1000px;margin:0 auto;padding:28px 20px 60px}
     .page-title{margin-bottom:24px}
-    .page-title h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--plum);margin-bottom:3px}
+    .page-title h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:3px;transition:color .3s}
     .page-title p{font-size:13px;color:var(--muted)}
 
-    /* RESULT BANNER */
-    .result-banner{padding:18px 24px;border-radius:14px;margin-bottom:24px;
-      display:flex;align-items:center;gap:14px;font-size:14px;font-weight:500;
-      animation:fadeUp .4s ease}
+    .result-banner{padding:18px 24px;border-radius:14px;margin-bottom:24px;display:flex;align-items:center;gap:14px;font-size:14px;font-weight:500;animation:fadeUp .4s ease}
     @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    .result-banner.low   {background:var(--success-light);color:#166534;border:1px solid #86efac}
-    .result-banner.medium{background:var(--warn-light);color:#92400e;border:1px solid #fcd34d}
-    .result-banner.high  {background:var(--danger-light);color:#991b1b;border:1px solid #fca5a5}
-    .result-banner.cycle {background:var(--rose-light);color:var(--rose-dark);border:1px solid #f4a4b8}
+    .result-banner.Low{background:var(--success-light);color:#166534;border:1px solid #86efac}
+    .result-banner.Medium{background:var(--warn-light);color:#92400e;border:1px solid #fcd34d}
+    .result-banner.High{background:var(--danger-light);color:#991b1b;border:1px solid #fca5a5}
+    .result-banner.cycle{background:var(--rose-light);color:var(--rose-dark);border:1px solid #f4a4b8}
+    [data-theme="dark"] .result-banner.Low{color:#86efac}[data-theme="dark"] .result-banner.Medium{color:#fcd34d}
+    [data-theme="dark"] .result-banner.High{color:#fca5a5}[data-theme="dark"] .result-banner.cycle{color:#f9a8c2}
     .banner-icon{font-size:26px;flex-shrink:0}
     .banner-text strong{display:block;font-size:15px;margin-bottom:2px}
 
-    /* GRID */
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
     .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
     .span2{grid-column:span 2}
     @media(max-width:680px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.span2{grid-column:span 1}}
     @media(max-width:440px){.grid3{grid-template-columns:1fr}}
 
-    /* CARD */
-    .card{background:#fff;border-radius:18px;border:1px solid var(--border);
-      box-shadow:0 3px 20px rgba(61,31,78,.07);overflow:hidden;
-      animation:fadeUp .5s ease both}
-    .card:nth-child(1){animation-delay:.04s}
-    .card:nth-child(2){animation-delay:.08s}
-    .card:nth-child(3){animation-delay:.12s}
-    .card:nth-child(4){animation-delay:.16s}
+    .card{background:var(--bg2);border-radius:18px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;animation:fadeUp .5s ease both;transition:background .3s,border-color .3s}
     .card-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--border)}
     .card-ttl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
     .card-sub{font-size:12px;color:var(--muted);margin-top:2px}
     .card-body{padding:20px}
 
-    /* GAUGE */
     .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:20px}
     .gauge-outer{position:relative;width:180px;height:180px}
     .gauge-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-    .gauge-pct{font-family:'DM Serif Display',serif;font-size:36px;color:var(--plum);line-height:1}
+    .gauge-pct{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1;transition:color .3s}
     .gauge-lbl{font-size:11px;color:var(--muted);margin-top:3px}
     .risk-badge{margin-top:14px;padding:5px 18px;border-radius:50px;font-size:12px;font-weight:600}
-    .risk-badge.Low   {background:var(--success-light);color:#166534}
+    .risk-badge.Low{background:var(--success-light);color:#166634}
     .risk-badge.Medium{background:var(--warn-light);color:#92400e}
-    .risk-badge.High  {background:var(--danger-light);color:#991b1b}
+    .risk-badge.High{background:var(--danger-light);color:#991b1b}
+    [data-theme="dark"] .risk-badge.Low{color:#86efac}[data-theme="dark"] .risk-badge.Medium{color:#fcd34d}[data-theme="dark"] .risk-badge.High{color:#fca5a5}
 
-    /* STAT */
-    .stat-val{font-family:'DM Serif Display',serif;font-size:34px;color:var(--plum);line-height:1}
+    .stat-val{font-family:'DM Serif Display',serif;font-size:34px;color:var(--text);line-height:1;transition:color .3s}
     .stat-unit{font-size:14px;color:var(--muted);margin-left:3px}
     .stat-desc{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
     .tag{display:inline-block;padding:3px 11px;border-radius:50px;font-size:11px;font-weight:600;margin-top:6px}
-    .tag-ok  {background:var(--success-light);color:#166534}
-    .tag-warn{background:var(--warn-light);color:#92400e}
-    .tag-info{background:#dbeafe;color:#1e40af}
-    .tag-bad {background:var(--danger-light);color:#991b1b}
+    .tag-ok{background:var(--success-light);color:#166634}.tag-warn{background:var(--warn-light);color:#92400e}
+    .tag-info{background:#dbeafe;color:#1e40af}.tag-bad{background:var(--danger-light);color:#991b1b}
+    [data-theme="dark"] .tag-ok{color:#86efac}[data-theme="dark"] .tag-warn{color:#fcd34d}
+    [data-theme="dark"] .tag-info{background:#1e3a5f;color:#93c5fd}[data-theme="dark"] .tag-bad{color:#fca5a5}
 
-    /* CYCLE RING */
-    .cycle-ring{width:100px;height:100px;border-radius:50%;border:6px solid;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
+    .cycle-ring{width:100px;height:100px;border-radius:50%;border:6px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
     .cycle-ring.Normal{border-color:var(--success);background:var(--success-light)}
-    .cycle-ring.Short {border-color:#3b82f6;background:#dbeafe}
-    .cycle-ring.Long  {border-color:var(--warn);background:var(--warn-light)}
-    .ring-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--plum);line-height:1}
+    .cycle-ring.Short{border-color:#3b82f6;background:#1e3a5f}
+    .cycle-ring.Long{border-color:var(--warn);background:var(--warn-light)}
+    .ring-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);line-height:1}
     .ring-lbl{font-size:10px;color:var(--muted)}
 
-    /* SYMPTOMS STRIP */
     .sym-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
-    .sym-day{flex-shrink:0;width:68px;background:var(--warm-white);border:1px solid var(--border);
-      border-radius:12px;padding:10px 8px;text-align:center}
+    .sym-day{flex-shrink:0;width:68px;background:var(--warm-white);border:1px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center;transition:background .3s}
     .sym-date{font-size:10px;color:var(--muted);margin-bottom:6px}
     .sym-mood{font-size:20px;margin-bottom:4px}
     .sym-pills{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
     .sym-pill{font-size:9px;padding:1px 5px;border-radius:4px;background:var(--rose-light);color:var(--rose-dark)}
+    [data-theme="dark"] .sym-pill{color:#f9a8c2}
     .sym-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px}
 
-    /* HISTORY */
-    .hist-item{display:flex;align-items:center;justify-content:space-between;
-      padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+    .hist-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
     .hist-item:last-child{border-bottom:none}
-    .hist-type{font-weight:600;color:var(--plum)}
+    .hist-type{font-weight:600;color:var(--text);transition:color .3s}
     .hist-date{color:var(--muted);font-size:11px}
-    .hist-risk{font-size:12px;font-weight:600}
 
-    /* SUGGESTIONS */
     .sug-list{list-style:none;display:flex;flex-direction:column;gap:8px}
-    .sug-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;
-      background:var(--warm-white);border-radius:10px;border:1px solid var(--border);
-      font-size:13px;line-height:1.5}
-    .sug-icon{width:26px;height:26px;border-radius:50%;background:var(--rose-light);
-      display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+    .sug-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--warm-white);border-radius:10px;border:1px solid var(--border);font-size:13px;line-height:1.5;transition:background .3s}
+    .sug-icon{width:26px;height:26px;border-radius:50%;background:var(--rose-light);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
 
-    /* DISCLAIMER */
-    .disclaimer{margin-top:24px;padding:14px 18px;background:var(--warm-white);
-      border:1px solid var(--border);border-radius:12px;font-size:11px;color:var(--muted);
-      text-align:center;line-height:1.6}
+    .disclaimer{margin-top:24px;padding:14px 18px;background:var(--warm-white);border:1px solid var(--border);border-radius:12px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6;transition:background .3s}
 
-    @media(max-width:480px){
-      header{padding:12px 14px}
-      .page{padding:20px 12px 48px}
-      .nav-link.primary span{display:none}
-    }
+    .notif-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;border-left:4px solid}
+    .notif-card.danger{background:var(--danger-light);border-color:#dc2626}
+    .notif-card.warning{background:var(--warn-light);border-color:#d97706}
+    .notif-card.success{background:var(--success-light);border-color:#2e9e6b}
+    .notif-card.info{background:#1e3a5f;border-color:#3b82f6}
+    .notif-card.tip{background:var(--rose-light);border-color:#e8537a}
+    [data-theme="light"] .notif-card.info{background:#dbeafe}
+    .notif-icon-big{font-size:22px;margin-bottom:6px}
+    .notif-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+    .notif-body{font-size:12px;color:var(--muted);line-height:1.55}
 
-   
+    @keyframes chatPop{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .qp-btn{padding:5px 10px;border-radius:50px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .qp-btn:hover{border-color:var(--rose);color:var(--rose)}
+    .msg-ai{align-self:flex-start;max-width:85%;background:var(--bg2);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:13px;color:var(--text);line-height:1.55}
+    .msg-user{align-self:flex-end;max-width:85%;background:linear-gradient(135deg,#e8537a,#5c3272);border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;color:#fff;line-height:1.55}
+    .msg-typing{align-self:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:10px 16px;font-size:18px;letter-spacing:2px;color:var(--muted)}
+    @media(max-width:480px){header{padding:12px 14px}.page{padding:20px 12px 48px}}
   </style>
-<script>
-// ── Global Theme & Language Persistence (OvaTrack) ─────────────────────
-(function(){
-  // Theme
-  var th = localStorage.getItem('ova-theme');
-  if(th) document.documentElement.setAttribute('data-theme', th);
-
-  // Language — apply after DOM loads
-  document.addEventListener('DOMContentLoaded', function(){
-    var lang = localStorage.getItem('ova-lang') || 'en';
-    document.querySelectorAll('[data-en]').forEach(function(el){
-      var txt = el.getAttribute('data-'+lang);
-      if(txt) el.innerHTML = txt;
-    });
-    // Sync lang buttons if they exist
-    document.querySelectorAll('.lang-btn').forEach(function(b, i){
-      b.classList.toggle('active', (lang==='en' && i===0)||(lang==='hi' && i===1));
-    });
-  });
-})();
-</script>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-icon">🌸</div>
-    <div class="logo-text">OvaTrack</div>
-  </div>
+  <div class="logo"><div class="logo-icon">🌸</div><div class="logo-text">OvaTrack</div></div>
   <div class="header-right">
-    <!-- Go to Landing Page -->
-    <a href="/" class="nav-link" title="Home">🏠 Home</a>
-    <!-- Symptoms -->
-    <a href="/symptoms" class="nav-link">📋 Symptoms</a>
-    <!-- New Analysis -->
-    <a href="/app" class="nav-link primary"><span>✦ New Analysis</span></a>
-    <!-- Chatbot Icon — scrolls to chat -->
-    <button onclick="openChatFromNav()" title="AI Health Assistant"
-      style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);
-      background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      font-size:18px;transition:all .2s;color:var(--text)">💬</button>
-    <!-- Notification Bell Icon -->
-    <button onclick="openNotif()" title="Reminders"
-      id="bell-nav-btn"
-      style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);
-      background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      font-size:18px;position:relative;transition:all .2s;">
-      🔔
-      <span id="bell-nav-badge" style="display:none;position:absolute;top:4px;right:4px;
-        width:9px;height:9px;background:#e8537a;border-radius:50%;border:2px solid white"></span>
+    <a href="/go-home" class="nav-link">
+      <span class="lang-en">🏠 Home</span><span class="lang-hi">🏠 होम</span>
+    </a>
+    <a href="/symptoms" class="nav-link">
+      <span class="lang-en">📋 Symptoms</span><span class="lang-hi">📋 लक्षण</span>
+    </a>
+    <a href="/app" class="nav-link primary">
+      <span class="lang-en">✦ New Analysis</span><span class="lang-hi">✦ नया विश्लेषण</span>
+    </a>
+    <button onclick="openChatFromNav()" class="icon-btn">💬</button>
+    <button onclick="openNotif()" class="icon-btn" id="bell-btn">🔔
+      <span id="bell-badge" style="display:none;position:absolute;top:4px;right:4px;width:9px;height:9px;background:#e8537a;border-radius:50%;border:2px solid var(--bg2)"></span>
     </button>
-    <!-- Sign Out -->
-    <a href="/logout" class="nav-link">Sign Out</a>
+    <button onclick="toggleTheme()" class="theme-btn" id="theme-btn">🌙</button>
+    <a href="/signout" class="nav-link">
+      <span class="lang-en">Sign Out</span><span class="lang-hi">साइन आउट</span>
+    </a>
   </div>
 </header>
 
-<!-- NOTIFICATION BANNER -->
 {% if notification %}
-  <div class="notif {{ notification.type }}">
-    <span class="notif-icon">
-      {% if notification.type == 'overdue' %}🔴
-      {% elif notification.type == 'soon' %}🟡
-      {% elif notification.type == 'upcoming' %}🔵
-      {% else %}🟢{% endif %}
-    </span>
-    <span>{{ notification.message }}</span>
-    {% if notification.date %}
-      <span class="notif-days">📅 {{ notification.date }}</span>
-    {% endif %}
-  </div>
+<div class="notif-banner {{ notification.type }}">
+  <span class="notif-icon">{% if notification.type=='overdue'%}🔴{% elif notification.type=='soon'%}🟡{% elif notification.type=='upcoming'%}🔵{% else %}🟢{% endif %}</span>
+  <span>{{ notification.message }}</span>
+  {% if notification.date %}<span class="notif-days">📅 {{ notification.date }}</span>{% endif %}
+</div>
 {% endif %}
 
 <div class="page">
   <div class="page-title">
-    <h1>Health Dashboard</h1>
-    <p>Hello, {{ user_name }} — here are your AI-generated insights</p>
+    <h1><span class="lang-en">Health Dashboard</span><span class="lang-hi">स्वास्थ्य डैशबोर्ड</span></h1>
+    <p>
+      <span class="lang-en">Hello, {{ user_name }} — here are your AI-generated insights</span>
+      <span class="lang-hi">नमस्ते, {{ user_name }} — यहाँ हैं आपकी AI-जनित जानकारी</span>
+    </p>
   </div>
 
-  <!-- RESULT BANNER -->
   {% if data.type == 'pcos' %}
-    <div class="result-banner {{ data.risk_level }}">
-      <span class="banner-icon">
-        {% if data.risk_level == 'Low' %}✅{% elif data.risk_level == 'Medium' %}⚠️{% else %}🔴{% endif %}
-      </span>
-      <div class="banner-text">
-        <strong>{{ data.result_text }} — Risk: {{ data.risk }}%</strong>
-        {% if data.risk_level == 'Low' %}Your results suggest a low likelihood of PCOS.
-        {% elif data.risk_level == 'Medium' %}Moderate risk detected. Lifestyle changes are recommended.
-        {% else %}High risk detected. Please consult a gynecologist.{% endif %}
-      </div>
+  <div class="result-banner {{ data.risk_level }}">
+    <span class="banner-icon">{% if data.risk_level=='Low'%}✅{% elif data.risk_level=='Medium'%}⚠️{% else %}🔴{% endif %}</span>
+    <div class="banner-text">
+      <strong>{{ data.result_text }} — <span class="lang-en">Risk</span><span class="lang-hi">जोखिम</span>: {{ data.risk }}%</strong>
+      {% if data.risk_level=='Low' %}
+        <span class="lang-en">Your results suggest a low likelihood of PCOS.</span>
+        <span class="lang-hi">आपके परिणाम PCOS की कम संभावना दर्शाते हैं।</span>
+      {% elif data.risk_level=='Medium' %}
+        <span class="lang-en">Moderate risk detected. Lifestyle changes are recommended.</span>
+        <span class="lang-hi">मध्यम जोखिम मिला। जीवनशैली में बदलाव अनुशंसित है।</span>
+      {% else %}
+        <span class="lang-en">High risk detected. Please consult a gynecologist.</span>
+        <span class="lang-hi">उच्च जोखिम मिला। कृपया स्त्री रोग विशेषज्ञ से मिलें।</span>
+      {% endif %}
     </div>
+  </div>
   {% else %}
-    <div class="result-banner cycle">
-      <span class="banner-icon">🩸</span>
-      <div class="banner-text">
-        <strong>{{ data.result_text }}</strong>
-        {{ data.cycle_note }}
-      </div>
+  <div class="result-banner cycle">
+    <span class="banner-icon">🩸</span>
+    <div class="banner-text">
+      <strong>{{ data.result_text }}</strong>
+      <span>{{ data.cycle_note }}</span>
     </div>
+  </div>
   {% endif %}
 
-  <!-- ── PCOS DASHBOARD ──────────────────────────────────────────────── -->
   {% if data.type == 'pcos' %}
-
-  {# Pass data to JS safely via hidden element — avoids Jinja/JS {{ }} conflict #}
-  <div id="js-data"
-       data-risk="{{ data.risk }}"
-       data-risk-level="{{ data.risk_level }}"
-       data-features="{{ data.feature_names | join(',') }}"
-       data-importances="{{ data.importances | join(',') }}"
-       style="display:none"></div>
-
+  <div id="js-data" data-risk="{{ data.risk }}" data-risk-level="{{ data.risk_level }}" data-features="{{ data.feature_names|join(',') }}" data-importances="{{ data.importances|join(',') }}" style="display:none"></div>
   <div class="grid2">
-    <!-- GAUGE -->
     <div class="card">
       <div class="card-hdr">
-        <div class="card-ttl">PCOS Risk Score</div>
-        <div class="card-sub">AI confidence level</div>
+        <div class="card-ttl"><span class="lang-en">PCOS RISK SCORE</span><span class="lang-hi">PCOS जोखिम स्कोर</span></div>
+        <div class="card-sub"><span class="lang-en">AI confidence level</span><span class="lang-hi">AI विश्वास स्तर</span></div>
       </div>
       <div class="gauge-wrap">
-        <div class="gauge-outer">
-          <canvas id="gaugeChart" width="180" height="180"></canvas>
-          <div class="gauge-center">
-            <div class="gauge-pct">{{ data.risk }}%</div>
-            <div class="gauge-lbl">risk score</div>
+        <div class="gauge-outer"><canvas id="gaugeChart" width="180" height="180"></canvas>
+          <div class="gauge-center"><div class="gauge-pct">{{ data.risk }}%</div>
+            <div class="gauge-lbl"><span class="lang-en">risk score</span><span class="lang-hi">जोखिम स्कोर</span></div>
           </div>
         </div>
-        <div class="risk-badge {{ data.risk_level }}">{{ data.risk_level }} Risk</div>
+        <div class="risk-badge {{ data.risk_level }}">
+          <span class="lang-en">{{ data.risk_level }} Risk</span>
+          <span class="lang-hi">{% if data.risk_level=='Low'%}कम{% elif data.risk_level=='Medium'%}मध्यम{% else %}अधिक{% endif %} जोखिम</span>
+        </div>
       </div>
     </div>
-
-    <!-- BMI -->
     <div class="card">
       <div class="card-hdr">
-        <div class="card-ttl">Body Mass Index</div>
+        <div class="card-ttl"><span class="lang-en">BODY MASS INDEX</span><span class="lang-hi">बॉडी मास इंडेक्स</span></div>
         <div class="card-sub">{{ data.weight }} kg · {{ data.height }} cm</div>
       </div>
       <div class="card-body">
         <div><span class="stat-val">{{ data.bmi }}</span><span class="stat-unit">BMI</span></div>
-        {% set b = data.bmi | float %}
-        {% if b < 18.5 %}
-          <span class="tag tag-info">Underweight</span>
-          <div class="stat-desc">BMI below 18.5. A nutrient-rich diet can help reach a healthy weight.</div>
-        {% elif b < 25 %}
-          <span class="tag tag-ok">Normal Weight ✓</span>
-          <div class="stat-desc">BMI 18.5–24.9. You are within the healthy range.</div>
-        {% elif b < 30 %}
-          <span class="tag tag-warn">Overweight</span>
-          <div class="stat-desc">BMI 25–29.9. Modest weight loss can reduce PCOS symptoms.</div>
-        {% else %}
-          <span class="tag tag-bad">Obese</span>
-          <div class="stat-desc">BMI ≥ 30. Weight management is strongly recommended.</div>
+        {% set b=data.bmi|float %}
+        {% if b<18.5%}
+          <span class="tag tag-info"><span class="lang-en">Underweight</span><span class="lang-hi">कम वजन</span></span>
+          <div class="stat-desc"><span class="lang-en">BMI below 18.5.</span><span class="lang-hi">BMI 18.5 से कम।</span></div>
+        {% elif b<25%}
+          <span class="tag tag-ok"><span class="lang-en">Normal Weight ✓</span><span class="lang-hi">सामान्य वजन ✓</span></span>
+          <div class="stat-desc"><span class="lang-en">BMI 18.5–24.9. Healthy range.</span><span class="lang-hi">BMI 18.5–24.9. स्वस्थ सीमा।</span></div>
+        {% elif b<30%}
+          <span class="tag tag-warn"><span class="lang-en">Overweight</span><span class="lang-hi">अधिक वजन</span></span>
+          <div class="stat-desc"><span class="lang-en">BMI 25–29.9. Weight loss recommended.</span><span class="lang-hi">BMI 25–29.9. वजन कम करना अनुशंसित।</span></div>
+        {% else%}
+          <span class="tag tag-bad"><span class="lang-en">Obese</span><span class="lang-hi">मोटापा</span></span>
+          <div class="stat-desc"><span class="lang-en">BMI ≥ 30. Weight management strongly recommended.</span><span class="lang-hi">BMI ≥ 30. वजन प्रबंधन अत्यंत आवश्यक।</span></div>
         {% endif %}
-
         <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
-          <div class="card-ttl" style="margin-bottom:8px">Cycle Length</div>
-          <span class="stat-val" style="font-size:24px">{{ data.cycle_length | int }}</span>
-          <span class="stat-unit">days</span>
-          {% if data.cycle_length | float < 21 or data.cycle_length | float > 35 %}
-            <span class="tag tag-warn" style="display:block;width:fit-content">Irregular</span>
-          {% else %}
-            <span class="tag tag-ok" style="display:block;width:fit-content">Regular ✓</span>
+          <div class="card-ttl" style="margin-bottom:8px"><span class="lang-en">CYCLE LENGTH</span><span class="lang-hi">चक्र लंबाई</span></div>
+          <span class="stat-val" style="font-size:24px">{{ data.cycle_length|int }}</span>
+          <span class="stat-unit"><span class="lang-en">days</span><span class="lang-hi">दिन</span></span>
+          {% if data.cycle_length|float<21 or data.cycle_length|float>35%}
+            <span class="tag tag-warn" style="display:block;width:fit-content"><span class="lang-en">Irregular</span><span class="lang-hi">अनियमित</span></span>
+          {% else%}
+            <span class="tag tag-ok" style="display:block;width:fit-content"><span class="lang-en">Regular ✓</span><span class="lang-hi">नियमित ✓</span></span>
           {% endif %}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- FEATURE CHART -->
   <div class="card span2" style="margin-bottom:18px">
     <div class="card-hdr">
-      <div class="card-ttl">What Influenced This Result</div>
-      <div class="card-sub">Feature importance — higher bar = stronger influence on prediction</div>
+      <div class="card-ttl"><span class="lang-en">WHAT INFLUENCED THIS RESULT</span><span class="lang-hi">इस परिणाम को क्या प्रभावित किया</span></div>
+      <div class="card-sub"><span class="lang-en">Feature importance — higher bar = stronger influence</span><span class="lang-hi">फीचर महत्व — लंबी बार = अधिक प्रभाव</span></div>
     </div>
-    <div class="card-body">
-      <canvas id="featureChart" height="80"></canvas>
-    </div>
+    <div class="card-body"><canvas id="featureChart" height="80"></canvas></div>
   </div>
 
-  <!-- STATS ROW -->
   <div class="grid3">
     <div class="card">
-      <div class="card-hdr"><div class="card-ttl">Age</div></div>
+      <div class="card-hdr"><div class="card-ttl"><span class="lang-en">AGE</span><span class="lang-hi">आयु</span></div></div>
       <div class="card-body">
-        <div><span class="stat-val">{{ data.age | int }}</span><span class="stat-unit">yrs</span></div>
-        <div class="stat-desc">Factored into the PCOS risk model.</div>
+        <div><span class="stat-val">{{ data.age|int }}</span><span class="stat-unit"><span class="lang-en">yrs</span><span class="lang-hi">वर्ष</span></span></div>
+        <div class="stat-desc"><span class="lang-en">Factored into the PCOS risk model.</span><span class="lang-hi">PCOS जोखिम मॉडल में शामिल।</span></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-hdr"><div class="card-ttl">Risk Level</div></div>
+      <div class="card-hdr"><div class="card-ttl"><span class="lang-en">RISK LEVEL</span><span class="lang-hi">जोखिम स्तर</span></div></div>
       <div class="card-body">
-        <div class="stat-val" style="font-size:24px">{{ data.risk_level }}</div>
+        <div class="stat-val" style="font-size:24px">
+          <span class="lang-en">{{ data.risk_level }}</span>
+          <span class="lang-hi">{% if data.risk_level=='Low'%}कम{% elif data.risk_level=='Medium'%}मध्यम{% else %}अधिक{% endif %}</span>
+        </div>
         <div class="stat-desc">
-          {% if data.risk_level == 'Low' %}Minimal PCOS indicators found.
-          {% elif data.risk_level == 'Medium' %}Some indicators present.
-          {% else %}Multiple indicators flagged.{% endif %}
+          {% if data.risk_level=='Low' %}<span class="lang-en">Minimal PCOS indicators.</span><span class="lang-hi">न्यूनतम PCOS संकेतक।</span>
+          {% elif data.risk_level=='Medium' %}<span class="lang-en">Some indicators present.</span><span class="lang-hi">कुछ संकेतक मौजूद।</span>
+          {% else%}<span class="lang-en">Multiple indicators flagged.</span><span class="lang-hi">कई संकेतक पाए गए।</span>{% endif %}
         </div>
       </div>
     </div>
     <div class="card">
-      <div class="card-hdr"><div class="card-ttl">Last Analysis</div></div>
+      <div class="card-hdr"><div class="card-ttl"><span class="lang-en">LAST ANALYSIS</span><span class="lang-hi">अंतिम विश्लेषण</span></div></div>
       <div class="card-body">
-        <div class="stat-val" style="font-size:18px">Today</div>
-        <div class="stat-desc">Your result is saved to your history below.</div>
+        <div class="stat-val" style="font-size:18px"><span class="lang-en">Today</span><span class="lang-hi">आज</span></div>
+        <div class="stat-desc"><span class="lang-en">Result saved to history.</span><span class="lang-hi">परिणाम इतिहास में सहेजा गया।</span></div>
       </div>
     </div>
   </div>
 
-  <!-- ── CYCLE DASHBOARD ───────────────────────────────────────────── -->
   {% else %}
-
   <div class="grid2">
     <div class="card">
       <div class="card-hdr">
-        <div class="card-ttl">Predicted Cycle Length</div>
-        <div class="card-sub">AI estimation for your next cycle</div>
+        <div class="card-ttl"><span class="lang-en">PREDICTED CYCLE LENGTH</span><span class="lang-hi">अनुमानित चक्र लंबाई</span></div>
+        <div class="card-sub"><span class="lang-en">AI estimation for your next cycle</span><span class="lang-hi">आपके अगले चक्र का AI अनुमान</span></div>
       </div>
       <div class="card-body" style="text-align:center">
         <div class="cycle-ring {{ data.cycle_status }}">
-          <div class="ring-num">{{ data.cycle_days | int }}</div>
-          <div class="ring-lbl">days</div>
+          <div class="ring-num">{{ data.cycle_days|int }}</div>
+          <div class="ring-lbl"><span class="lang-en">days</span><span class="lang-hi">दिन</span></div>
         </div>
-        <div style="font-size:15px;font-weight:600;color:var(--plum);margin-bottom:6px">{{ data.cycle_status }} Cycle</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">
+          <span class="lang-en">{{ data.cycle_status }} Cycle</span>
+          <span class="lang-hi">{% if data.cycle_status=='Normal'%}सामान्य{% elif data.cycle_status=='Short'%}छोटा{% else%}लंबा{% endif %} चक्र</span>
+        </div>
         <div style="font-size:12px;color:var(--muted);line-height:1.6">{{ data.cycle_note }}</div>
       </div>
     </div>
     <div class="card">
-      <div class="card-hdr"><div class="card-ttl">Normal Range</div></div>
+      <div class="card-hdr"><div class="card-ttl"><span class="lang-en">NORMAL RANGE</span><span class="lang-hi">सामान्य सीमा</span></div></div>
       <div class="card-body">
-        <div><span class="stat-val">21–35</span><span class="stat-unit">days</span></div>
-        <div class="stat-desc">The typical healthy menstrual cycle range.</div>
-        {% if data.cycle_days >= 21 and data.cycle_days <= 35 %}
-          <span class="tag tag-ok">Within Normal Range ✓</span>
-        {% else %}
-          <span class="tag tag-warn">Outside Normal Range</span>
+        <div><span class="stat-val">21–35</span><span class="stat-unit"><span class="lang-en">days</span><span class="lang-hi">दिन</span></span></div>
+        <div class="stat-desc"><span class="lang-en">The typical healthy menstrual cycle range.</span><span class="lang-hi">सामान्य मासिक धर्म चक्र सीमा।</span></div>
+        {% if data.cycle_days>=21 and data.cycle_days<=35%}
+          <span class="tag tag-ok"><span class="lang-en">Within Normal Range ✓</span><span class="lang-hi">सामान्य सीमा में ✓</span></span>
+        {% else%}
+          <span class="tag tag-warn"><span class="lang-en">Outside Normal Range</span><span class="lang-hi">सामान्य सीमा से बाहर</span></span>
         {% endif %}
       </div>
     </div>
   </div>
-
   {% endif %}
 
-  <!-- ── SUGGESTIONS (both types) ─────────────────────────────────── -->
   <div class="card" style="margin-bottom:18px">
     <div class="card-hdr">
-      <div class="card-ttl">Personalised Recommendations</div>
-      <div class="card-sub">Based on your result</div>
+      <div class="card-ttl"><span class="lang-en">PERSONALISED RECOMMENDATIONS</span><span class="lang-hi">व्यक्तिगत सुझाव</span></div>
+      <div class="card-sub"><span class="lang-en">Based on your result</span><span class="lang-hi">आपके परिणाम के आधार पर</span></div>
     </div>
-    <div class="card-body">
-      <ul class="sug-list">
-        {% set icons = ['🥗','🏃‍♀️','😴','👩‍⚕️','📅'] %}
-        {% for tip in data.suggestions %}
-        <li class="sug-item">
-          <span class="sug-icon">{{ icons[loop.index0 % (icons | length)] }}</span>
-          {{ tip }}
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
+    <div class="card-body"><ul class="sug-list">
+      {% set icons=['🥗','🏃‍♀️','😴','👩‍⚕️','📅'] %}
+      {% for tip in data.suggestions %}
+      <li class="sug-item"><span class="sug-icon">{{ icons[loop.index0%(icons|length)] }}</span>{{ tip }}</li>
+      {% endfor %}
+    </ul></div>
   </div>
 
-  <!-- ── BOTTOM ROW: Symptoms + History ───────────────────────────── -->
   <div class="grid2">
-
-    <!-- RECENT SYMPTOMS -->
     <div class="card">
       <div class="card-hdr">
-        <div class="card-ttl">Recent Symptoms</div>
-        <div class="card-sub">Last 7 days — <a href="/symptoms" style="color:var(--rose);text-decoration:none;font-weight:500">Log today's</a></div>
+        <div class="card-ttl"><span class="lang-en">RECENT SYMPTOMS</span><span class="lang-hi">हाल के लक्षण</span></div>
+        <div class="card-sub">
+          <span class="lang-en">Last 7 days — <a href="/symptoms" style="color:var(--rose);text-decoration:none;font-weight:500">Log today's</a></span>
+          <span class="lang-hi">पिछले 7 दिन — <a href="/symptoms" style="color:var(--rose);text-decoration:none;font-weight:500">आज लॉग करें</a></span>
+        </div>
       </div>
       <div class="card-body">
         {% if symptoms %}
-          <div class="sym-strip">
-            {% set mood_emoji = ['😢','😕','😐','🙂','😄'] %}
-            {% for s in symptoms %}
-            <div class="sym-day">
-              <div class="sym-date">{{ s.log_date[5:] }}</div>
-              <div class="sym-mood">{{ mood_emoji[s.mood - 1] if s.mood and s.mood >= 1 and s.mood <= 5 else '😐' }}</div>
-              <div class="sym-pills">
-                {% if s.acne %}<span class="sym-pill">acne</span>{% endif %}
-                {% if s.bloating %}<span class="sym-pill">bloat</span>{% endif %}
-                {% if s.fatigue %}<span class="sym-pill">tired</span>{% endif %}
-                {% if s.headache %}<span class="sym-pill">head</span>{% endif %}
-              </div>
-            </div>
-            {% endfor %}
-          </div>
+        <div class="sym-strip">{% set mood_emoji=['😢','😕','😐','🙂','😄'] %}
+          {% for s in symptoms %}<div class="sym-day">
+            <div class="sym-date">{{ s.log_date[5:] }}</div>
+            <div class="sym-mood">{{ mood_emoji[s.mood-1] if s.mood and s.mood>=1 and s.mood<=5 else '😐' }}</div>
+            <div class="sym-pills">{% if s.acne%}<span class="sym-pill">acne</span>{% endif %}{% if s.bloating%}<span class="sym-pill">bloat</span>{% endif %}{% if s.fatigue%}<span class="sym-pill">tired</span>{% endif %}{% if s.headache%}<span class="sym-pill">head</span>{% endif %}</div>
+          </div>{% endfor %}
+        </div>
         {% else %}
-          <div class="sym-empty">No symptoms logged yet.<br><a href="/symptoms" style="color:var(--rose)">Log your first entry →</a></div>
+        <div class="sym-empty">
+          <span class="lang-en">No symptoms logged yet.<br><a href="/symptoms" style="color:var(--rose)">Log your first entry →</a></span>
+          <span class="lang-hi">अभी तक कोई लक्षण नहीं।<br><a href="/symptoms" style="color:var(--rose)">पहली एंट्री लॉग करें →</a></span>
+        </div>
         {% endif %}
       </div>
     </div>
-
-    <!-- PREDICTION HISTORY -->
     <div class="card">
       <div class="card-hdr">
-        <div class="card-ttl">Recent Analyses</div>
-        <div class="card-sub">Your last 5 predictions</div>
+        <div class="card-ttl"><span class="lang-en">RECENT ANALYSES</span><span class="lang-hi">हाल के विश्लेषण</span></div>
+        <div class="card-sub"><span class="lang-en">Your last 5 predictions</span><span class="lang-hi">आपकी अंतिम 5 भविष्यवाणियां</span></div>
       </div>
       <div class="card-body">
-        {% if recent_preds %}
-          {% for p in recent_preds %}
-          <div class="hist-item">
-            <div>
-              <div class="hist-type">{{ p.type | upper }}</div>
-              <div class="hist-date">{{ p.created[:10] }}</div>
-            </div>
-            <div class="hist-risk">
-              {% if p.type == 'pcos' %}
-                <span class="tag {% if p.risk_level == 'Low' %}tag-ok{% elif p.risk_level == 'Medium' %}tag-warn{% else %}tag-bad{% endif %}">
-                  {{ p.risk_level }} · {{ p.risk | round(1) }}%
-                </span>
-              {% else %}
-                <span class="tag tag-info">{{ p.cycle_days | round(1) }} days</span>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        {% else %}
-          <div class="sym-empty">No history yet.</div>
-        {% endif %}
+        {% if recent_preds %}{% for p in recent_preds %}
+        <div class="hist-item"><div><div class="hist-type">{{ p.type|upper }}</div><div class="hist-date">{{ p.created[:10] }}</div></div>
+          <div>{% if p.type=='pcos'%}<span class="tag {% if p.risk_level=='Low'%}tag-ok{% elif p.risk_level=='Medium'%}tag-warn{% else %}tag-bad{% endif %}">{{ p.risk_level }} · {{ p.risk|round(1) }}%</span>
+          {% else%}<span class="tag tag-info">{{ p.cycle_days|round(1) }} <span class="lang-en">days</span><span class="lang-hi">दिन</span></span>{% endif %}</div>
+        </div>{% endfor %}
+        {% else%}<div class="sym-empty"><span class="lang-en">No history yet.</span><span class="lang-hi">अभी तक कोई इतिहास नहीं।</span></div>{% endif %}
       </div>
     </div>
-
   </div>
 
   <div class="disclaimer">
-    ⚕️ <strong>Medical Disclaimer:</strong> OvaTrack provides AI-based predictions for informational purposes only.
-    This is not a substitute for professional medical advice, diagnosis, or treatment.
-    Always consult a qualified healthcare provider with any health concerns.
+    <span class="lang-en">⚕️ <strong>Medical Disclaimer:</strong> OvaTrack provides AI-based predictions for informational purposes only. Always consult a qualified healthcare provider.</span>
+    <span class="lang-hi">⚕️ <strong>चिकित्सा अस्वीकरण:</strong> OvaTrack AI-आधारित भविष्यवाणियां केवल जानकारी के लिए प्रदान करता है। हमेशा किसी योग्य स्वास्थ्य प्रदाता से परामर्श करें।</span>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     NOTIFICATION CENTER (slide-in panel)
-═══════════════════════════════════════════════════════ -->
+<!-- NOTIFICATION PANEL -->
 <div id="notif-overlay" onclick="closeNotif()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200"></div>
-<div id="notif-panel" style="
-  position:fixed;top:0;right:-420px;width:380px;max-width:95vw;height:100vh;
-  background:#fff;z-index:201;box-shadow:-8px 0 40px rgba(61,31,78,.15);
-  display:flex;flex-direction:column;transition:right .35s cubic-bezier(.4,0,.2,1)">
-  <div style="padding:22px 24px 16px;border-bottom:1px solid #e8ddef;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(232,83,122,.06),rgba(92,50,114,.06))">
+<div id="notif-panel" style="position:fixed;top:0;right:-420px;width:380px;max-width:95vw;height:100vh;background:var(--notif-bg);z-index:201;box-shadow:-8px 0 40px rgba(0,0,0,.2);display:flex;flex-direction:column;transition:right .35s cubic-bezier(.4,0,.2,1),background .3s">
+  <div style="padding:22px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(232,83,122,.06),rgba(92,50,114,.06))">
     <div>
-      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#3d1f4e">Reminders</div>
-      <div style="font-size:12px;color:#7a6882">Period & ovulation alerts</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)"><span class="lang-en">Reminders</span><span class="lang-hi">रिमाइंडर</span></div>
+      <div style="font-size:12px;color:var(--muted)"><span class="lang-en">Period & ovulation alerts</span><span class="lang-hi">पीरियड और ओव्यूलेशन अलर्ट</span></div>
     </div>
-    <button onclick="closeNotif()" style="width:32px;height:32px;border-radius:50%;border:1px solid #e8ddef;background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:#7a6882">✕</button>
+    <button onclick="closeNotif()" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--muted)">✕</button>
   </div>
   <div id="notif-list" style="flex:1;overflow-y:auto;padding:16px"></div>
-  <div style="padding:16px;border-top:1px solid #e8ddef;font-size:11px;color:#7a6882;text-align:center;line-height:1.5">
-    Dates are estimated. Always confirm with a healthcare provider.
+  <div style="padding:16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:center;line-height:1.5">
+    <span class="lang-en">Dates are estimated. Always confirm with a healthcare provider.</span>
+    <span class="lang-hi">तारीखें अनुमानित हैं। हमेशा किसी स्वास्थ्य प्रदाता से पुष्टि करें।</span>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     FLOATING CHAT WIDGET
-═══════════════════════════════════════════════════════ -->
-<div id="chat-widget" style="position:fixed;bottom:28px;right:28px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:12px">
-
-  <!-- Chat window -->
-  <div id="chat-box" style="
-    display:none;width:360px;max-width:calc(100vw - 40px);
-    background:#fff;border-radius:20px;
-    box-shadow:0 12px 50px rgba(61,31,78,.18);
-    border:1px solid #e8ddef;overflow:hidden;
-    animation:chatPop .25s cubic-bezier(.34,1.56,.64,1)">
-
-    <!-- Chat header -->
+<!-- CHAT WIDGET -->
+<div style="position:fixed;bottom:28px;right:28px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:12px">
+  <div id="chat-box" style="display:none;width:360px;max-width:calc(100vw - 40px);background:var(--bg2);border-radius:20px;box-shadow:0 12px 50px rgba(0,0,0,.2);border:1px solid var(--border);overflow:hidden;animation:chatPop .25s cubic-bezier(.34,1.56,.64,1)">
     <div style="padding:16px 18px;background:linear-gradient(135deg,#e8537a,#5c3272);display:flex;align-items:center;gap:10px">
       <div style="width:36px;height:36px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🌸</div>
       <div style="flex:1">
         <div style="font-family:'DM Serif Display',serif;font-size:15px;color:#fff">OvaTrack AI</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.75)">Women's health assistant</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75)"><span class="lang-en">Women's health assistant</span><span class="lang-hi">महिला स्वास्थ्य सहायक</span></div>
       </div>
       <button onclick="toggleChat()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px">✕</button>
     </div>
-
-    <!-- Messages -->
-    <div id="chat-messages" style="height:300px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#fdf7f2">
-      <div class="msg-ai" style="align-self:flex-start;max-width:85%;background:#fff;border:1px solid #e8ddef;border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:13px;color:#2a1a30;line-height:1.55;box-shadow:0 1px 4px rgba(0,0,0,.06)">
-        👋 Hi! I'm your OvaTrack health assistant. Ask me anything about PCOS, your cycle, diet, or hormonal health!
+    <div id="chat-messages" style="height:300px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--chat-bg)">
+      <div class="msg-ai" id="chat-welcome-msg">
+        <!-- Filled by JS based on language -->
       </div>
     </div>
-
-    <!-- Quick prompts -->
-    <div id="quick-prompts" style="padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #e8ddef;background:#fff9f5">
-      <button onclick="sendQuick('What foods help with PCOS?')" class="qp-btn">🥗 PCOS diet</button>
-      <button onclick="sendQuick('Why is my cycle irregular?')" class="qp-btn">❓ Irregular cycle</button>
-      <button onclick="sendQuick('How to reduce PCOS symptoms naturally?')" class="qp-btn">🌿 Natural tips</button>
+    <div id="quick-prompts" style="padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border);background:var(--warm-white)">
+      <button class="qp-btn" onclick="sendQuickMsg('diet')">
+        🥗 <span class="lang-en">PCOS diet</span><span class="lang-hi">PCOS आहार</span>
+      </button>
+      <button class="qp-btn" onclick="sendQuickMsg('cycle')">
+        ❓ <span class="lang-en">Irregular cycle</span><span class="lang-hi">अनियमित चक्र</span>
+      </button>
+      <button class="qp-btn" onclick="sendQuickMsg('tips')">
+        🌿 <span class="lang-en">Natural tips</span><span class="lang-hi">प्राकृतिक उपाय</span>
+      </button>
     </div>
-
-    <!-- Input -->
-    <div style="padding:10px 12px;border-top:1px solid #e8ddef;display:flex;gap:8px;background:#fff">
-      <input id="chat-input" type="text" placeholder="Ask about your health…"
-        style="flex:1;padding:9px 14px;border:1.5px solid #e8ddef;border-radius:50px;
-        font-family:'DM Sans',sans-serif;font-size:13px;color:#2a1a30;background:#fff9f5;outline:none"
-        onkeydown="if(event.key==='Enter')sendMsg()">
+    <div style="padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--bg2)">
+      <input id="chat-input" type="text" style="flex:1;padding:9px 14px;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--input-bg);outline:none" onkeydown="if(event.key==='Enter')sendMsg()">
       <button onclick="sendMsg()" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e8537a,#5c3272);border:none;color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0">↑</button>
     </div>
   </div>
-
-  <!-- Chat FAB only (bell removed per requirement) -->
-  <div style="display:flex;gap:10px;align-items:center">
-    <button onclick="toggleChat()" title="AI Health Assistant" style="
-      width:56px;height:56px;border-radius:50%;
-      background:linear-gradient(135deg,#e8537a,#5c3272);
-      border:none;box-shadow:0 6px 24px rgba(232,83,122,.4);
-      cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;
-      transition:all .25s;color:#fff">
-      💬
-    </button>
-  </div>
+  <button onclick="toggleChat()" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#e8537a,#5c3272);border:none;box-shadow:0 6px 24px rgba(232,83,122,.4);cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;color:#fff">💬</button>
 </div>
 
-<style>
-@keyframes chatPop{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.qp-btn{padding:5px 10px;border-radius:50px;border:1px solid #e8ddef;background:#fff;
-  color:#7a6882;font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
-.qp-btn:hover{border-color:#e8537a;color:#e8537a}
-.msg-ai{align-self:flex-start;max-width:85%;background:#fff;border:1px solid #e8ddef;
-  border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:13px;color:#2a1a30;
-  line-height:1.55;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.msg-user{align-self:flex-end;max-width:85%;background:linear-gradient(135deg,#e8537a,#5c3272);
-  border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;color:#fff;line-height:1.55}
-.msg-typing{align-self:flex-start;background:#fff;border:1px solid #e8ddef;
-  border-radius:14px 14px 14px 4px;padding:10px 16px;font-size:18px;letter-spacing:2px;color:#c4b8cc}
-.notif-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;border-left:4px solid;animation:fadeUp .3s ease}
-.notif-card.danger {background:#fee2e2;border-color:#dc2626}
-.notif-card.warning{background:#fef3c7;border-color:#d97706}
-.notif-card.success{background:#d4f0e5;border-color:#2e9e6b}
-.notif-card.info   {background:#dbeafe;border-color:#3b82f6}
-.notif-card.tip    {background:#f9dde5;border-color:#e8537a}
-.notif-icon-big{font-size:22px;margin-bottom:6px}
-.notif-title{font-size:13px;font-weight:600;color:#2a1a30;margin-bottom:3px}
-.notif-body{font-size:12px;color:#4b5563;line-height:1.55}
-</style>
-
 <script>
-// ══ CHARTS ══════════════════════════════════════════════════════════════════════
-const jsEl = document.getElementById('js-data');
-if(jsEl){
-  const risk      = parseFloat(jsEl.dataset.risk);
-  const riskLevel = jsEl.dataset.riskLevel;
-  const featNames = jsEl.dataset.features.split(',');
-  const imps      = jsEl.dataset.importances.split(',').map(Number);
-
-  const gaugeColor = riskLevel==='Low'?'#2e9e6b':riskLevel==='Medium'?'#d97706':'#dc2626';
-  new Chart(document.getElementById('gaugeChart'),{
-    type:'doughnut',
-    data:{datasets:[{data:[risk,100-risk],backgroundColor:[gaugeColor,'#f0e8f5'],
-      borderWidth:0,circumference:270,rotation:225}]},
-    options:{cutout:'78%',plugins:{tooltip:{enabled:false},legend:{display:false}},
-      animation:{duration:900,easing:'easeInOutQuart'}}
-  });
-
-  const combined = featNames.map((n,i)=>({n,v:imps[i]})).sort((a,b)=>b.v-a.v);
-  new Chart(document.getElementById('featureChart'),{
-    type:'bar',
-    data:{labels:combined.map(c=>c.n),datasets:[{label:'Importance',
-      data:combined.map(c=>(c.v*100).toFixed(1)),
-      backgroundColor:combined.map((_,i)=>`rgba(232,83,122,${1-(i/combined.length)*0.45})`),
-      borderRadius:8,borderSkipped:false}]},
-    options:{responsive:true,plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:ctx=>` ${ctx.parsed.y}% influence`}}},
-      scales:{y:{beginAtZero:true,grid:{color:'#f0e8f5'},
-        ticks:{callback:v=>v+'%',font:{family:'DM Sans',size:11},color:'#7a6882'}},
-        x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:12},color:'#3d1f4e'}}},
-      animation:{duration:700,delay:ctx=>ctx.dataIndex*50}}
-  });
+// ── THEME ─────────────────────────────────────────────────────────────
+var isDark = localStorage.getItem('ova-theme') === 'dark';
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', isDark?'dark':'light');
+  var b=document.getElementById('theme-btn'); if(b)b.textContent=isDark?'☀️':'🌙';
 }
+function toggleTheme(){isDark=!isDark;localStorage.setItem('ova-theme',isDark?'dark':'light');applyTheme();}
+applyTheme();
 
-// ══ NOTIFICATIONS ════════════════════════════════════════════════════════════════
+// ── LANGUAGE (CSS already handles show/hide via data-lang attr) ────────
+var LANG = localStorage.getItem('ova-lang') || 'en';
+// Just set chat placeholder and welcome message — CSS handles the rest
+(function(){
+  var ci = document.getElementById('chat-input');
+  if(ci) ci.placeholder = LANG==='hi' ? 'अपने स्वास्थ्य के बारे में पूछें…' : 'Ask about your health…';
+  var cw = document.getElementById('chat-welcome-msg');
+  if(cw) cw.textContent = LANG==='hi'
+    ? '👋 नमस्ते! मैं आपका OvaTrack सहायक हूं। PCOS, चक्र, आहार के बारे में कुछ भी पूछें!'
+    : '👋 Hi! I\'m your OvaTrack health assistant. Ask me anything about PCOS, your cycle, diet, or hormonal health!';
+})();
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────
+var NOTIF_TITLES = {
+  en: {'Period Overdue':'Period Overdue','Period Expected Today':'Period Expected Today','Ovulation Window':'Ovulation Window','Luteal Phase — Self Care Week':'Luteal Phase — Self Care Week','Track Your Cycle':'Track Your Cycle'},
+  hi: {'Period Overdue':'पीरियड देर से','Period Expected Today':'आज पीरियड अपेक्षित','Ovulation Window':'ओव्यूलेशन विंडो','Luteal Phase — Self Care Week':'ल्यूटियल फेज — स्व-देखभाल','Track Your Cycle':'अपना चक्र ट्रैक करें'}
+};
 async function loadNotifications(){
   try{
-    const res  = await fetch('/api/notifications');
-    const data = await res.json();
-    const list = document.getElementById('notif-list');
-    list.innerHTML = '';
-
+    var res=await fetch('/api/notifications'); var data=await res.json();
+    var list=document.getElementById('notif-list'); list.innerHTML='';
     if(data.length===0){
-      list.innerHTML='<div style="text-align:center;color:#7a6882;padding:40px 20px;font-size:14px">No reminders right now.<br>Enter your last period date to get alerts.</div>';
+      list.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px 20px;font-size:14px">'+(LANG==='hi'?'अभी कोई रिमाइंडर नहीं।<br>पीरियड अलर्ट के लिए अंतिम पीरियड तारीख दर्ज करें।':'No reminders right now.<br>Enter your last period date to get alerts.')+'</div>';
       return;
     }
-
-    // Show badge if urgent notifications exist
-    const urgent = data.filter(n=>n.level==='danger'||n.level==='warning');
-    if(urgent.length>0){
-      document.getElementById('bell-badge').style.display='block';
-      const nb = document.getElementById('bell-nav-badge');
-      if(nb) nb.style.display='block';
-    }
-
-    data.forEach(n=>{
-      const card = document.createElement('div');
-      card.className = `notif-card ${n.level}`;
-      card.innerHTML = `
-        <div class="notif-icon-big">${n.icon}</div>
-        <div class="notif-title">${n.title}</div>
-        <div class="notif-body">${n.body}</div>
-        ${n.days!==null?`<div style="font-size:11px;color:#9ca3af;margin-top:6px;font-weight:500">${n.days===0?'Today':`${n.days} day(s)`}</div>`:''}
-      `;
+    var urgent=data.filter(function(n){return n.level==='danger'||n.level==='warning';});
+    if(urgent.length>0){var nb=document.getElementById('bell-badge');if(nb)nb.style.display='block';}
+    data.forEach(function(n){
+      var title=(NOTIF_TITLES[LANG]&&NOTIF_TITLES[LANG][n.title])||n.title;
+      var daysText=n.days===0?(LANG==='hi'?'आज':'Today'):(n.days+' '+(LANG==='hi'?'दिन':'day(s)'));
+      var card=document.createElement('div'); card.className='notif-card '+n.level;
+      card.innerHTML='<div class="notif-icon-big">'+n.icon+'</div><div class="notif-title">'+title+'</div><div class="notif-body">'+n.body+'</div>'+(n.days!==null?'<div style="font-size:11px;color:var(--muted);margin-top:6px;font-weight:500">'+daysText+'</div>':'');
       list.appendChild(card);
     });
   }catch(e){
-    document.getElementById('notif-list').innerHTML='<div style="color:#7a6882;text-align:center;padding:20px;font-size:13px">Could not load reminders.</div>';
+    document.getElementById('notif-list').innerHTML='<div style="color:var(--muted);text-align:center;padding:20px;font-size:13px">'+(LANG==='hi'?'रिमाइंडर लोड नहीं हो सके।':'Could not load reminders.')+'</div>';
   }
 }
+function openNotif(){document.getElementById('notif-overlay').style.display='block';document.getElementById('notif-panel').style.right='0';loadNotifications();}
+function closeNotif(){document.getElementById('notif-overlay').style.display='none';document.getElementById('notif-panel').style.right='-420px';}
 
-function openNotif(){
-  document.getElementById('notif-overlay').style.display='block';
-  document.getElementById('notif-panel').style.right='0';
-  loadNotifications();
-}
-function closeNotif(){
-  document.getElementById('notif-overlay').style.display='none';
-  document.getElementById('notif-panel').style.right='-420px';
-}
-
-// ══ CHATBOT ══════════════════════════════════════════════════════════════════════
-let chatOpen = false;
-
-function toggleChat(){
-  chatOpen = !chatOpen;
-  document.getElementById('chat-box').style.display = chatOpen ? 'flex' : 'none';
-  if(chatOpen){ 
-    document.getElementById('chat-box').style.flexDirection='column';
-    document.getElementById('chat-input').focus();
-  }
+// ── CHARTS ────────────────────────────────────────────────────────────
+var jsEl=document.getElementById('js-data');
+if(jsEl){
+  var risk=parseFloat(jsEl.dataset.risk),rl=jsEl.dataset.riskLevel;
+  var fn=jsEl.dataset.features.split(','),imp=jsEl.dataset.importances.split(',').map(Number);
+  var gc=rl==='Low'?'#2e9e6b':rl==='Medium'?'#d97706':'#dc2626';
+  var tc=isDark?'#374151':'#f0e8f5';
+  new Chart(document.getElementById('gaugeChart'),{type:'doughnut',data:{datasets:[{data:[risk,100-risk],backgroundColor:[gc,tc],borderWidth:0,circumference:270,rotation:225}]},options:{cutout:'78%',plugins:{tooltip:{enabled:false},legend:{display:false}},animation:{duration:900}}});
+  var combined=fn.map(function(n,i){return{n:n,v:imp[i]};}).sort(function(a,b){return b.v-a.v;});
+  var txtC=isDark?'#9ca3af':'#7a6882',lblC=isDark?'#f3f4f6':'#3d1f4e',grdC=isDark?'#374151':'#f0e8f5';
+  new Chart(document.getElementById('featureChart'),{type:'bar',data:{labels:combined.map(function(c){return c.n;}),datasets:[{label:'Importance',data:combined.map(function(c){return(c.v*100).toFixed(1);}),backgroundColor:combined.map(function(_,i){return'rgba(232,83,122,'+(1-(i/combined.length)*0.45)+')';}),borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:grdC},ticks:{callback:function(v){return v+'%';},color:txtC}},x:{grid:{display:false},ticks:{color:lblC}}},animation:{duration:700}}});
 }
 
-function appendMsg(text, role){
-  const msgs = document.getElementById('chat-messages');
-  const div  = document.createElement('div');
-  div.className = role==='user'?'msg-user':'msg-ai';
-  div.textContent = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-  return div;
+// ── CHAT ──────────────────────────────────────────────────────────────
+var chatOpen=false;
+function toggleChat(){chatOpen=!chatOpen;var b=document.getElementById('chat-box');b.style.display=chatOpen?'flex':'none';if(chatOpen){b.style.flexDirection='column';document.getElementById('chat-input').focus();}}
+function appendMsg(text,role){var msgs=document.getElementById('chat-messages');var div=document.createElement('div');div.className=role==='user'?'msg-user':'msg-ai';div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
+function showTyping(){var msgs=document.getElementById('chat-messages');var div=document.createElement('div');div.className='msg-typing';div.id='typing-indicator';div.textContent='●●●';msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
+function removeTyping(){var el=document.getElementById('typing-indicator');if(el)el.remove();}
+var QUICK_MSGS={
+  en:{diet:'What foods help with PCOS?',cycle:'Why is my cycle irregular?',tips:'How to reduce PCOS symptoms naturally?'},
+  hi:{diet:'PCOS में कौन से खाद्य पदार्थ मदद करते हैं?',cycle:'मेरा चक्र अनियमित क्यों है?',tips:'PCOS के लक्षणों को प्राकृतिक रूप से कैसे कम करें?'}
+};
+function sendQuickMsg(key){
+  var msg=(QUICK_MSGS[LANG]&&QUICK_MSGS[LANG][key])||QUICK_MSGS.en[key];
+  document.getElementById('chat-input').value=msg; sendMsg();
 }
-
-function showTyping(){
-  const msgs = document.getElementById('chat-messages');
-  const div  = document.createElement('div');
-  div.className = 'msg-typing';
-  div.id = 'typing-indicator';
-  div.textContent = '●●●';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function removeTyping(){
-  const el = document.getElementById('typing-indicator');
-  if(el) el.remove();
-}
-
 async function sendMsg(){
-  const input = document.getElementById('chat-input');
-  const text  = input.value.trim();
-  if(!text) return;
-
-  // Hide quick prompts after first message
+  var input=document.getElementById('chat-input');var text=input.value.trim();if(!text)return;
   document.getElementById('quick-prompts').style.display='none';
-
-  input.value = '';
-  input.disabled = true;
-
-  appendMsg(text, 'user');
-  showTyping();
-
+  input.value='';input.disabled=true;appendMsg(text,'user');showTyping();
   try{
-    const res  = await fetch('/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:text})
-    });
-    const data = await res.json();
-    removeTyping();
-    appendMsg(data.reply||'Sorry, I could not process that.','ai');
-  }catch(e){
-    removeTyping();
-    appendMsg('Connection error. Please try again.','ai');
-  }
-
-  input.disabled = false;
-  input.focus();
+    var res=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,lang:LANG})});
+    var data=await res.json();removeTyping();appendMsg(data.reply||'...','ai');
+  }catch(e){removeTyping();appendMsg(LANG==='hi'?'कनेक्शन त्रुटि। पुनः प्रयास करें।':'Connection error. Please try again.','ai');}
+  input.disabled=false;input.focus();
 }
+function openChatFromNav(){chatOpen=true;var b=document.getElementById('chat-box');b.style.display='flex';b.style.flexDirection='column';document.getElementById('chat-input').focus();}
 
-function sendQuick(text){
-  document.getElementById('chat-input').value = text;
-  sendMsg();
-}
-
-// Open chat from navbar icon
-function openChatFromNav(){
-  chatOpen = true;
-  const box = document.getElementById('chat-box');
-  box.style.display = 'flex';
-  box.style.flexDirection = 'column';
-  document.getElementById('chat-input').focus();
-  // Scroll to bottom-right
-  setTimeout(()=>{
-    box.scrollIntoView({behavior:'smooth', block:'end'});
-  }, 100);
-}
-
-// Load notification badge on page load
+// Load notifications on page load
 loadNotifications();
-
-// ── Auto-open panel based on URL hash ────────────────────────────────
-(function(){
-  const hash = window.location.hash;
-  if(hash === '#chat'){
-    setTimeout(()=>{ toggleChat(); }, 400);
-  } else if(hash === '#notif'){
-    setTimeout(()=>{ openNotif(); }, 400);
-  }
-})();
+var hash=window.location.hash;
+if(hash==='#chat')setTimeout(toggleChat,400);
+else if(hash==='#notif')setTimeout(openNotif,400);
 </script>
 </body>
 </html>

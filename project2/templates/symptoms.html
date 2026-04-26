@@ -9,116 +9,99 @@
     :root{
       --rose:#e8537a;--rose-light:#f9dde5;--rose-dark:#c23d62;--plum:#3d1f4e;--plum-mid:#5c3272;
       --bg:#fdf7f2;--bg2:#ffffff;--warm-white:#fff9f5;--text:#2a1a30;--muted:#7a6882;--border:#e8ddef;
-      --success:#2e9e6b;--success-light:#d4f0e5;
-      --input-bg:#fff9f5;--blob1:rgba(232,83,122,.10);
-      --header-bg:rgba(253,247,242,.92);
-      --card-shadow:0 3px 20px rgba(61,31,78,.07);
-      --form-hdr-bg:linear-gradient(135deg,rgba(232,83,122,.04),rgba(92,50,114,.04));
+      --success:#2e9e6b;--success-light:#d4f0e5;--input-bg:#fff9f5;
+      --header-bg:rgba(253,247,242,.92);--card-shadow:0 3px 20px rgba(61,31,78,.07);
+      --blob:rgba(232,83,122,.10);--form-hdr-bg:linear-gradient(135deg,rgba(232,83,122,.04),rgba(92,50,114,.04));
     }
     [data-theme="dark"]{
-      --bg:#111827;--bg2:#1f2937;--warm-white:#111827;--text:#f3f4f6;--muted:#9ca3af;
+      --bg:#111827;--bg2:#1f2937;--warm-white:#1a2332;--text:#f3f4f6;--muted:#9ca3af;
       --border:#374151;--input-bg:#111827;--rose-light:#4a1525;
-      --blob1:rgba(232,83,122,.05);
-      --header-bg:rgba(17,24,39,.95);
-      --card-shadow:0 3px 20px rgba(0,0,0,.3);
+      --success-light:#052e16;--header-bg:rgba(17,24,39,.95);
+      --card-shadow:0 3px 20px rgba(0,0,0,.35);--blob:rgba(232,83,122,.05);
       --form-hdr-bg:linear-gradient(135deg,rgba(232,83,122,.10),rgba(92,50,114,.10));
     }
+    /* Hide lang variants — shown by JS */
+    .lang-en,.lang-hi{display:none}
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
-    body::before{content:'';position:fixed;top:-150px;right:-150px;width:500px;height:500px;
-      background:radial-gradient(circle,var(--blob1) 0%,transparent 70%);pointer-events:none;z-index:0}
-
-    header{position:sticky;top:0;z-index:100;padding:16px 32px;display:flex;align-items:center;
-      justify-content:space-between;background:var(--header-bg);backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    body::before{content:'';position:fixed;top:-150px;right:-150px;width:500px;height:500px;background:radial-gradient(circle,var(--blob) 0%,transparent 70%);pointer-events:none;z-index:0}
+    header{position:sticky;top:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
     .logo{display:flex;align-items:center;gap:10px}
-    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
     .logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);transition:color .3s}
-    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;
-      padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
+    .nav-right{display:flex;align-items:center;gap:10px}
+    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
     .nav-link:hover{border-color:var(--rose);color:var(--rose)}
-
-    /* Theme toggle in nav */
-    .theme-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);
-      background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;
-      font-size:16px;transition:all .25s}
+    .theme-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .25s}
     .theme-btn:hover{border-color:var(--rose)}
-
     .page{position:relative;z-index:5;max-width:800px;margin:0 auto;padding:28px 20px 60px}
     .page-title{margin-bottom:24px}
     .page-title h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:3px;transition:color .3s}
     .page-title p{font-size:13px;color:var(--muted)}
-
-    .success-msg{background:var(--success-light);color:#166534;border:1px solid #86efac;
-      border-radius:12px;padding:12px 18px;font-size:13px;margin-bottom:20px;text-align:center}
-    [data-theme="dark"] .success-msg{background:#052e16;color:#86efac;border-color:#166534}
-
-    .log-card{background:var(--bg2);border-radius:20px;border:1px solid var(--border);
-      box-shadow:var(--card-shadow);overflow:hidden;margin-bottom:24px;transition:background .3s,border-color .3s}
-    .log-card-hdr{padding:20px 28px 16px;border-bottom:1px solid var(--border);
-      background:var(--form-hdr-bg);transition:border-color .3s}
+    .success-msg{background:var(--success-light);color:#166534;border:1px solid #86efac;border-radius:12px;padding:12px 18px;font-size:13px;margin-bottom:20px;text-align:center}
+    [data-theme="dark"] .success-msg{color:#86efac}
+    .log-card{background:var(--bg2);border-radius:20px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;margin-bottom:24px;transition:background .3s,border-color .3s}
+    .log-card-hdr{padding:20px 28px 16px;border-bottom:1px solid var(--border);background:var(--form-hdr-bg)}
     .log-card-hdr h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:3px;transition:color .3s}
     .log-card-hdr p{font-size:13px;color:var(--muted)}
     .log-body{padding:24px 28px 28px}
-
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
     @media(max-width:500px){.form-row{grid-template-columns:1fr}}
-    label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;
-      letter-spacing:.6px;color:var(--muted);margin-bottom:6px;transition:color .3s}
-    input[type=date],input[type=number],textarea{width:100%;padding:11px 14px;
-      border:1.5px solid var(--border);border-radius:11px;font-family:'DM Sans',sans-serif;
-      font-size:14px;color:var(--text);background:var(--input-bg);outline:none;transition:all .2s}
-    input[type=date]:focus,input[type=number]:focus,textarea:focus{
-      border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,83,122,.1);background:var(--bg2)}
-    input[type=range]{width:100%;accent-color:var(--rose);height:6px;padding:0;
-      background:transparent;border:none}
-
+    label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px;transition:color .3s}
+    input[type=date],input[type=number],textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--input-bg);outline:none;transition:all .2s}
+    input[type=date]:focus,input[type=number]:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,83,122,.1);background:var(--bg2)}
+    input::placeholder,textarea::placeholder{color:var(--muted);opacity:.6}
+    input[type=range]{width:100%;accent-color:var(--rose);height:6px;padding:0;background:transparent;border:none}
     .mood-row{margin-bottom:20px}
     .mood-track{display:flex;justify-content:space-between;font-size:22px;margin-top:8px}
     .check-section{margin-bottom:20px}
     .check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:8px}
-    .check-item{display:flex;align-items:center;gap:8px;cursor:pointer}
+    .check-item{cursor:pointer}
     .check-item input[type=checkbox]{display:none}
-    .check-box{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;
-      font-size:13px;color:var(--muted);transition:all .2s;background:var(--input-bg);
-      display:flex;align-items:center;gap:8px}
-    .check-item input[type=checkbox]:checked+.check-box{background:var(--rose-light);
-      border-color:var(--rose);color:var(--rose-dark);font-weight:500}
+    .check-box{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;color:var(--muted);transition:all .2s;background:var(--input-bg);display:flex;align-items:center;gap:8px}
+    .check-item input[type=checkbox]:checked+.check-box{background:var(--rose-light);border-color:var(--rose);color:var(--rose-dark);font-weight:500}
     [data-theme="dark"] .check-item input[type=checkbox]:checked+.check-box{color:#f9a8c2}
-
     textarea{resize:vertical;min-height:80px}
-    textarea::placeholder{color:var(--muted);opacity:.6}
-
-    .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));
-      color:#fff;border:none;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:15px;
-      font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(232,83,122,.3)}
+    .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));color:#fff;border:none;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(232,83,122,.3)}
     .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,83,122,.4)}
-
-    .hist-card{background:var(--bg2);border-radius:20px;border:1px solid var(--border);
-      box-shadow:var(--card-shadow);overflow:hidden;transition:background .3s,border-color .3s}
+    .hist-card{background:var(--bg2);border-radius:20px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;transition:background .3s,border-color .3s}
     .hist-hdr{padding:18px 28px 14px;border-bottom:1px solid var(--border)}
     .hist-hdr h2{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:2px;transition:color .3s}
     .hist-hdr p{font-size:12px;color:var(--muted)}
     table{width:100%;border-collapse:collapse}
-    th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
-      color:var(--muted);padding:12px 20px;text-align:left;border-bottom:1px solid var(--border)}
+    th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:12px 20px;text-align:left;border-bottom:1px solid var(--border)}
     td{padding:12px 20px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);transition:color .3s}
     tr:last-child td{border-bottom:none}
     tr:hover td{background:var(--warm-white)}
-    .mood-cell{font-size:18px}
-    .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;
-      background:var(--rose-light);color:var(--rose-dark);margin:1px;font-weight:500}
+    .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;background:var(--rose-light);color:var(--rose-dark);margin:1px;font-weight:500}
     [data-theme="dark"] .pill{color:#f9a8c2}
     .no-data{text-align:center;padding:32px;color:var(--muted);font-size:14px}
   </style>
+
   <script>
+    // ── SYNCHRONOUS: Apply theme & language BEFORE any render ──────────
     (function(){
-      var th = localStorage.getItem('ova-theme');
-      if(th) document.documentElement.setAttribute('data-theme', th);
+      // 1. Apply theme immediately
+      var th = localStorage.getItem('ova-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', th);
+
+      // 2. Apply language by adding class to <html> immediately
+      var lang = localStorage.getItem('ova-lang') || 'en';
+      document.documentElement.setAttribute('data-lang', lang);
     })();
   </script>
+
+  <style>
+    /* Language switching via attribute — applied before render so no flash */
+    html[data-lang="en"] .lang-en { display: inline; }
+    html[data-lang="en"] .lang-en-block { display: block; }
+    html[data-lang="hi"] .lang-hi { display: inline; }
+    html[data-lang="hi"] .lang-hi-block { display: block; }
+    /* For flex containers */
+    html[data-lang="en"] .lang-en-flex { display: flex; }
+    html[data-lang="hi"] .lang-hi-flex { display: flex; }
+  </style>
 </head>
 <body>
 
@@ -127,17 +110,29 @@
     <div class="logo-icon">🌸</div>
     <div class="logo-text">OvaTrack</div>
   </div>
-  <div style="display:flex;gap:10px;align-items:center">
-    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
-    <a href="/dashboard" class="nav-link">← Dashboard</a>
-    <a href="/logout" class="nav-link">Sign Out</a>
+  <div class="nav-right">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    <a href="/dashboard" class="nav-link">
+      <span class="lang-en">← Dashboard</span>
+      <span class="lang-hi">← डैशबोर्ड</span>
+    </a>
+    <a href="/signout" class="nav-link">
+      <span class="lang-en">Sign Out</span>
+      <span class="lang-hi">साइन आउट</span>
+    </a>
   </div>
 </header>
 
 <div class="page">
   <div class="page-title">
-    <h1>Symptom Tracker</h1>
-    <p>Log your daily symptoms to track patterns over time</p>
+    <h1>
+      <span class="lang-en">Symptom Tracker</span>
+      <span class="lang-hi">लक्षण ट्रैकर</span>
+    </h1>
+    <p>
+      <span class="lang-en">Log your daily symptoms to track patterns over time</span>
+      <span class="lang-hi">समय के साथ पैटर्न ट्रैक करने के लिए अपने दैनिक लक्षण लॉग करें</span>
+    </p>
   </div>
 
   {% if message %}
@@ -146,67 +141,121 @@
 
   <div class="log-card">
     <div class="log-card-hdr">
-      <h2>Log Today's Symptoms</h2>
-      <p>Takes less than 60 seconds</p>
+      <h2>
+        <span class="lang-en">Log Today's Symptoms</span>
+        <span class="lang-hi">आज के लक्षण लॉग करें</span>
+      </h2>
+      <p>
+        <span class="lang-en">Takes less than 60 seconds</span>
+        <span class="lang-hi">60 सेकंड से कम समय लगता है</span>
+      </p>
     </div>
     <div class="log-body">
       <form method="POST">
         <div class="form-row">
           <div>
-            <label>Date</label>
+            <label>
+              <span class="lang-en">DATE</span>
+              <span class="lang-hi">तारीख</span>
+            </label>
             <input type="date" name="log_date" value="{{ today }}" required>
           </div>
           <div>
-            <label>Pain Level (0 = none, 5 = severe)</label>
+            <label>
+              <span class="lang-en">PAIN LEVEL (0 = NONE, 5 = SEVERE)</span>
+              <span class="lang-hi">दर्द स्तर (0 = कोई नहीं, 5 = गंभीर)</span>
+            </label>
             <input type="number" name="pain_level" min="0" max="5" value="0">
           </div>
         </div>
 
         <div class="mood-row">
-          <label>Mood</label>
+          <label>
+            <span class="lang-en">MOOD</span>
+            <span class="lang-hi">मूड</span>
+          </label>
           <div class="mood-track">
-            <span title="Very Bad">😢</span>
-            <span title="Bad">😕</span>
-            <span title="Neutral">😐</span>
-            <span title="Good">🙂</span>
-            <span title="Great">😄</span>
+            <span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>
           </div>
           <input type="range" name="mood" min="1" max="5" value="3">
         </div>
 
         <div class="check-section">
-          <label>Symptoms Present Today</label>
+          <label>
+            <span class="lang-en">SYMPTOMS PRESENT TODAY</span>
+            <span class="lang-hi">आज के लक्षण</span>
+          </label>
           <div class="check-grid">
-            <label class="check-item"><input type="checkbox" name="acne" value="1">
-              <div class="check-box">😣 Acne / Pimples</div></label>
-            <label class="check-item"><input type="checkbox" name="bloating" value="1">
-              <div class="check-box">🤰 Bloating</div></label>
-            <label class="check-item"><input type="checkbox" name="fatigue" value="1">
-              <div class="check-box">😴 Fatigue</div></label>
-            <label class="check-item"><input type="checkbox" name="headache" value="1">
-              <div class="check-box">🤕 Headache</div></label>
+            <label class="check-item">
+              <input type="checkbox" name="acne" value="1">
+              <div class="check-box">
+                😣
+                <span class="lang-en">Acne / Pimples</span>
+                <span class="lang-hi">मुंहासे</span>
+              </div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="bloating" value="1">
+              <div class="check-box">
+                🤰
+                <span class="lang-en">Bloating</span>
+                <span class="lang-hi">सूजन</span>
+              </div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="fatigue" value="1">
+              <div class="check-box">
+                😴
+                <span class="lang-en">Fatigue</span>
+                <span class="lang-hi">थकान</span>
+              </div>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="headache" value="1">
+              <div class="check-box">
+                🤕
+                <span class="lang-en">Headache</span>
+                <span class="lang-hi">सिरदर्द</span>
+              </div>
+            </label>
           </div>
         </div>
 
         <div style="margin-bottom:20px">
-          <label>Notes (optional)</label>
-          <textarea name="notes" placeholder="Any other symptoms, feelings, or observations..."></textarea>
+          <label>
+            <span class="lang-en">NOTES (OPTIONAL)</span>
+            <span class="lang-hi">नोट्स (वैकल्पिक)</span>
+          </label>
+          <textarea name="notes" id="notes-area"></textarea>
         </div>
-        <button type="submit" class="submit-btn">✦ Save Today's Log</button>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          ✦ <span class="lang-en">Save Today's Log</span><span class="lang-hi">आज का लॉग सहेजें</span>
+        </button>
       </form>
     </div>
   </div>
 
   <div class="hist-card">
     <div class="hist-hdr">
-      <h2>Symptom History</h2>
-      <p>Last 14 entries</p>
+      <h2>
+        <span class="lang-en">Symptom History</span>
+        <span class="lang-hi">लक्षण इतिहास</span>
+      </h2>
+      <p>
+        <span class="lang-en">Last 14 entries</span>
+        <span class="lang-hi">अंतिम 14 एंट्री</span>
+      </p>
     </div>
     {% if logs %}
       <table>
         <thead>
           <tr>
-            <th>Date</th><th>Mood</th><th>Pain</th><th>Symptoms</th><th>Notes</th>
+            <th><span class="lang-en">Date</span><span class="lang-hi">तारीख</span></th>
+            <th><span class="lang-en">Mood</span><span class="lang-hi">मूड</span></th>
+            <th><span class="lang-en">Pain</span><span class="lang-hi">दर्द</span></th>
+            <th><span class="lang-en">Symptoms</span><span class="lang-hi">लक्षण</span></th>
+            <th><span class="lang-en">Notes</span><span class="lang-hi">नोट्स</span></th>
           </tr>
         </thead>
         <tbody>
@@ -214,35 +263,60 @@
           {% for s in logs %}
           <tr>
             <td>{{ s.log_date }}</td>
-            <td class="mood-cell">{{ mood_emoji[s.mood - 1] if s.mood and s.mood >= 1 and s.mood <= 5 else '😐' }}</td>
+            <td style="font-size:18px">{{ mood_emoji[s.mood - 1] if s.mood and s.mood >= 1 and s.mood <= 5 else '😐' }}</td>
             <td>{{ s.pain_level }}/5</td>
             <td>
-              {% if s.acne %}<span class="pill">Acne</span>{% endif %}
-              {% if s.bloating %}<span class="pill">Bloating</span>{% endif %}
-              {% if s.fatigue %}<span class="pill">Fatigue</span>{% endif %}
-              {% if s.headache %}<span class="pill">Headache</span>{% endif %}
-              {% if not s.acne and not s.bloating and not s.fatigue and not s.headache %}<span style="color:var(--muted)">None</span>{% endif %}
+              {% if s.acne %}<span class="pill"><span class="lang-en">Acne</span><span class="lang-hi">मुंहासे</span></span>{% endif %}
+              {% if s.bloating %}<span class="pill"><span class="lang-en">Bloating</span><span class="lang-hi">सूजन</span></span>{% endif %}
+              {% if s.fatigue %}<span class="pill"><span class="lang-en">Fatigue</span><span class="lang-hi">थकान</span></span>{% endif %}
+              {% if s.headache %}<span class="pill"><span class="lang-en">Headache</span><span class="lang-hi">सिरदर्द</span></span>{% endif %}
+              {% if not s.acne and not s.bloating and not s.fatigue and not s.headache %}
+                <span style="color:var(--muted)"><span class="lang-en">None</span><span class="lang-hi">कोई नहीं</span></span>
+              {% endif %}
             </td>
-            <td style="color:var(--muted);max-width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">{{ s.notes or '—' }}</td>
+            <td style="color:var(--muted);max-width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
+              {{ s.notes or '—' }}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     {% else %}
-      <div class="no-data">No symptoms logged yet. Use the form above to start tracking.</div>
+      <div class="no-data">
+        <span class="lang-en">No symptoms logged yet. Use the form above to start tracking.</span>
+        <span class="lang-hi">अभी तक कोई लक्षण लॉग नहीं। ट्रैकिंग शुरू करने के लिए ऊपर का फॉर्म भरें।</span>
+      </div>
     {% endif %}
   </div>
 </div>
 
 <script>
-let isDark = (localStorage.getItem('ova-theme') === 'dark');
-function applyTheme(){
+// ── THEME (synchronous, no flash) ─────────────────────────────────────
+var isDark = localStorage.getItem('ova-theme') === 'dark';
+function applyTheme() {
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  const btn = document.getElementById('theme-btn');
-  if(btn) btn.textContent = isDark ? '☀️' : '🌙';
+  var btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
 }
-function toggleTheme(){ isDark=!isDark; localStorage.setItem('ova-theme',isDark?'dark':'light'); applyTheme(); }
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
 applyTheme();
+
+// ── LANGUAGE (synchronous via data-lang attribute set in <head>) ───────
+// The CSS already shows/hides .lang-en / .lang-hi via [data-lang] attribute
+// Just sync the textarea placeholder
+(function(){
+  var lang = localStorage.getItem('ova-lang') || 'en';
+  var notes = document.getElementById('notes-area');
+  if (notes) {
+    notes.placeholder = lang === 'hi'
+      ? 'कोई भी अन्य लक्षण, भावनाएं या टिप्पणियां...'
+      : 'Any other symptoms, feelings, or observations...';
+  }
+})();
 </script>
 </body>
 </html>
