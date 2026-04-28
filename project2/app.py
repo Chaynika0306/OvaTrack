@@ -152,27 +152,36 @@ def login():
         error = "Invalid email or password."
     return render_template('login.html', error=error, registered=registered)
 
+# ── LOGOUT / SIGNOUT — both go to landing page ────────────────────────────────
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('landing'))
-@app.route('/go-home')
-def go_home():
-    """Always renders the landing page — regardless of login state."""
-    return render_template('landing.html')
+
 @app.route('/signout')
 def signout():
     session.clear()
     return redirect(url_for('landing'))
 
-# ── HOME ──────────────────────────────────────────────────────────────────────────
+# ── LANDING PAGE ──────────────────────────────────────────────────────────────────
+# FIX: No longer redirects logged-in users away.
+# Always renders landing.html and passes logged_in + user_name so the
+# template can show the correct buttons/footer for each state.
 @app.route('/')
 def landing():
-    # If already logged in, go straight to app
-    if session.get('user_id'):
-        return redirect(url_for('home'))
-    return render_template('landing.html')
+    logged_in = bool(session.get('user_id'))
+    user_name = session.get('user_name', '')
+    return render_template('landing.html', logged_in=logged_in, user_name=user_name)
 
+# ── GO-HOME — used by navbar "Home" button in app pages ──────────────────────────
+# Always renders landing page regardless of login state.
+@app.route('/go-home')
+def go_home():
+    logged_in = bool(session.get('user_id'))
+    user_name = session.get('user_name', '')
+    return render_template('landing.html', logged_in=logged_in, user_name=user_name)
+
+# ── APP (main prediction page) ────────────────────────────────────────────────────
 @app.route('/app')
 @login_required
 def home():
@@ -264,6 +273,12 @@ def predict_cycle():
         imputed    = cycle_imputer.transform(feats)
         cycle_days = round(float(cycle_model.predict(imputed)[0]), 1)
 
+        # FIX: Ensure cycle_days is never negative (clamp to minimum 1)
+        if cycle_days < 1:
+            cycle_days = abs(cycle_days)
+        if cycle_days < 1:
+            cycle_days = 1.0
+
         if 21 <= cycle_days <= 35:
             status, note = "Normal","Predicted cycle is within the normal 21–35 day range."
         elif cycle_days < 21:
@@ -351,97 +366,88 @@ def symptoms():
                            today=datetime.today().strftime('%Y-%m-%d'),
                            user_name=session.get('user_name',''))
 
-# ── AI CHATBOT — Smart rule-based responses (no API key needed) ─────────────────
+# ── AI CHATBOT ────────────────────────────────────────────────────────────────────
 @app.route('/chat', methods=['POST'])
 @login_required
 def chat():
     import re, random
 
     user_msg = request.json.get('message', '').strip().lower()
+    lang     = request.json.get('lang', 'en')   # language sent from frontend
+
     if not user_msg:
-        return jsonify({'reply': 'Please type a message.'})
+        return jsonify({'reply': 'Please type a message.' if lang != 'hi' else 'कृपया एक संदेश लिखें।'})
 
     uid  = session['user_id']
     dash = session.get('dash', {})
 
-    # ── Build personalised context prefix ────────────────────────────────
+    # ── Personalised context prefix ──────────────────────────────────────
     ctx = ""
     if dash.get('type') == 'pcos' and dash.get('risk'):
-        r = dash['risk']
+        r  = dash['risk']
         rl = dash.get('risk_level','')
         ctx = f"(Based on your {r}% {rl} PCOS risk) "
 
     # ── Keyword → response bank ───────────────────────────────────────────
     responses = [
-        # Diet / food
-        (r'diet|food|eat|khaana|khana|nutrition|glycemic',
+        (r'diet|food|eat|khaana|khana|nutrition|glycemic|aahaar|khana',
          [ctx + "For PCOS, focus on low-glycemic foods — oats, lentils, vegetables, fruits, and lean proteins 🥗 Avoid refined sugar, white bread, and processed snacks. Small frequent meals help stabilise blood sugar and hormones.",
           ctx + "The best PCOS diet includes: fibre-rich foods (vegetables, legumes), lean proteins (eggs, chicken, tofu), healthy fats (nuts, avocado), and complex carbs (brown rice, millets) 🌿 Cut back on sugary drinks and fast food.",
           ctx + "Eating anti-inflammatory foods helps PCOS — think turmeric, leafy greens, berries, and fish. Cutting sugar and processed carbs is one of the most impactful dietary changes you can make 💚"]),
 
-        # Exercise / workout
-        (r'exercise|workout|gym|yoga|walk|physical|fit|active|vyayaam',
+        (r'exercise|workout|gym|yoga|walk|physical|fit|active|vyayaam|exercise',
          [ctx + "For PCOS, aim for 30 minutes of moderate exercise 5 days a week 🏃‍♀️ Walking, yoga, cycling, and swimming are all excellent. Resistance training also helps improve insulin sensitivity.",
           ctx + "Yoga is especially beneficial for PCOS — poses like Butterfly, Cobra, and Child's pose help regulate hormones and reduce stress 🧘‍♀️ Even a 20-minute daily walk makes a meaningful difference.",
           ctx + "Exercise helps lower insulin levels, reduce androgens, and regulate your cycle 💪 Combine cardio with light strength training 3-4 times a week for the best hormonal results."]),
 
-        # Stress / anxiety / mental health
-        (r'stress|anxiety|mental|mood|sad|depressed|overwhelm|tension|pareshan',
+        (r'stress|anxiety|mental|mood|sad|depressed|overwhelm|tension|pareshan|chinta',
          [ctx + "Stress raises cortisol, which directly worsens PCOS symptoms 😔 Try 10 minutes of deep breathing or meditation daily. Apps like Headspace can help if you're just starting out.",
           ctx + "High stress disrupts the hormonal balance that regulates your cycle 💆‍♀️ Prioritise 7-8 hours of sleep, reduce screen time before bed, and try journaling to process emotions.",
           ctx + "You're not alone — anxiety and mood swings are very common with PCOS due to hormonal imbalance 💙 Gentle yoga, walks in nature, and talking to someone you trust can make a real difference."]),
 
-        # Sleep
-        (r'sleep|nind|neend|rest|tired|thakaan|fatigue|insomnia',
+        (r'sleep|nind|neend|rest|tired|thakaan|fatigue|insomnia|neend',
          [ctx + "Sleep is critical for hormone regulation 😴 Aim for 7-9 hours per night. Poor sleep increases cortisol and insulin resistance — both of which worsen PCOS symptoms.",
           ctx + "For better sleep with PCOS, try keeping a consistent bedtime, avoiding screens 1 hour before bed, and keeping your room cool and dark 🌙 Magnesium supplements can also help some people.",
           ctx + "PCOS fatigue is very real — your body is working harder due to hormonal imbalance 💤 Prioritise sleep hygiene, stay hydrated, and consider a gentle 10-minute walk after meals to boost energy."]),
 
-        # Irregular periods / cycle
-        (r'period|cycle|irregular|late|miss|menstrual|menses|mahavari|masik',
+        (r'period|cycle|irregular|late|miss|menstrual|menses|mahavari|masik|periods',
          [ctx + "Irregular periods are the most common PCOS symptom 🌊 Lifestyle changes — diet, exercise, and stress reduction — can help regulate cycles naturally. Consult a gynecologist if periods are missing for 3+ months.",
           ctx + "Tracking your cycle with OvaTrack can reveal patterns even when cycles seem irregular 📅 Use our Cycle Predictor to get an AI estimate of your next period based on your history.",
           ctx + "Hormonal balance takes time to restore 🌸 Many women see cycle improvements within 3-6 months of consistent lifestyle changes. Inositol supplements are also commonly recommended — ask your doctor."]),
 
-        # Weight / BMI
-        (r'weight|bmi|fat|obesity|slim|lose weight|vajan|mota',
+        (r'weight|bmi|fat|obesity|slim|lose weight|vajan|mota|motapa',
          [ctx + "Weight management with PCOS is harder because of insulin resistance — but it's possible ⚖️ Even a 5-10% reduction in body weight can significantly improve hormonal balance and cycle regularity.",
           ctx + "Focus on sustainable changes rather than crash diets 🥗 Reducing sugar, increasing protein and fibre, and exercising regularly is more effective long-term than restrictive dieting for PCOS.",
           ctx + "PCOS makes it harder to lose weight due to elevated insulin levels 💪 A combination of low-glycemic eating + regular movement + stress management works better than dieting alone."]),
 
-        # Acne / skin / hair
-        (r'acne|pimple|skin|hair|thinning|facial hair|hirsutism|daag|baal',
+        (r'acne|pimple|skin|hair|thinning|facial hair|hirsutism|daag|baal|muhase',
          [ctx + "Acne and excess hair growth in PCOS are caused by high androgen levels 😣 Spearmint tea has been shown to reduce androgens naturally. A dermatologist can also recommend targeted treatments.",
           ctx + "For hormonal acne, avoid high-glycemic foods (sugar, white bread) which spike insulin and androgens 💆 Keep skin clean, use non-comedogenic products, and stay hydrated.",
           ctx + "Hair thinning with PCOS is linked to DHT — a type of androgen 💇 Iron and Vitamin D deficiency can worsen it. Get blood tests done and discuss options like minoxidil with your doctor."]),
 
-        # PCOS general / what is
-        (r'what is pcos|pcos kya|pcos ke baare|polycystic|ovary|symptoms of',
+        (r'what is pcos|pcos kya|pcos ke baare|polycystic|ovary|symptoms of|pcos hai',
          [ctx + "PCOS (Polycystic Ovary Syndrome) is a hormonal disorder affecting 1 in 10 women 🌸 It causes irregular periods, excess androgens, and small ovarian cysts. It's manageable with lifestyle changes and medical support.",
           ctx + "PCOS symptoms include irregular cycles, acne, hair thinning, weight gain, fatigue, and mood changes 📋 Not every woman has all symptoms. OvaTrack's AI analyses your specific pattern to estimate your risk.",
           ctx + "PCOS is the most common cause of female infertility — but it's very treatable 💚 Early detection and lifestyle changes make a huge difference. You're already taking the right step by tracking your health!"]),
 
-        # Ovulation / fertility
-        (r'ovulation|fertile|fertility|pregnant|baby|conceive|garbh',
+        (r'ovulation|fertile|fertility|pregnant|baby|conceive|garbh|pregnancy',
          [ctx + "With PCOS, ovulation can be irregular or absent 🌕 Tracking basal body temperature and using OvulationTrack can help identify your fertile window. Consult a doctor if you're trying to conceive.",
           ctx + "Improving insulin sensitivity through diet and exercise often restores ovulation naturally in PCOS 💪 Many women with PCOS conceive naturally after lifestyle changes. Medical options like Clomid are also effective.",
           ctx + "Your fertile window is typically around Day 14 of your cycle 📅 With PCOS, this can shift. OvaTrack's notification system estimates your ovulation window based on your cycle data."]),
 
-        # Vitamin / supplements
-        (r'vitamin|supplement|inositol|zinc|magnesium|omega|vitamin d',
+        (r'vitamin|supplement|inositol|zinc|magnesium|omega|vitamin d|supplements',
          [ctx + "For PCOS, commonly recommended supplements include: Inositol (improves insulin sensitivity), Vitamin D (often deficient), Omega-3 (reduces inflammation), and Zinc (helps with acne and hair loss) 💊 Always consult a doctor before starting.",
           ctx + "Myo-inositol is one of the most researched supplements for PCOS 🌿 It improves insulin sensitivity, reduces androgen levels, and can help regulate cycles. A typical dose is 2-4g daily.",
           ctx + "Vitamin D deficiency is extremely common in PCOS women 🌞 Get your levels tested — many doctors recommend supplementation. It plays a key role in insulin regulation and hormonal balance."]),
 
-        # Doctor / medication / treatment
-        (r'doctor|medication|medicine|treatment|gynecologist|metformin|pill|dawai',
+        (r'doctor|medication|medicine|treatment|gynecologist|metformin|pill|dawai|doctor',
          [ctx + "Please consult a gynecologist or endocrinologist for medical treatment of PCOS 👩‍⚕️ Common medical options include Metformin (insulin sensitizer), oral contraceptives (cycle regulation), and anti-androgens.",
           ctx + "OvaTrack gives you a risk assessment to start the conversation with your doctor 📋 Bring your OvaTrack report to your appointment — it shows risk percentage, BMI, cycle data, and symptom history.",
           ctx + "A comprehensive PCOS workup usually includes blood tests (FSH, LH, testosterone, insulin, thyroid) and an ultrasound 🩺 Your OvaTrack data can guide your doctor to the right tests."]),
     ]
 
-    # ── Greeting special case ──────────────────────────────────────────────
-    if re.search(r'^(hi|hello|hey|namaste|hii|helo|good morning|good evening)', user_msg):
+    # ── Greeting ──────────────────────────────────────────────────────────
+    if re.search(r'^(hi|hello|hey|namaste|hii|helo|good morning|good evening|namaskar|helo)', user_msg):
         notif = get_notification(uid)
         notif_msg = f" {notif['message']}" if notif and notif.get('message') else ""
         greetings = [
@@ -456,7 +462,7 @@ def chat():
         if re.search(pattern, user_msg):
             return jsonify({'reply': random.choice(replies)})
 
-    # ── Personalised default with context ──────────────────────────────────
+    # ── Default ────────────────────────────────────────────────────────────
     defaults = [
         ctx + "That's a great question! For personalised advice, I recommend discussing this with your gynecologist. In general, managing PCOS involves balanced diet, regular exercise, stress reduction, and good sleep 🌸",
         ctx + "I may not have a specific answer for that, but I'm here to help with PCOS, cycle tracking, diet, hormones, and lifestyle questions 💚 Could you rephrase or ask something more specific?",
@@ -464,13 +470,11 @@ def chat():
     ]
     return jsonify({'reply': random.choice(defaults)})
 
-
-
 # ── NOTIFICATIONS API ─────────────────────────────────────────────────────────────
 @app.route('/api/notifications')
 @login_required
 def api_notifications():
-    uid   = session['user_id']
+    uid    = session['user_id']
     notifs = []
 
     with get_db() as db:
@@ -485,7 +489,7 @@ def api_notifications():
         cycle_len  = int(cycle['cycle_length'])
         delta      = (next_p - today).days
 
-        # ── Period reminder
+        # Period reminder
         if delta < 0:
             notifs.append({
                 'type': 'period', 'level': 'danger',
@@ -515,7 +519,7 @@ def api_notifications():
                 'days': delta
             })
 
-        # ── Ovulation alert (approx. day 14 from last period = cycle_len - 14 days before next)
+        # Ovulation alert
         ovulation_date = last_p + timedelta(days=14)
         ov_delta = (ovulation_date - today).days
         if -1 <= ov_delta <= 3:
@@ -533,7 +537,7 @@ def api_notifications():
                 'days': ov_delta
             })
 
-        # ── Luteal phase tip (7 days before period)
+        # Luteal phase tip
         if 5 <= delta <= 10:
             notifs.append({
                 'type': 'tip', 'level': 'tip',
@@ -542,7 +546,7 @@ def api_notifications():
                 'days': delta
             })
 
-    # ── Health tip if no cycle data
+    # Default tip if no cycle data
     if not notifs:
         notifs.append({
             'type': 'tip', 'level': 'info',
@@ -552,9 +556,6 @@ def api_notifications():
         })
 
     return jsonify(notifs)
-
-
-
 
 # ── FORGOT PASSWORD ────────────────────────────────────────────────────────────
 @app.route('/forgot-password', methods=['GET','POST'])
@@ -574,7 +575,6 @@ def forgot_password():
         if not user:
             error = "No account found with that email address."
         else:
-            # Generate 6-digit OTP
             otp = ''.join(random.choices(string.digits, k=6))
             expires = (datetime.now() + timedelta(minutes=10)).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -583,10 +583,9 @@ def forgot_password():
                 db.execute("INSERT INTO otp_store (email,otp,expires) VALUES (?,?,?)",
                            (email, otp, expires))
 
-            # Send email via Gmail
             try:
                 sender    = "ovatrack9903@gmail.com"
-                app_pass  = "meka njvg zopu kbhr"   # Gmail App Password
+                app_pass  = "bsbj esmc bjji hcfp"   # ← Add your Gmail App Password here
                 recipient = email
 
                 mail_msg = MIMEMultipart("alternative")
@@ -612,8 +611,7 @@ def forgot_password():
                     <div style="color:#7a6882;font-size:12px;margin-top:6px">One-Time Password</div>
                   </div>
                   <p style="color:#9ca3af;font-size:12px">
-                    If you didn't request this, please ignore this email.
-                    Your account is safe.
+                    If you didn't request this, please ignore this email. Your account is safe.
                   </p>
                   <hr style="border:none;border-top:1px solid #e8ddef;margin:20px 0">
                   <p style="color:#c4b8cc;font-size:11px;text-align:center">
@@ -634,7 +632,6 @@ def forgot_password():
                 error = f"Could not send email. Please try again. ({str(e)[:60]})"
 
     return render_template('forgot_password.html', error=error, msg_sent=msg_sent)
-
 
 @app.route('/verify-otp', methods=['GET','POST'])
 def verify_otp():
