@@ -3,11 +3,12 @@ import joblib
 import numpy as np
 import sqlite3
 import hashlib
+import os
 from datetime import datetime, timedelta
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'ovatrack_secret_2025'
+app.secret_key = os.getenv("SECRET_KEY")
 
 # ── Load ML models ──────────────────────────────────────────────────────────────
 pcos_model    = joblib.load("RandomForest_PCOS.pkl")
@@ -584,8 +585,8 @@ def forgot_password():
                            (email, otp, expires))
 
             try:
-                sender    = "ovatrack9903@gmail.com"
-                app_pass  = "bsbj esmc bjji hcfp"   # ← Add your Gmail App Password here
+                sender    = os.getenv("EMAIL_USER")
+                app_pass  = os.getenv("EMAIL_PASS")   # ← Add your Gmail App Password here
                 recipient = email
 
                 mail_msg = MIMEMultipart("alternative")
