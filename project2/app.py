@@ -6,6 +6,8 @@ import hashlib
 import os
 from datetime import datetime, timedelta
 from functools import wraps
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -684,4 +686,4 @@ def learn_pcos():
 if __name__ == '__main__':
     import webbrowser, threading
     threading.Timer(1, lambda: webbrowser.open('http://127.0.0.1:5000/')).start()
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=False, use_reloader=False)
