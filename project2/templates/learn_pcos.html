@@ -32,19 +32,81 @@
     html{scroll-behavior:smooth;background:var(--bg);transition:background .3s}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
 
-    nav{position:sticky;top:0;z-index:100;height:64px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 1px 16px rgba(0,0,0,.06);transition:background .3s,border-color .3s}
+    /* ═══ NAVBAR ══════════════════════════════════════════════════════ */
+    nav{
+      position:sticky;top:0;z-index:200;height:64px;padding:0 5%;
+      display:flex;align-items:center;justify-content:space-between;
+      background:var(--nav-bg);backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 1px 16px rgba(0,0,0,.06);
+      transition:background .3s,border-color .3s;
+    }
     .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
     .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
     .logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);transition:color .3s}
+
+    /* Desktop nav links */
     .nav-links{display:flex;align-items:center;gap:10px}
-    .nav-btn{padding:8px 18px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);background:transparent;transition:all .2s}
+    .nav-btn{padding:8px 18px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);background:transparent;transition:all .2s;white-space:nowrap}
     .nav-btn:hover{border-color:var(--teal);color:var(--teal-dark)}
     .nav-btn.primary{background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;border-color:transparent}
+    .nav-btn.primary:hover{opacity:.9}
 
     .lang-toggle{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:50px;padding:3px;transition:background .3s}
     .lang-btn{padding:4px 14px;border-radius:50px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
     .lang-btn.active{background:var(--teal);color:white}
 
+    /* Theme button */
+    .theme-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .25s;color:var(--text)}
+    .theme-btn:hover{border-color:var(--teal)}
+
+    /* ── HAMBURGER (mobile only) ── */
+    .hamburger{
+      display:none;
+      flex-direction:column;justify-content:center;align-items:center;gap:5px;
+      width:38px;height:38px;border-radius:10px;
+      border:1.5px solid var(--border);background:var(--bg2);
+      cursor:pointer;padding:0;transition:all .25s;flex-shrink:0;
+    }
+    .hamburger span{
+      display:block;width:18px;height:2px;
+      background:var(--text);border-radius:2px;transition:all .3s;
+    }
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    /* ── MOBILE MENU DRAWER ── */
+    .mobile-menu{
+      display:none;
+      position:sticky;top:64px;z-index:199;
+      background:var(--nav-bg);backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+      padding:16px 5% 20px;
+      flex-direction:column;gap:0;
+      box-shadow:0 8px 30px rgba(0,0,0,.10);
+      transition:background .3s;
+    }
+    .mobile-menu.open{display:flex}
+    .mobile-nav-links{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+    .mobile-nav-links a{
+      display:block;padding:11px 0;
+      color:var(--text);text-decoration:none;font-size:15px;font-weight:500;
+      border-bottom:1px solid var(--border);transition:color .2s;
+    }
+    .mobile-nav-links a:hover{color:var(--teal-dark)}
+    .mobile-nav-links li:last-child a{border-bottom:none}
+    .mobile-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+    .mobile-cta{
+      flex:1;text-align:center;padding:11px 20px;
+      background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+      color:white;border:none;border-radius:50px;
+      font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+      cursor:pointer;text-decoration:none;display:block;
+      box-shadow:0 3px 12px rgba(59,191,163,.35);
+    }
+
+    /* ═══ PAGE HERO ═══════════════════════════════════════════════════ */
     .page-hero{padding:60px 5% 48px;background:linear-gradient(135deg,#e8f9f6,#f0faf8);text-align:center;border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
     [data-theme="dark"] .page-hero{background:linear-gradient(135deg,#1a2332,#1f2937)}
     .page-badge{display:inline-block;background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px}
@@ -52,10 +114,12 @@
     .page-hero h1 span{color:var(--teal-dark)}
     .page-hero p{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto;transition:color .3s}
 
+    /* TOC */
     .toc{max-width:900px;margin:0 auto;padding:32px 5%;display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--bg);transition:background .3s,border-color .3s}
     .toc-link{padding:7px 16px;border-radius:50px;border:1px solid var(--border);color:var(--muted);font-size:13px;text-decoration:none;background:var(--bg2);transition:all .2s}
     .toc-link:hover{border-color:var(--teal);color:var(--teal-dark);background:var(--teal-light)}
 
+    /* CONTENT */
     .content{max-width:900px;margin:0 auto;padding:0 5% 80px;background:var(--bg);transition:background .3s}
     .learn-section{padding:48px 0;border-bottom:1px solid var(--border);transition:border-color .3s}
     .learn-section:last-child{border-bottom:none}
@@ -107,34 +171,92 @@
     .bottom-cta a{padding:13px 30px;background:var(--orange);color:white;border-radius:50px;text-decoration:none;font-weight:600;font-size:15px;display:inline-block;box-shadow:0 6px 20px rgba(0,0,0,.2);transition:all .25s}
     .bottom-cta a:hover{transform:translateY(-2px)}
 
+    /* FOOTER */
     footer{padding:28px 5%;background:var(--plum);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     [data-theme="dark"] footer{background:#0f172a}
     .footer-logo{font-family:'DM Serif Display',serif;font-size:18px;color:white}
+    .footer-links{display:flex;gap:20px;list-style:none;align-items:center;flex-wrap:wrap}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:13px}
+    .footer-links a:hover{color:var(--teal)}
+    .footer-links span{color:rgba(255,255,255,.7);font-size:13px}
     .footer-copy{font-size:11px;color:rgba(255,255,255,.4)}
+    .go-top-btn{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .25s}
+    .go-top-btn:hover{background:rgba(59,191,163,.25);border-color:var(--teal);color:white}
 
-    @media(max-width:480px){.cards{grid-template-columns:1fr 1fr}.toc{justify-content:center}.myth-box{grid-template-columns:1fr}}
+    /* ═══ RESPONSIVE ══════════════════════════════════════════════════ */
+    @media(max-width:700px){
+      /* Show hamburger, hide desktop nav controls */
+      .hamburger{display:flex}
+      .nav-links{display:none}
+
+      /* Footer stacks */
+      footer{flex-direction:column;text-align:center;align-items:center}
+      .footer-links{justify-content:center}
+
+      /* Myth box stacks */
+      .myth-box{grid-template-columns:1fr}
+
+      /* Cards */
+      .cards{grid-template-columns:1fr 1fr}
+      .toc{justify-content:center}
+    }
   </style>
 </head>
 <body>
 
+<!-- ══════ NAVBAR ════════════════════════════════════════════════════ -->
 <nav>
   <a href="/" class="logo">
     <div class="logo-icon">🌸</div>
     <span class="logo-text">OvaTrack</span>
   </a>
+
+  <!-- Desktop nav links -->
   <div class="nav-links">
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('hi')">हिं</button>
     </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
     <a href="/" class="nav-btn" data-en="← Back to Home" data-hi="← होम पर जाएं">← Back to Home</a>
     {% if logged_in %}
       <a href="/app" class="nav-btn primary" data-en="Go to App" data-hi="ऐप पर जाएं">Go to App</a>
     {% endif %}
   </div>
+
+  <!-- Mobile hamburger -->
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- HERO -->
+<!-- ══════ MOBILE MENU DRAWER ════════════════════════════════════════ -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul class="mobile-nav-links">
+    <li><a href="/" data-en="← Back to Home" data-hi="← होम पर जाएं">← Back to Home</a></li>
+    {% if logged_in %}
+      <li><a href="/app" data-en="Go to App →" data-hi="ऐप पर जाएं →">Go to App →</a></li>
+      <li><a href="/logout" data-en="Log Out" data-hi="लॉग आउट">Log Out</a></li>
+    {% else %}
+      <li><a href="/login"    data-en="Log In"       data-hi="लॉगिन">Log In</a></li>
+      <li><a href="/register" data-en="Sign Up Free" data-hi="मुफ्त साइन अप">Sign Up Free</a></li>
+    {% endif %}
+  </ul>
+  <div class="mobile-controls">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('hi')">हिं</button>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn-mobile">🌙</button>
+    {% if logged_in %}
+      <a href="/app" class="mobile-cta" data-en="Go to Dashboard →" data-hi="डैशबोर्ड पर जाएं →">Go to Dashboard →</a>
+    {% else %}
+      <a href="/register" class="mobile-cta" data-en="Get Started Free" data-hi="मुफ्त शुरू करें">Get Started Free</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══════ PAGE HERO ══════════════════════════════════════════════════ -->
 <div class="page-hero">
   <div class="page-badge" data-en="✦ Complete PCOS Guide" data-hi="✦ संपूर्ण PCOS गाइड">✦ Complete PCOS Guide</div>
   <h1 data-en="Everything You Need to Know<br>About <span>PCOS</span>"
@@ -161,7 +283,7 @@
 
 <div class="content">
 
-  <!-- 01 -->
+  <!-- 01 — WHAT IS PCOS -->
   <div class="learn-section" id="what-is">
     <div class="sec-badge" data-en="01 — Overview" data-hi="01 — अवलोकन">01 — Overview</div>
     <h2 data-en="What is <span>PCOS</span>?" data-hi="<span>PCOS</span> क्या है?">What is <span>PCOS</span>?</h2>
@@ -187,67 +309,25 @@
     </div>
   </div>
 
-  <!-- 02 -->
+  <!-- 02 — SYMPTOMS -->
   <div class="learn-section" id="symptoms">
     <div class="sec-badge" data-en="02 — Signs &amp; Symptoms" data-hi="02 — संकेत और लक्षण">02 — Signs &amp; Symptoms</div>
     <h2 data-en="Common <span>Symptoms</span> of PCOS" data-hi="PCOS के सामान्य <span>लक्षण</span>">Common <span>Symptoms</span> of PCOS</h2>
     <p data-en="Symptoms vary widely — some women have many, others just a few. The most common include:"
-       data-hi="लक्षण बहुत अलग-अलग होते हैं — कुछ में कई, कुछ में थोड़े। सबसे आम लक्षण:">
-      Symptoms vary widely — some women have many, others just a few. The most common include:
-    </p>
+       data-hi="लक्षण बहुत अलग-अलग होते हैं — कुछ में कई, कुछ में थोड़े। सबसे आम लक्षण:">Symptoms vary widely — some women have many, others just a few. The most common include:</p>
     <div class="cards">
-      <div class="info-card">
-        <span class="info-card-icon">🌊</span>
-        <h3 data-en="Irregular Periods" data-hi="अनियमित मासिक धर्म">Irregular Periods</h3>
-        <p data-en="Cycles longer than 35 days, fewer than 8 cycles per year, or missing periods for months. The most universal PCOS symptom."
-           data-hi="35 दिनों से लंबे चक्र, साल में 8 से कम चक्र, या महीनों तक पीरियड न आना। PCOS का सबसे सामान्य लक्षण।">Cycles longer than 35 days, fewer than 8 cycles per year, or missing periods for months.</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">⚖️</span>
-        <h3 data-en="Weight Gain" data-hi="वजन बढ़ना">Weight Gain</h3>
-        <p data-en="Unexplained weight gain, especially around the abdomen. Insulin resistance makes losing weight harder."
-           data-hi="बिना कारण वजन बढ़ना, खासकर पेट के आसपास। इंसुलिन प्रतिरोध वजन घटाना कठिन बनाता है।">Unexplained weight gain, especially around the abdomen.</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">😣</span>
-        <h3 data-en="Acne &amp; Oily Skin" data-hi="मुंहासे और तैलीय त्वचा">Acne &amp; Oily Skin</h3>
-        <p data-en="Hormonal acne on the face, chest, or back that doesn't respond to standard skincare treatments."
-           data-hi="चेहरे, छाती या पीठ पर हार्मोनल मुंहासे जो सामान्य स्किनकेयर से ठीक नहीं होते।">Hormonal acne that doesn't respond to standard skincare treatments.</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">💇</span>
-        <h3 data-en="Hair Changes" data-hi="बालों में बदलाव">Hair Changes</h3>
-        <p data-en="Thinning hair on the scalp and unwanted hair on the face, chest, or abdomen (hirsutism)."
-           data-hi="सिर के बालों का पतला होना और चेहरे, छाती या पेट पर अनचाहे बाल (हिरसुटिज़्म)।">Thinning hair on scalp and unwanted facial/body hair (hirsutism).</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">😴</span>
-        <h3 data-en="Fatigue" data-hi="थकान">Fatigue</h3>
-        <p data-en="Constant exhaustion even after adequate sleep, linked to insulin resistance and hormonal fluctuations."
-           data-hi="पर्याप्त नींद के बाद भी लगातार थकान, जो इंसुलिन प्रतिरोध और हार्मोनल उतार-चढ़ाव से जुड़ी है।">Constant exhaustion even after adequate sleep.</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">🧠</span>
-        <h3 data-en="Mood Changes" data-hi="मूड में बदलाव">Mood Changes</h3>
-        <p data-en="Anxiety, depression, irritability, and mood swings are significantly more common in women with PCOS."
-           data-hi="PCOS वाली महिलाओं में चिंता, अवसाद, चिड़चिड़ापन और मूड स्विंग काफी अधिक होते हैं।">Anxiety, depression, and mood swings are significantly more common with PCOS.</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">🤰</span>
-        <h3 data-en="Fertility Issues" data-hi="प्रजनन समस्याएं">Fertility Issues</h3>
-        <p data-en="Difficulty conceiving due to irregular or absent ovulation. PCOS is the leading cause of ovulatory infertility."
-           data-hi="अनियमित ओव्यूलेशन के कारण गर्भधारण में कठिनाई। PCOS ओव्युलेटरी बांझपन का मुख्य कारण है।">PCOS is the leading cause of ovulatory infertility.</p>
-      </div>
-      <div class="info-card">
-        <span class="info-card-icon">🌑</span>
-        <h3 data-en="Darkened Skin" data-hi="त्वचा का काला पड़ना">Darkened Skin</h3>
-        <p data-en="Dark, velvety patches (acanthosis nigricans) in the neck, armpits, or groin — a sign of insulin resistance."
-           data-hi="गर्दन, बगल या कमर में काले मखमली धब्बे — इंसुलिन प्रतिरोध का संकेत।">Dark patches in neck/armpits — a sign of insulin resistance.</p>
-      </div>
+      <div class="info-card"><span class="info-card-icon">🌊</span><h3 data-en="Irregular Periods" data-hi="अनियमित मासिक धर्म">Irregular Periods</h3><p data-en="Cycles longer than 35 days, fewer than 8 cycles per year, or missing periods for months." data-hi="35 दिनों से लंबे चक्र, साल में 8 से कम चक्र, या महीनों तक पीरियड न आना।">Cycles longer than 35 days, fewer than 8 cycles per year, or missing periods for months.</p></div>
+      <div class="info-card"><span class="info-card-icon">⚖️</span><h3 data-en="Weight Gain" data-hi="वजन बढ़ना">Weight Gain</h3><p data-en="Unexplained weight gain, especially around the abdomen. Insulin resistance makes losing weight harder." data-hi="बिना कारण वजन बढ़ना, खासकर पेट के आसपास। इंसुलिन प्रतिरोध वजन घटाना कठिन बनाता है।">Unexplained weight gain, especially around the abdomen.</p></div>
+      <div class="info-card"><span class="info-card-icon">😣</span><h3 data-en="Acne &amp; Oily Skin" data-hi="मुंहासे और तैलीय त्वचा">Acne &amp; Oily Skin</h3><p data-en="Hormonal acne on the face, chest, or back that doesn't respond to standard skincare treatments." data-hi="चेहरे, छाती या पीठ पर हार्मोनल मुंहासे जो सामान्य स्किनकेयर से ठीक नहीं होते।">Hormonal acne that doesn't respond to standard skincare treatments.</p></div>
+      <div class="info-card"><span class="info-card-icon">💇</span><h3 data-en="Hair Changes" data-hi="बालों में बदलाव">Hair Changes</h3><p data-en="Thinning hair on the scalp and unwanted hair on the face, chest, or abdomen (hirsutism)." data-hi="सिर के बालों का पतला होना और चेहरे, छाती या पेट पर अनचाहे बाल (हिरसुटिज़्म)।">Thinning hair on scalp and unwanted facial/body hair (hirsutism).</p></div>
+      <div class="info-card"><span class="info-card-icon">😴</span><h3 data-en="Fatigue" data-hi="थकान">Fatigue</h3><p data-en="Constant exhaustion even after adequate sleep, linked to insulin resistance and hormonal fluctuations." data-hi="पर्याप्त नींद के बाद भी लगातार थकान, जो इंसुलिन प्रतिरोध और हार्मोनल उतार-चढ़ाव से जुड़ी है।">Constant exhaustion even after adequate sleep.</p></div>
+      <div class="info-card"><span class="info-card-icon">🧠</span><h3 data-en="Mood Changes" data-hi="मूड में बदलाव">Mood Changes</h3><p data-en="Anxiety, depression, irritability, and mood swings are significantly more common in women with PCOS." data-hi="PCOS वाली महिलाओं में चिंता, अवसाद, चिड़चिड़ापन और मूड स्विंग काफी अधिक होते हैं।">Anxiety, depression, and mood swings are significantly more common with PCOS.</p></div>
+      <div class="info-card"><span class="info-card-icon">🤰</span><h3 data-en="Fertility Issues" data-hi="प्रजनन समस्याएं">Fertility Issues</h3><p data-en="Difficulty conceiving due to irregular or absent ovulation. PCOS is the leading cause of ovulatory infertility." data-hi="अनियमित ओव्यूलेशन के कारण गर्भधारण में कठिनाई। PCOS ओव्युलेटरी बांझपन का मुख्य कारण है।">PCOS is the leading cause of ovulatory infertility.</p></div>
+      <div class="info-card"><span class="info-card-icon">🌑</span><h3 data-en="Darkened Skin" data-hi="त्वचा का काला पड़ना">Darkened Skin</h3><p data-en="Dark, velvety patches (acanthosis nigricans) in the neck, armpits, or groin — a sign of insulin resistance." data-hi="गर्दन, बगल या कमर में काले मखमली धब्बे — इंसुलिन प्रतिरोध का संकेत।">Dark patches in neck/armpits — a sign of insulin resistance.</p></div>
     </div>
   </div>
 
-  <!-- 03 -->
+  <!-- 03 — CAUSES -->
   <div class="learn-section" id="causes">
     <div class="sec-badge" data-en="03 — Root Causes" data-hi="03 — मूल कारण">03 — Root Causes</div>
     <h2 data-en="What <span>Causes</span> PCOS?" data-hi="PCOS के <span>कारण</span> क्या हैं?">What <span>Causes</span> PCOS?</h2>
@@ -262,54 +342,30 @@
     </ul>
   </div>
 
-  <!-- 04 -->
+  <!-- 04 — TYPES -->
   <div class="learn-section" id="types">
     <div class="sec-badge" data-en="04 — Types of PCOS" data-hi="04 — PCOS के प्रकार">04 — Types of PCOS</div>
     <h2 data-en="The Four <span>Types</span> of PCOS" data-hi="PCOS के चार <span>प्रकार</span>">The Four <span>Types</span> of PCOS</h2>
     <p data-en="Not all PCOS is the same. Doctors increasingly recognize distinct types based on the root hormonal imbalance:"
        data-hi="सभी PCOS एक जैसी नहीं होती। डॉक्टर अब मूल हार्मोनल असंतुलन के आधार पर अलग-अलग प्रकारों को पहचानते हैं:">Not all PCOS is the same. Doctors increasingly recognize distinct types based on the root hormonal imbalance:</p>
     <div class="two-col">
-      <div class="col-card">
-        <h4 data-en="🔴 Insulin-Resistant PCOS" data-hi="🔴 इंसुलिन-प्रतिरोधी PCOS">🔴 Insulin-Resistant PCOS</h4>
-        <p data-en="The most common type (~70%). High insulin drives androgen production. Associated with weight gain, acne, and dark patches. Best managed with low-glycemic diet and exercise." data-hi="सबसे सामान्य प्रकार (~70%)। उच्च इंसुलिन एंड्रोजेन बढ़ाता है। वजन बढ़ना, मुंहासे और काले धब्बों से जुड़ा। कम-ग्लाइसेमिक आहार और व्यायाम से बेहतर होता है।">The most common type (~70%). Best managed with low-glycemic diet and exercise.</p>
-      </div>
-      <div class="col-card">
-        <h4 data-en="💊 Pill-Induced PCOS" data-hi="💊 पिल-प्रेरित PCOS">💊 Pill-Induced PCOS</h4>
-        <p data-en="Triggered after stopping hormonal birth control pills. Usually resolves within 3-6 months as hormones rebalance." data-hi="हार्मोनल गर्भनिरोधक गोलियां बंद करने के बाद होती है। हार्मोन संतुलित होते ही आमतौर पर 3-6 महीनों में ठीक हो जाती है।">Triggered after stopping birth control pills. Usually resolves within 3-6 months.</p>
-      </div>
-      <div class="col-card">
-        <h4 data-en="🔥 Inflammatory PCOS" data-hi="🔥 सूजन-जनित PCOS">🔥 Inflammatory PCOS</h4>
-        <p data-en="Chronic inflammation drives androgen production. Often associated with fatigue, skin issues, and gut problems. Anti-inflammatory diet is key." data-hi="दीर्घकालिक सूजन एंड्रोजेन बढ़ाती है। थकान, त्वचा और आंत की समस्याओं से जुड़ी। सूजन-रोधी आहार सबसे महत्वपूर्ण है।">Chronic inflammation drives androgen production. Anti-inflammatory diet is key.</p>
-      </div>
-      <div class="col-card">
-        <h4 data-en="⚡ Adrenal PCOS" data-hi="⚡ एड्रिनल PCOS">⚡ Adrenal PCOS</h4>
-        <p data-en="Adrenal glands produce excess DHEA-S in response to stress. More common in lean women with anxiety. Stress management is crucial." data-hi="तनाव के जवाब में एड्रिनल ग्रंथियां अधिक DHEA-S उत्पन्न करती हैं। पतली, चिंताग्रस्त महिलाओं में अधिक। तनाव प्रबंधन सबसे ज़रूरी।">Adrenal glands produce excess DHEA-S in response to stress. Stress management is crucial.</p>
-      </div>
+      <div class="col-card"><h4 data-en="🔴 Insulin-Resistant PCOS" data-hi="🔴 इंसुलिन-प्रतिरोधी PCOS">🔴 Insulin-Resistant PCOS</h4><p data-en="The most common type (~70%). High insulin drives androgen production. Associated with weight gain, acne, and dark patches. Best managed with low-glycemic diet and exercise." data-hi="सबसे सामान्य प्रकार (~70%)। उच्च इंसुलिन एंड्रोजेन बढ़ाता है। वजन बढ़ना, मुंहासे और काले धब्बों से जुड़ा। कम-ग्लाइसेमिक आहार और व्यायाम से बेहतर होता है।">The most common type (~70%). Best managed with low-glycemic diet and exercise.</p></div>
+      <div class="col-card"><h4 data-en="💊 Pill-Induced PCOS" data-hi="💊 पिल-प्रेरित PCOS">💊 Pill-Induced PCOS</h4><p data-en="Triggered after stopping hormonal birth control pills. Usually resolves within 3-6 months as hormones rebalance." data-hi="हार्मोनल गर्भनिरोधक गोलियां बंद करने के बाद होती है। हार्मोन संतुलित होते ही आमतौर पर 3-6 महीनों में ठीक हो जाती है।">Triggered after stopping birth control pills. Usually resolves within 3-6 months.</p></div>
+      <div class="col-card"><h4 data-en="🔥 Inflammatory PCOS" data-hi="🔥 सूजन-जनित PCOS">🔥 Inflammatory PCOS</h4><p data-en="Chronic inflammation drives androgen production. Often associated with fatigue, skin issues, and gut problems. Anti-inflammatory diet is key." data-hi="दीर्घकालिक सूजन एंड्रोजेन बढ़ाती है। थकान, त्वचा और आंत की समस्याओं से जुड़ी। सूजन-रोधी आहार सबसे महत्वपूर्ण है।">Chronic inflammation drives androgen production. Anti-inflammatory diet is key.</p></div>
+      <div class="col-card"><h4 data-en="⚡ Adrenal PCOS" data-hi="⚡ एड्रिनल PCOS">⚡ Adrenal PCOS</h4><p data-en="Adrenal glands produce excess DHEA-S in response to stress. More common in lean women with anxiety. Stress management is crucial." data-hi="तनाव के जवाब में एड्रिनल ग्रंथियां अधिक DHEA-S उत्पन्न करती हैं। पतली, चिंताग्रस्त महिलाओं में अधिक। तनाव प्रबंधन सबसे ज़रूरी।">Adrenal glands produce excess DHEA-S in response to stress. Stress management is crucial.</p></div>
     </div>
   </div>
 
-  <!-- 05 -->
+  <!-- 05 — DIAGNOSIS -->
   <div class="learn-section" id="diagnosis">
     <div class="sec-badge" data-en="05 — Getting Diagnosed" data-hi="05 — निदान कैसे होता है">05 — Getting Diagnosed</div>
     <h2 data-en="How is PCOS <span>Diagnosed</span>?" data-hi="PCOS का <span>निदान</span> कैसे होता है?">How is PCOS <span>Diagnosed</span>?</h2>
     <p data-en="Doctors use the <strong>Rotterdam Criteria</strong> — you need at least 2 of these 3 features for a PCOS diagnosis:"
        data-hi="डॉक्टर <strong>रॉटरडैम मानदंड</strong> का उपयोग करते हैं — निदान के लिए इन 3 में से कम से कम 2 लक्षण होने चाहिए:">Doctors use the <strong>Rotterdam Criteria</strong> — you need at least 2 of these 3 features:</p>
     <div class="cards" style="grid-template-columns:repeat(3,1fr)">
-      <div class="info-card" style="text-align:center">
-        <span class="info-card-icon">🌊</span>
-        <h3 data-en="Irregular Periods" data-hi="अनियमित मासिक धर्म">Irregular Periods</h3>
-        <p data-en="Fewer than 8 cycles per year, or cycles longer than 35 days." data-hi="साल में 8 से कम चक्र, या 35 दिनों से लंबे चक्र।">Fewer than 8 cycles per year, or cycles longer than 35 days.</p>
-      </div>
-      <div class="info-card" style="text-align:center">
-        <span class="info-card-icon">🔬</span>
-        <h3 data-en="High Androgens" data-hi="उच्च एंड्रोजेन">High Androgens</h3>
-        <p data-en="Elevated testosterone or DHEA on blood tests — OR physical signs like acne/hirsutism." data-hi="रक्त परीक्षण में उच्च टेस्टोस्टेरोन या DHEA — या मुंहासे/हिरसुटिज़्म के शारीरिक संकेत।">Elevated testosterone/DHEA on blood tests or physical signs like acne/hirsutism.</p>
-      </div>
-      <div class="info-card" style="text-align:center">
-        <span class="info-card-icon">🩺</span>
-        <h3 data-en="Polycystic Ovaries" data-hi="पॉलीसिस्टिक अंडाशय">Polycystic Ovaries</h3>
-        <p data-en="12 or more follicles in at least one ovary on ultrasound." data-hi="अल्ट्रासाउंड पर कम से कम एक अंडाशय में 12 या अधिक फॉलिकल्स।">12 or more follicles in at least one ovary on ultrasound.</p>
-      </div>
+      <div class="info-card" style="text-align:center"><span class="info-card-icon">🌊</span><h3 data-en="Irregular Periods" data-hi="अनियमित मासिक धर्म">Irregular Periods</h3><p data-en="Fewer than 8 cycles per year, or cycles longer than 35 days." data-hi="साल में 8 से कम चक्र, या 35 दिनों से लंबे चक्र।">Fewer than 8 cycles per year, or cycles longer than 35 days.</p></div>
+      <div class="info-card" style="text-align:center"><span class="info-card-icon">🔬</span><h3 data-en="High Androgens" data-hi="उच्च एंड्रोजेन">High Androgens</h3><p data-en="Elevated testosterone or DHEA on blood tests — OR physical signs like acne/hirsutism." data-hi="रक्त परीक्षण में उच्च टेस्टोस्टेरोन या DHEA — या मुंहासे/हिरसुटिज़्म के शारीरिक संकेत।">Elevated testosterone/DHEA on blood tests or physical signs like acne/hirsutism.</p></div>
+      <div class="info-card" style="text-align:center"><span class="info-card-icon">🩺</span><h3 data-en="Polycystic Ovaries" data-hi="पॉलीसिस्टिक अंडाशय">Polycystic Ovaries</h3><p data-en="12 or more follicles in at least one ovary on ultrasound." data-hi="अल्ट्रासाउंड पर कम से कम एक अंडाशय में 12 या अधिक फॉलिकल्स।">12 or more follicles in at least one ovary on ultrasound.</p></div>
     </div>
     <p style="margin-top:20px" data-en="<strong>Tests your doctor may order:</strong>" data-hi="<strong>डॉक्टर ये जांचें कर सकते हैं:</strong>"><strong>Tests your doctor may order:</strong></p>
     <ul class="styled-list">
@@ -325,7 +381,7 @@
     </div>
   </div>
 
-  <!-- 06 -->
+  <!-- 06 — TREATMENT -->
   <div class="learn-section" id="treatment">
     <div class="sec-badge" data-en="06 — Treatment Options" data-hi="06 — उपचार के विकल्प">06 — Treatment Options</div>
     <h2 data-en="PCOS <span>Treatment</span> — What Works?" data-hi="PCOS का <span>उपचार</span> — क्या काम करता है?">PCOS <span>Treatment</span> — What Works?</h2>
@@ -356,7 +412,7 @@
     </div>
   </div>
 
-  <!-- 07 -->
+  <!-- 07 — DIET -->
   <div class="learn-section" id="diet">
     <div class="sec-badge" data-en="07 — Diet &amp; Lifestyle" data-hi="07 — आहार और जीवनशैली">07 — Diet &amp; Lifestyle</div>
     <h2 data-en="Best <span>Diet &amp; Lifestyle</span> for PCOS" data-hi="PCOS के लिए सबसे अच्छा <span>आहार और जीवनशैली</span>">Best <span>Diet &amp; Lifestyle</span> for PCOS</h2>
@@ -395,34 +451,18 @@
     </div>
   </div>
 
-  <!-- 08 -->
+  <!-- 08 — MYTHS -->
   <div class="learn-section" id="myths">
     <div class="sec-badge" data-en="08 — Myths vs Facts" data-hi="08 — मिथक बनाम तथ्य">08 — Myths vs Facts</div>
     <h2 data-en="PCOS <span>Myths</span> Debunked" data-hi="PCOS के <span>मिथक</span> का खंडन">PCOS <span>Myths</span> Debunked</h2>
     <p data-en="There's a lot of misinformation about PCOS. Here's the truth:"
        data-hi="PCOS के बारे में बहुत सारी गलत जानकारी है। यहां सच्चाई है:">There's a lot of misinformation about PCOS. Here's the truth:</p>
-
     <div style="display:flex;flex-direction:column;gap:14px;margin-top:20px">
-      <div class="myth-box">
-        <div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "You can&apos;t get pregnant with PCOS."' data-hi='<strong>❌ मिथक:</strong> "PCOS के साथ गर्भवती नहीं हो सकते।"'><strong>❌ MYTH:</strong> "You can't get pregnant with PCOS."</div>
-        <div class="myth-fact" data-en="<strong>✅ FACT:</strong> Many women with PCOS conceive naturally or with medical support. Fertility can often be restored." data-hi="<strong>✅ तथ्य:</strong> PCOS वाली कई महिलाएं प्राकृतिक रूप से या चिकित्सा सहायता से गर्भवती होती हैं। प्रजनन क्षमता अक्सर बहाल हो सकती है।"><strong>✅ FACT:</strong> Many women with PCOS conceive naturally or with medical support.</div>
-      </div>
-      <div class="myth-box">
-        <div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "PCOS only affects overweight women."' data-hi='<strong>❌ मिथक:</strong> "PCOS केवल मोटी महिलाओं को होती है।"'><strong>❌ MYTH:</strong> "PCOS only affects overweight women."</div>
-        <div class="myth-fact" data-en="<strong>✅ FACT:</strong> 20-30% of women with PCOS are lean. PCOS affects women of all body types." data-hi="<strong>✅ तथ्य:</strong> PCOS वाली 20-30% महिलाएं पतली होती हैं। यह हर शरीर के प्रकार को प्रभावित करती है।"><strong>✅ FACT:</strong> 20-30% of women with PCOS are lean. It affects all body types.</div>
-      </div>
-      <div class="myth-box">
-        <div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "Regular periods mean no PCOS."' data-hi='<strong>❌ मिथक:</strong> "नियमित पीरियड्स हों तो PCOS नहीं हो सकती।"'><strong>❌ MYTH:</strong> "Regular periods mean no PCOS."</div>
-        <div class="myth-fact" data-en="<strong>✅ FACT:</strong> Some women with PCOS have regular cycles but still have elevated androgens or polycystic ovaries." data-hi="<strong>✅ तथ्य:</strong> कुछ PCOS महिलाओं के चक्र नियमित होते हैं, फिर भी एंड्रोजेन उच्च या अंडाशय पॉलीसिस्टिक होते हैं।"><strong>✅ FACT:</strong> Some PCOS women have regular cycles but still have elevated androgens or polycystic ovaries.</div>
-      </div>
-      <div class="myth-box">
-        <div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "PCOS goes away after pregnancy."' data-hi='<strong>❌ मिथक:</strong> "गर्भावस्था के बाद PCOS ठीक हो जाती है।"'><strong>❌ MYTH:</strong> "PCOS goes away after pregnancy."</div>
-        <div class="myth-fact" data-en="<strong>✅ FACT:</strong> PCOS is a lifelong hormonal condition. Pregnancy may temporarily improve symptoms, but the underlying tendency remains." data-hi="<strong>✅ तथ्य:</strong> PCOS एक आजीवन हार्मोनल स्थिति है। गर्भावस्था अस्थायी सुधार कर सकती है, लेकिन प्रवृत्ति बनी रहती है।"><strong>✅ FACT:</strong> PCOS is lifelong. Pregnancy may temporarily improve symptoms, but the condition remains.</div>
-      </div>
-      <div class="myth-box">
-        <div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "The birth control pill cures PCOS."' data-hi='<strong>❌ मिथक:</strong> "गर्भनिरोधक गोली PCOS ठीक कर देती है।"'><strong>❌ MYTH:</strong> "The birth control pill cures PCOS."</div>
-        <div class="myth-fact" data-en="<strong>✅ FACT:</strong> The pill manages symptoms but doesn't cure PCOS. Symptoms often return when the pill is stopped." data-hi="<strong>✅ तथ्य:</strong> गोली लक्षण प्रबंधित करती है, PCOS ठीक नहीं करती। गोली बंद करने पर लक्षण वापस आ जाते हैं।"><strong>✅ FACT:</strong> The pill manages symptoms but doesn't cure PCOS.</div>
-      </div>
+      <div class="myth-box"><div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "You can&apos;t get pregnant with PCOS."' data-hi='<strong>❌ मिथक:</strong> "PCOS के साथ गर्भवती नहीं हो सकते।"'><strong>❌ MYTH:</strong> "You can't get pregnant with PCOS."</div><div class="myth-fact" data-en="<strong>✅ FACT:</strong> Many women with PCOS conceive naturally or with medical support. Fertility can often be restored." data-hi="<strong>✅ तथ्य:</strong> PCOS वाली कई महिलाएं प्राकृतिक रूप से या चिकित्सा सहायता से गर्भवती होती हैं। प्रजनन क्षमता अक्सर बहाल हो सकती है।"><strong>✅ FACT:</strong> Many women with PCOS conceive naturally or with medical support.</div></div>
+      <div class="myth-box"><div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "PCOS only affects overweight women."' data-hi='<strong>❌ मिथक:</strong> "PCOS केवल मोटी महिलाओं को होती है।"'><strong>❌ MYTH:</strong> "PCOS only affects overweight women."</div><div class="myth-fact" data-en="<strong>✅ FACT:</strong> 20-30% of women with PCOS are lean. PCOS affects women of all body types." data-hi="<strong>✅ तथ्य:</strong> PCOS वाली 20-30% महिलाएं पतली होती हैं। यह हर शरीर के प्रकार को प्रभावित करती है।"><strong>✅ FACT:</strong> 20-30% of women with PCOS are lean. It affects all body types.</div></div>
+      <div class="myth-box"><div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "Regular periods mean no PCOS."' data-hi='<strong>❌ मिथक:</strong> "नियमित पीरियड्स हों तो PCOS नहीं हो सकती।"'><strong>❌ MYTH:</strong> "Regular periods mean no PCOS."</div><div class="myth-fact" data-en="<strong>✅ FACT:</strong> Some women with PCOS have regular cycles but still have elevated androgens or polycystic ovaries." data-hi="<strong>✅ तथ्य:</strong> कुछ PCOS महिलाओं के चक्र नियमित होते हैं, फिर भी एंड्रोजेन उच्च या अंडाशय पॉलीसिस्टिक होते हैं।"><strong>✅ FACT:</strong> Some PCOS women have regular cycles but still have elevated androgens or polycystic ovaries.</div></div>
+      <div class="myth-box"><div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "PCOS goes away after pregnancy."' data-hi='<strong>❌ मिथक:</strong> "गर्भावस्था के बाद PCOS ठीक हो जाती है।"'><strong>❌ MYTH:</strong> "PCOS goes away after pregnancy."</div><div class="myth-fact" data-en="<strong>✅ FACT:</strong> PCOS is a lifelong hormonal condition. Pregnancy may temporarily improve symptoms, but the underlying tendency remains." data-hi="<strong>✅ तथ्य:</strong> PCOS एक आजीवन हार्मोनल स्थिति है। गर्भावस्था अस्थायी सुधार कर सकती है, लेकिन प्रवृत्ति बनी रहती है।"><strong>✅ FACT:</strong> PCOS is lifelong. Pregnancy may temporarily improve symptoms, but the condition remains.</div></div>
+      <div class="myth-box"><div class="myth-myth" data-en='<strong>❌ MYTH:</strong> "The birth control pill cures PCOS."' data-hi='<strong>❌ मिथक:</strong> "गर्भनिरोधक गोली PCOS ठीक कर देती है।"'><strong>❌ MYTH:</strong> "The birth control pill cures PCOS."</div><div class="myth-fact" data-en="<strong>✅ FACT:</strong> The pill manages symptoms but doesn't cure PCOS. Symptoms often return when the pill is stopped." data-hi="<strong>✅ तथ्य:</strong> गोली लक्षण प्रबंधित करती है, PCOS ठीक नहीं करती। गोली बंद करने पर लक्षण वापस आ जाते हैं।"><strong>✅ FACT:</strong> The pill manages symptoms but doesn't cure PCOS.</div></div>
     </div>
   </div>
 
@@ -442,42 +482,86 @@
 
 </div>
 
+<!-- ══════ FOOTER ═════════════════════════════════════════════════════ -->
 <footer>
   <div class="footer-logo">🌸 OvaTrack</div>
+  <ul class="footer-links">
+    {% if logged_in %}
+      <li><span>👤 {{ user_name }}</span></li>
+      <li><a href="/app"    data-en="Go to App" data-hi="ऐप पर जाएं">Go to App</a></li>
+      <li><a href="/logout" data-en="Log Out"   data-hi="लॉग आउट">Log Out</a></li>
+    {% else %}
+      <li><a href="/login"    data-en="Log In"  data-hi="लॉगिन">Log In</a></li>
+      <li><a href="/register" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></li>
+    {% endif %}
+  </ul>
+  <button class="go-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    ↑ <span data-en="Back to Top" data-hi="ऊपर जाएं">Back to Top</span>
+  </button>
   <div class="footer-copy">© 2025 OvaTrack. Built for PCOS Awareness.</div>
 </footer>
 
 <script>
-// ══ LANGUAGE SYSTEM — learn_pcos.html ═══════════════════════════════════
+// ── THEME ────────────────────────────────────────────────────────────
+var isDark = localStorage.getItem('ova-theme') === 'dark';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.querySelectorAll('#theme-btn,#theme-btn-mobile').forEach(function(b){
+    if(b) b.textContent = isDark ? '☀️' : '🌙';
+  });
+}
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+applyTheme();
+
+// ── LANGUAGE ─────────────────────────────────────────────────────────
 function applyLang(lang) {
   localStorage.setItem('ova-lang', lang);
-
-  // Sync toggle buttons
   document.querySelectorAll('.lang-btn').forEach(function(btn, i) {
-    btn.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'hi' && i === 1));
+    btn.classList.toggle('active', (lang==='en' && i%2===0) || (lang==='hi' && i%2===1));
   });
-
-  // Apply translation to every element that has data-en attribute
   document.querySelectorAll('[data-en]').forEach(function(el) {
     var translation = el.getAttribute('data-' + lang);
-    if (translation) {
-      el.innerHTML = translation;
-    }
+    if (translation) el.innerHTML = translation;
   });
-
   document.documentElement.setAttribute('lang', lang === 'hi' ? 'hi' : 'en');
 }
-
-function setLang(lang) {
-  applyLang(lang);
-}
-
-// On page load: apply saved language (so it persists from landing page)
+function setLang(lang) { applyLang(lang); }
 document.addEventListener('DOMContentLoaded', function() {
-  var savedLang = localStorage.getItem('ova-lang') || 'en';
-  applyLang(savedLang);
+  applyLang(localStorage.getItem('ova-lang') || 'en');
+});
+
+// ── HAMBURGER ─────────────────────────────────────────────────────────
+function toggleMenu() {
+  var menu = document.getElementById('mobile-menu');
+  var ham  = document.getElementById('hamburger');
+  var open = menu.classList.contains('open');
+  if (open) { menu.classList.remove('open'); ham.classList.remove('open'); }
+  else       { menu.classList.add('open');    ham.classList.add('open'); }
+}
+function closeMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('mobile-menu');
+  var ham  = document.getElementById('hamburger');
+  if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !ham.contains(e.target)) {
+    closeMenu();
+  }
+});
+
+// ── SMOOTH SCROLL ─────────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    var t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
 });
 </script>
-
 </body>
 </html>

@@ -6,910 +6,401 @@
   <title>OvaTrack – AI-Powered Women's Health</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ═══ CSS VARIABLES — LIGHT & DARK ══════════════════════════════════ */
     :root {
-      --teal:         #3bbfa3;
-      --teal-dark:    #2a9980;
-      --teal-light:   #e0f5f1;
-      --orange:       #f26e3f;
-      --plum:         #2d2d3a;
-
-      --bg:           #f8fffe;
-      --bg2:          #ffffff;
-      --bg3:          #f0faf8;
-      --nav-bg:       rgba(255,255,255,0.93);
-      --text:         #1a1a2e;
-      --muted:        #6b7280;
-      --border:       #e5e7eb;
-      --card-shadow:  0 4px 24px rgba(0,0,0,0.07);
-
-      --dark-section: #2d2d3a;
-      --dark-text:    #ffffff;
+      --teal:#3bbfa3;--teal-dark:#2a9980;--teal-light:#e0f5f1;
+      --orange:#f26e3f;--plum:#2d2d3a;
+      --bg:#f8fffe;--bg2:#ffffff;--bg3:#f0faf8;
+      --nav-bg:rgba(255,255,255,0.93);
+      --text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;
+      --card-shadow:0 4px 24px rgba(0,0,0,0.07);
+      --dark-section:#2d2d3a;--dark-text:#ffffff;
     }
-
     [data-theme="dark"] {
-      --bg:          #111827;
-      --bg2:         #1f2937;
-      --bg3:         #1a2332;
-      --nav-bg:      rgba(17,24,39,0.95);
-      --text:        #f3f4f6;
-      --muted:       #9ca3af;
-      --border:      #374151;
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.3);
-      --teal-light:  #0d3d35;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    /* ═══ NAVBAR ══════════════════════════════════════════════════════════ */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      height: 66px;
-      padding: 0 5%;
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--nav-bg);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 1px 20px rgba(0,0,0,0.06);
-      transition: background 0.3s, border-color 0.3s;
-    }
-
-    .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none;
-    }
-    .nav-logo-icon {
-      width: 38px; height: 38px;
-      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
-    }
-    .nav-logo-text {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px; color: var(--text);
-      transition: color 0.3s;
-    }
-
-    .nav-center {
-      display: flex; gap: 36px; list-style: none;
-    }
-    .nav-center a {
-      text-decoration: none; color: var(--muted);
-      font-size: 14px; font-weight: 500;
-      transition: color 0.2s;
-    }
-    .nav-center a:hover { color: var(--teal-dark); }
-
-    .nav-right {
-      display: flex; align-items: center; gap: 10px;
-    }
-
-    /* Language toggle */
-    .lang-toggle {
-      display: flex; gap: 2px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 3px;
-      transition: background 0.3s;
-    }
-    .lang-btn {
-      padding: 4px 12px;
-      border-radius: 50px; border: none;
-      background: transparent;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px; font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: var(--teal);
-      color: white;
-    }
-
-    /* Dark mode toggle */
-    .theme-btn {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: var(--bg2);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 17px;
-      transition: all 0.25s;
-      color: var(--text);
-    }
-    .theme-btn:hover {
-      border-color: var(--teal);
-      background: var(--teal-light);
-    }
-
-    /* Get Started nav button */
-    .nav-start-btn {
-      padding: 9px 20px;
-      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
-      color: white;
-      border: none; border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; text-decoration: none;
-      transition: all 0.25s;
-      box-shadow: 0 3px 12px rgba(59,191,163,0.35);
-    }
-    .nav-start-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(59,191,163,0.45);
-    }
-
-    /* ═══ HERO ═══════════════════════════════════════════════════════════ */
-    .hero {
-      min-height: 100vh;
-      padding: 66px 5% 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: stretch;
-      gap: 0;
-      background: var(--bg);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-bg-blob {
-      position: absolute; pointer-events: none;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.18;
-    }
-    .blob1 {
-      width: 500px; height: 500px;
-      background: var(--teal);
-      top: -100px; right: -100px;
-    }
-    .blob2 {
-      width: 350px; height: 350px;
-      background: #f26e3f;
-      bottom: -60px; left: -60px;
-    }
-
-    .hero-content { position: relative; z-index: 2; }
-
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--teal-light);
-      color: var(--teal-dark);
-      font-size: 11px; font-weight: 700;
-      padding: 6px 14px; border-radius: 20px;
-      text-transform: uppercase; letter-spacing: 0.6px;
-      margin-bottom: 22px;
-      border: 1px solid rgba(59,191,163,0.3);
-    }
-    .badge-dot {
-      width: 6px; height: 6px;
-      background: var(--teal-dark);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%,100%{ opacity:1; transform:scale(1); }
-      50%{ opacity:0.5; transform:scale(0.7); }
-    }
-
-    .hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(30px, 3.5vw, 50px);
-      color: var(--text);
-      line-height: 1.15;
-      margin-bottom: 20px;
-      transition: color 0.3s;
-    }
-    .hero h1 span { color: var(--teal-dark); }
-
-    .hero-desc {
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 460px;
-      margin-bottom: 34px;
-    }
-
-    .hero-btns {
-      display: flex; gap: 12px; flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-
-    .btn-primary {
-      padding: 14px 30px;
-      background: var(--orange);
-      color: white; border: none; border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px; font-weight: 600;
-      cursor: pointer; text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 6px 24px rgba(242,110,63,0.35);
-      transition: all 0.25s;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(242,110,63,0.45);
-    }
-
-    .btn-outline {
-      padding: 14px 26px;
-      background: transparent;
-      color: var(--teal-dark);
-      border: 2px solid var(--teal);
-      border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px; font-weight: 600;
-      cursor: pointer; text-decoration: none;
-      display: inline-block;
-      transition: all 0.25s;
-    }
-    .btn-outline:hover {
-      background: var(--teal);
-      color: white;
-    }
-
-    .hero-trust {
-      display: flex; gap: 12px; flex-wrap: wrap;
-    }
-    .trust-chip {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 6px 14px; border-radius: 50px;
-      font-size: 12px; color: var(--muted);
-      transition: background 0.3s, border-color 0.3s;
-    }
-
-    /* Hero Image */
-    .hero-img-side {
-      position: relative; z-index: 2;
-      display: flex; align-items: center; justify-content: center;
-      padding: 40px 5% 40px 0;
-    }
-
-    .hero-photo-wrap {
-      position: relative;
-      max-width: 520px; width: 100%;
-    }
-
-    .hero-photo {
-      width: 100%;
-      border-radius: 24px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.14);
-      display: block;
-      object-fit: cover;
-    }
-
-    /* Floating chips on the photo */
-    .photo-chip {
-      position: absolute;
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(8px);
-      padding: 9px 16px;
-      border-radius: 50px;
-      font-size: 13px; font-weight: 600;
-      color: var(--teal-dark);
-      border: 1px solid rgba(59,191,163,0.25);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-      white-space: nowrap;
-      animation: floatChip 3s ease-in-out infinite;
-    }
-    .chip-dot {
-      width: 8px; height: 8px;
-      background: var(--teal);
-      border-radius: 50%;
-      animation: pulse 1.8s infinite;
-    }
-
-    .chip1 { top: 18%;  right: -18px; animation-delay: 0s; }
-    .chip2 { top: 42%;  right: -22px; animation-delay: 0.6s; }
-    .chip3 { top: 66%;  right: -16px; animation-delay: 1.2s; }
-
-    @keyframes floatChip {
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-6px); }
-    }
-
-    .photo-bottom-tag {
-      position: absolute;
-      bottom: -16px; left: 50%; transform: translateX(-50%);
-      background: white;
-      border: 1px solid var(--border);
-      padding: 9px 22px; border-radius: 50px;
-      font-size: 13px; font-weight: 600; color: var(--plum);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-      white-space: nowrap;
-    }
-
-    /* ═══ STAT STRIP ══════════════════════════════════════════════════════ */
-    .stat-strip {
-      margin-top: 32px;
-      background: var(--teal-dark);
-      color: white;
-      padding: 20px 5%;
-      display: flex; justify-content: center; align-items: center;
-      gap: 60px; flex-wrap: wrap;
-    }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-family: 'DM Serif Display', serif;
-      font-size: 26px; line-height: 1;
-    }
-    .stat-lbl { font-size: 12px; opacity: 0.75; margin-top: 3px; }
-
-    /* ═══ SECTIONS SHARED ═════════════════════════════════════════════════ */
-    .section { padding: 80px 5%; background: var(--bg); transition: background 0.3s; }
-    .section-alt { background: var(--bg3); }
-
-    .sec-badge {
-      display: inline-block;
-      background: var(--teal-light);
-      color: var(--teal-dark);
-      font-size: 11px; font-weight: 700;
-      padding: 4px 14px; border-radius: 20px;
-      text-transform: uppercase; letter-spacing: 0.8px;
-      margin-bottom: 12px;
-    }
-
-    .sec-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(24px, 3vw, 38px);
-      color: var(--text);
-      margin-bottom: 10px;
-      transition: color 0.3s;
-    }
-
-    .sec-sub {
-      font-size: 15px; color: var(--muted);
-      line-height: 1.65; max-width: 540px;
-      margin-bottom: 48px;
-    }
-
-    /* ═══ PCOS SYMPTOMS SECTION ═══════════════════════════════════════════ */
-    .symptoms-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
-    }
-
-    .symptom-intro h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(24px, 2.5vw, 36px);
-      color: var(--text); line-height: 1.25;
-      margin-bottom: 16px;
-    }
-    .symptom-intro h2 em { color: var(--teal-dark); font-style: italic; }
-    .symptom-intro p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
-
-    .relate-chips {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin-bottom: 28px;
-    }
-    .relate-chip {
-      padding: 7px 16px;
-      background: var(--bg2);
-      border: 1.5px solid var(--border);
-      border-radius: 50px;
-      font-size: 13px; color: var(--text);
-      font-weight: 500;
-      transition: all 0.2s;
-      cursor: default;
-    }
-    .relate-chip:hover {
-      border-color: var(--teal);
-      background: var(--teal-light);
-      color: var(--teal-dark);
-    }
-
-    .symptoms-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .sym-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
-      display: flex; flex-direction: column; gap: 8px;
-      transition: all 0.3s;
-      box-shadow: var(--card-shadow);
-    }
-    .sym-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--teal);
-      box-shadow: 0 8px 28px rgba(59,191,163,0.15);
-    }
-
-    .sym-icon { font-size: 26px; }
-    .sym-name {
-      font-size: 14px; font-weight: 600;
-      color: var(--text);
-    }
-    .sym-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-    /* ═══ FEATURES ════════════════════════════════════════════════════════ */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 22px;
-    }
-
-    .feat-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      position: relative; overflow: hidden;
-      box-shadow: var(--card-shadow);
-      transition: all 0.3s;
-    }
-    .feat-card::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--teal), var(--teal-dark));
-      transform: scaleX(0); transform-origin: left;
-      transition: transform 0.35s;
-    }
-    .feat-card:hover { transform: translateY(-5px); box-shadow: 0 16px 44px rgba(0,0,0,0.10); }
-    .feat-card:hover::after { transform: scaleX(1); }
-
-    .feat-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; margin-bottom: 18px;
-    }
-    .fi-teal   { background: var(--teal-light); }
-    .fi-orange { background: #fff1eb; }
-    .fi-purple { background: #f0e8ff; }
-    .fi-blue   { background: #e8f0ff; }
-    .fi-green  { background: #e8f5e9; }
-    .fi-pink   { background: #fce4ec; }
-
-    .feat-card h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 18px; color: var(--text);
-      margin-bottom: 8px;
-    }
-    .feat-card p { font-size: 13px; color: var(--muted); line-height: 1.65; }
-
-    /* ═══ CHATBOT FEATURE SECTION ════════════════════════════════════════ */
-    .chat-section {
-      padding: 80px 5%;
-      background: var(--bg3);
-    }
-
-    .chat-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 52px;
-      align-items: center;
-    }
-
-    .chat-preview {
-      background: var(--bg2);
-      border-radius: 24px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.10);
-    }
-
-    .chat-header-bar {
-      padding: 16px 18px;
-      background: linear-gradient(135deg, #e8537a, #5c3272);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .chat-avatar {
-      width: 32px; height: 32px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
-    }
-    .chat-title { font-size: 13px; font-weight: 600; color: white; }
-    .chat-status { font-size: 11px; color: rgba(255,255,255,0.7); }
-
-    .chat-body { padding: 16px; background: #fdf7f2; display: flex; flex-direction: column; gap: 10px; }
-
-    .chat-msg-ai {
-      align-self: flex-start;
-      max-width: 80%;
-      background: white;
-      border: 1px solid #e8ddef;
-      border-radius: 12px 12px 12px 4px;
-      padding: 10px 14px;
-      font-size: 13px; line-height: 1.55; color: #2a1a30;
-    }
-    .chat-msg-user {
-      align-self: flex-end;
-      max-width: 80%;
-      background: linear-gradient(135deg, #e8537a, #5c3272);
-      border-radius: 12px 12px 4px 12px;
-      padding: 10px 14px;
-      font-size: 13px; color: white; line-height: 1.5;
-    }
-
-    .chat-info h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(22px, 2.5vw, 32px);
-      color: var(--text); margin-bottom: 14px;
-      line-height: 1.25;
-    }
-    .chat-info h3 em { color: var(--teal-dark); font-style: italic; }
-    .chat-info p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
-
-    .chat-bullets {
-      display: flex; flex-direction: column; gap: 10px;
-      margin-bottom: 28px;
-    }
-    .chat-bullet {
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: 14px; color: var(--text); line-height: 1.5;
-    }
-    .bullet-icon {
-      width: 26px; height: 26px; flex-shrink: 0;
-      background: var(--teal-light);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; color: var(--teal-dark);
-    }
-
-    /* ═══ CHARTS / MOOD SECTION ══════════════════════════════════════════ */
-    .charts-section {
-      padding: 80px 5%;
-      background: var(--bg);
-    }
-
-    .charts-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 52px;
-      align-items: center;
-    }
-
-    .charts-info { order: 2; }
-    .charts-visual { order: 1; }
-
-    .charts-info h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(22px, 2.5vw, 32px);
-      color: var(--text); margin-bottom: 14px;
-    }
-    .charts-info h3 em { color: var(--teal-dark); font-style: italic; }
-    .charts-info p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
-
-    /* Mini chart mockup */
-    .chart-mockup {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: var(--card-shadow);
-    }
-
-    .chart-mockup-title {
-      font-size: 12px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.6px;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
-    .mood-bar-row {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
-    }
-    .mood-day { font-size: 11px; color: var(--muted); width: 28px; flex-shrink: 0; }
-    .mood-bar-track {
-      flex: 1; height: 28px;
-      background: var(--bg3);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .mood-bar-fill {
-      height: 100%;
-      border-radius: 8px;
-      display: flex; align-items: center; padding-left: 10px;
-      font-size: 11px; color: white; font-weight: 600;
-      transition: width 1s ease;
-    }
-    .mood-emoji { font-size: 14px; margin-left: 6px; }
-
-    .symptom-dots {
-      display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap;
-    }
-    .sym-dot {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 11px; color: var(--muted);
-    }
-    .dot {
-      width: 10px; height: 10px; border-radius: 50%;
-    }
-
-    /* Mini line chart */
-    .mini-chart-wrap {
-      margin-top: 16px;
-      background: var(--bg3);
-      border-radius: 12px;
-      padding: 12px;
-    }
-    .mini-chart-label {
-      font-size: 11px; font-weight: 600; color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    /* ═══ PCOS FACTS — DARK SECTION ══════════════════════════════════════ */
-    .pcos-dark {
-      padding: 80px 5%;
-      background: var(--dark-section);
-      color: var(--dark-text);
-      text-align: center;
-    }
-
-    .pcos-dark h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(26px, 3vw, 42px);
-      color: white;
-      line-height: 1.25;
-      margin-bottom: 14px;
-    }
-    .pcos-dark h2 span { color: var(--teal); }
-
-    .pcos-dark > p {
-      font-size: 15px;
-      color: rgba(255,255,255,0.65);
-      max-width: 520px; margin: 0 auto 48px;
-      line-height: 1.7;
-    }
-
-    /* PCOS SYMPTOMS LIST in dark section */
-    .pcos-symptoms-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      max-width: 900px;
-      margin: 0 auto 52px;
-    }
-
-    .pcos-sym-item {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px;
-      padding: 20px 18px;
-      text-align: left;
-      transition: all 0.3s;
-    }
-    .pcos-sym-item:hover {
-      background: rgba(59,191,163,0.12);
-      border-color: rgba(59,191,163,0.4);
-    }
-    .pcos-sym-emoji { font-size: 24px; margin-bottom: 8px; display: block; }
-    .pcos-sym-name { font-size: 14px; font-weight: 600; color: white; margin-bottom: 4px; }
-    .pcos-sym-desc { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.5; }
-
-    .facts-row {
-      display: flex; justify-content: center; gap: 52px; flex-wrap: wrap;
-      padding-top: 40px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-    .fact-item { text-align: center; }
-    .fact-num {
-      font-family: 'DM Serif Display', serif;
-      font-size: 40px; color: var(--teal); line-height: 1;
-    }
-    .fact-desc { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 6px; }
-
-    /* ═══ FAQ ═════════════════════════════════════════════════════════════ */
-    .faq-section { padding: 80px 5%; background: var(--bg); }
-    .faq-wrap { max-width: 720px; margin: 52px auto 0; }
-
-    .faq-item { border-bottom: 1px solid var(--border); }
-
-    .faq-q {
-      width: 100%; padding: 20px 0;
-      display: flex; align-items: center; justify-content: space-between;
-      background: transparent; border: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px; font-weight: 600;
-      color: var(--text); cursor: pointer; text-align: left; gap: 16px;
-      transition: color 0.2s;
-    }
-    .faq-q:hover { color: var(--teal-dark); }
-
-    .faq-icon {
-      width: 28px; height: 28px; flex-shrink: 0;
-      background: var(--teal-light); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; color: var(--teal-dark);
-      transition: transform 0.3s;
-    }
-
-    .faq-a {
-      max-height: 0; overflow: hidden;
-      transition: max-height 0.35s ease;
-      font-size: 14px; color: var(--muted); line-height: 1.7;
-    }
-    .faq-a.open { max-height: 200px; padding-bottom: 18px; }
-    .faq-item.open .faq-icon { transform: rotate(45deg); }
-
-    /* ═══ CTA SECTION ═════════════════════════════════════════════════════ */
-    .cta-section {
-      padding: 80px 5%;
-      background: linear-gradient(135deg, var(--teal-dark), #1d7a66);
-      text-align: center; color: white;
-    }
-    .cta-section h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(26px, 3vw, 40px);
-      margin-bottom: 14px;
-    }
-    .cta-section p {
-      font-size: 15px; opacity: 0.82;
-      max-width: 460px; margin: 0 auto 36px; line-height: 1.65;
-    }
-    .cta-btn {
-      padding: 16px 40px;
-      background: var(--orange); color: white;
-      border: none; border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px; font-weight: 700;
-      cursor: pointer; text-decoration: none; display: inline-block;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.22);
-      transition: all 0.25s;
-    }
-    .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.3); }
-
-    /* ═══ FOOTER ══════════════════════════════════════════════════════════ */
-    footer {
-      padding: 36px 5%;
-      background: var(--plum);
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 16px;
-    }
-    .footer-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px; color: white;
-    }
-    .footer-links {
-      display: flex; gap: 24px; list-style: none;
-    }
-    .footer-links a {
-      color: rgba(255,255,255,0.55);
-      text-decoration: none; font-size: 13px;
-    }
-    .footer-links a:hover { color: var(--teal); }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); }
-
-    /* ═══ RESPONSIVE ══════════════════════════════════════════════════════ */
-    .step-card {
-      text-align: center;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 28px 20px;
-      box-shadow: var(--card-shadow);
-      transition: all 0.3s;
-    }
-    .step-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.10); }
-
-    @media (max-width: 860px) {
-      .hero { grid-template-columns: 1fr; text-align: center; }
-      .hero p, .hero-desc { margin-left: auto; margin-right: auto; }
-      .hero-btns { justify-content: center; }
-      .hero-trust { justify-content: center; }
-      .hero-img-side { justify-content: center; order: -1; }
-      .hero-photo-wrap { max-width: 340px; }
-      .chip1,.chip2,.chip3 { display: none; }
-
-      .symptoms-layout,
-      .chat-layout,
-      .charts-layout { grid-template-columns: 1fr; }
-      .charts-info { order: 1; }
-      .charts-visual { order: 2; }
-
-      .nav-center { display: none; }
-      .stat-strip { gap: 28px; }
-      .facts-row { gap: 28px; }
-      footer { flex-direction: column; text-align: center; }
-      .footer-links { justify-content: center; }
-    }
-
-    @media (max-width: 480px) {
-      .pcos-symptoms-list { grid-template-columns: 1fr 1fr; }
-      .symptoms-grid { grid-template-columns: 1fr 1fr; }
+      --bg:#111827;--bg2:#1f2937;--bg3:#1a2332;
+      --nav-bg:rgba(17,24,39,0.95);
+      --text:#f3f4f6;--muted:#9ca3af;--border:#374151;
+      --card-shadow:0 4px 24px rgba(0,0,0,0.3);
+      --teal-light:#0d3d35;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .3s,color .3s}
+
+    /* ═══ NAVBAR ══════════════════════════════════════════════════════ */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      height:66px;padding:0 5%;
+      display:flex;align-items:center;justify-content:space-between;
+      background:var(--nav-bg);backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 1px 20px rgba(0,0,0,0.06);
+      transition:background .3s,border-color .3s;
+    }
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .nav-logo-text{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);transition:color .3s}
+    .nav-center{display:flex;gap:36px;list-style:none}
+    .nav-center a{text-decoration:none;color:var(--muted);font-size:14px;font-weight:500;transition:color .2s}
+    .nav-center a:hover{color:var(--teal-dark)}
+    .nav-right{display:flex;align-items:center;gap:10px}
+    .lang-toggle{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:50px;padding:3px;transition:background .3s}
+    .lang-btn{padding:4px 12px;border-radius:50px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+    .lang-btn.active{background:var(--teal);color:white}
+    .theme-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .25s;color:var(--text)}
+    .theme-btn:hover{border-color:var(--teal);background:var(--teal-light)}
+    .nav-start-btn{padding:9px 20px;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .25s;box-shadow:0 3px 12px rgba(59,191,163,0.35);white-space:nowrap}
+    .nav-start-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,191,163,0.45)}
+
+    /* ── HAMBURGER BUTTON (mobile only) ── */
+    .hamburger{
+      display:none;
+      flex-direction:column;justify-content:center;align-items:center;gap:5px;
+      width:38px;height:38px;border-radius:10px;
+      border:1.5px solid var(--border);background:var(--bg2);
+      cursor:pointer;padding:0;transition:all .25s;
+    }
+    .hamburger span{
+      display:block;width:18px;height:2px;
+      background:var(--text);border-radius:2px;transition:all .3s;
+    }
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    /* ── MOBILE MENU DRAWER ── */
+    .mobile-menu{
+      display:none;
+      position:fixed;top:66px;left:0;right:0;z-index:199;
+      background:var(--nav-bg);backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+      padding:20px 5% 24px;
+      flex-direction:column;gap:0;
+      box-shadow:0 8px 30px rgba(0,0,0,.12);
+      transition:background .3s;
+    }
+    .mobile-menu.open{display:flex}
+
+    /* Nav links in mobile menu */
+    .mobile-nav-links{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:16px}
+    .mobile-nav-links a{
+      display:block;padding:12px 0;
+      color:var(--text);text-decoration:none;font-size:15px;font-weight:500;
+      border-bottom:1px solid var(--border);transition:color .2s;
+    }
+    .mobile-nav-links a:hover{color:var(--teal-dark)}
+    .mobile-nav-links li:last-child a{border-bottom:none}
+
+    /* Controls row in mobile menu */
+    .mobile-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+    .mobile-cta{
+      flex:1;text-align:center;padding:12px 20px;
+      background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+      color:white;border:none;border-radius:50px;
+      font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+      cursor:pointer;text-decoration:none;display:block;
+      box-shadow:0 3px 12px rgba(59,191,163,0.35);
+    }
+
+    /* ═══ HERO ═══════════════════════════════════════════════════════ */
+    .hero{
+      min-height:100vh;padding:66px 5% 0;
+      display:grid;grid-template-columns:1fr 1fr;
+      align-items:stretch;gap:0;
+      background:var(--bg);position:relative;overflow:hidden;
+    }
+    .hero-bg-blob{position:absolute;pointer-events:none;border-radius:50%;filter:blur(80px);opacity:.18}
+    .blob1{width:500px;height:500px;background:var(--teal);top:-100px;right:-100px}
+    .blob2{width:350px;height:350px;background:#f26e3f;bottom:-60px;left:-60px}
+    .hero-content{position:relative;z-index:2}
+    .hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:700;padding:6px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:22px;border:1px solid rgba(59,191,163,.3)}
+    .badge-dot{width:6px;height:6px;background:var(--teal-dark);border-radius:50%;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+    .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,3.5vw,50px);color:var(--text);line-height:1.15;margin-bottom:20px;transition:color .3s}
+    .hero h1 span{color:var(--teal-dark)}
+    .hero-desc{font-size:15px;color:var(--muted);line-height:1.75;max-width:460px;margin-bottom:34px}
+    .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+    .btn-primary{padding:14px 30px;background:var(--orange);color:white;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;box-shadow:0 6px 24px rgba(242,110,63,.35);transition:all .25s}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(242,110,63,.45)}
+    .btn-outline{padding:14px 26px;background:transparent;color:var(--teal-dark);border:2px solid var(--teal);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all .25s}
+    .btn-outline:hover{background:var(--teal);color:white}
+    .hero-trust{display:flex;gap:12px;flex-wrap:wrap}
+    .trust-chip{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:6px 14px;border-radius:50px;font-size:12px;color:var(--muted);transition:background .3s,border-color .3s}
+    .hero-img-side{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:40px 5% 40px 0}
+    .hero-photo-wrap{position:relative;max-width:520px;width:100%}
+    .hero-photo{width:100%;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.14);display:block;object-fit:cover}
+    .photo-chip{position:absolute;display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:9px 16px;border-radius:50px;font-size:13px;font-weight:600;color:var(--teal-dark);border:1px solid rgba(59,191,163,.25);box-shadow:0 4px 16px rgba(0,0,0,.1);white-space:nowrap;animation:floatChip 3s ease-in-out infinite}
+    .chip-dot{width:8px;height:8px;background:var(--teal);border-radius:50%;animation:pulse 1.8s infinite}
+    .chip1{top:18%;right:-18px;animation-delay:0s}
+    .chip2{top:42%;right:-22px;animation-delay:.6s}
+    .chip3{top:66%;right:-16px;animation-delay:1.2s}
+    @keyframes floatChip{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .photo-bottom-tag{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);background:white;border:1px solid var(--border);padding:9px 22px;border-radius:50px;font-size:13px;font-weight:600;color:var(--plum);box-shadow:0 4px 16px rgba(0,0,0,.1);white-space:nowrap}
+
+    /* ═══ STAT STRIP ════════════════════════════════════════════════ */
+    .stat-strip{margin-top:32px;background:var(--teal-dark);color:white;padding:20px 5%;display:flex;justify-content:center;align-items:center;gap:60px;flex-wrap:wrap}
+    .stat-item{text-align:center}
+    .stat-num{font-family:'DM Serif Display',serif;font-size:26px;line-height:1}
+    .stat-lbl{font-size:12px;opacity:.75;margin-top:3px}
+
+    /* ═══ SECTIONS ══════════════════════════════════════════════════ */
+    .section{padding:80px 5%;background:var(--bg);transition:background .3s}
+    .section-alt{background:var(--bg3)}
+    .sec-badge{display:inline-block;background:var(--teal-light);color:var(--teal-dark);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+    .sec-title{font-family:'DM Serif Display',serif;font-size:clamp(24px,3vw,38px);color:var(--text);margin-bottom:10px;transition:color .3s}
+    .sec-sub{font-size:15px;color:var(--muted);line-height:1.65;max-width:540px;margin-bottom:48px}
+
+    /* SYMPTOMS */
+    .symptoms-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .symptom-intro h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,2.5vw,36px);color:var(--text);line-height:1.25;margin-bottom:16px}
+    .symptom-intro h2 em{color:var(--teal-dark);font-style:italic}
+    .symptom-intro p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+    .relate-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+    .relate-chip{padding:7px 16px;background:var(--bg2);border:1.5px solid var(--border);border-radius:50px;font-size:13px;color:var(--text);font-weight:500;transition:all .2s;cursor:default}
+    .relate-chip:hover{border-color:var(--teal);background:var(--teal-light);color:var(--teal-dark)}
+    .symptoms-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .sym-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:8px;transition:all .3s;box-shadow:var(--card-shadow)}
+    .sym-card:hover{transform:translateY(-3px);border-color:var(--teal);box-shadow:0 8px 28px rgba(59,191,163,.15)}
+    .sym-icon{font-size:26px}
+    .sym-name{font-size:14px;font-weight:600;color:var(--text)}
+    .sym-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+    /* FEATURES */
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+    .feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;position:relative;overflow:hidden;box-shadow:var(--card-shadow);transition:all .3s}
+    .feat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--teal-dark));transform:scaleX(0);transform-origin:left;transition:transform .35s}
+    .feat-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(0,0,0,.1)}
+    .feat-card:hover::after{transform:scaleX(1)}
+    .feat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+    .fi-teal{background:var(--teal-light)}.fi-orange{background:#fff1eb}.fi-purple{background:#f0e8ff}.fi-blue{background:#e8f0ff}.fi-green{background:#e8f5e9}.fi-pink{background:#fce4ec}
+    .feat-card h3{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:8px}
+    .feat-card p{font-size:13px;color:var(--muted);line-height:1.65}
+
+    /* CHAT SECTION */
+    .chat-section{padding:80px 5%;background:var(--bg3)}
+    .chat-layout{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+    .chat-preview{background:var(--bg2);border-radius:24px;border:1px solid var(--border);overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.1)}
+    .chat-header-bar{padding:16px 18px;background:linear-gradient(135deg,#e8537a,#5c3272);display:flex;align-items:center;gap:10px}
+    .chat-avatar{width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .chat-title{font-size:13px;font-weight:600;color:white}
+    .chat-status{font-size:11px;color:rgba(255,255,255,.7)}
+    .chat-body{padding:16px;background:#fdf7f2;display:flex;flex-direction:column;gap:10px}
+    .chat-msg-ai{align-self:flex-start;max-width:80%;background:white;border:1px solid #e8ddef;border-radius:12px 12px 12px 4px;padding:10px 14px;font-size:13px;line-height:1.55;color:#2a1a30}
+    .chat-msg-user{align-self:flex-end;max-width:80%;background:linear-gradient(135deg,#e8537a,#5c3272);border-radius:12px 12px 4px 12px;padding:10px 14px;font-size:13px;color:white;line-height:1.5}
+    .chat-info h3{font-family:'DM Serif Display',serif;font-size:clamp(22px,2.5vw,32px);color:var(--text);margin-bottom:14px;line-height:1.25}
+    .chat-info h3 em{color:var(--teal-dark);font-style:italic}
+    .chat-info p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+    .chat-bullets{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+    .chat-bullet{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text);line-height:1.5}
+    .bullet-icon{width:26px;height:26px;flex-shrink:0;background:var(--teal-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--teal-dark)}
+
+    /* CHARTS */
+    .charts-section{padding:80px 5%;background:var(--bg)}
+    .charts-layout{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+    .charts-info{order:2}.charts-visual{order:1}
+    .charts-info h3{font-family:'DM Serif Display',serif;font-size:clamp(22px,2.5vw,32px);color:var(--text);margin-bottom:14px}
+    .charts-info h3 em{color:var(--teal-dark);font-style:italic}
+    .charts-info p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+    .chart-mockup{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--card-shadow)}
+    .chart-mockup-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:14px}
+    .mood-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .mood-day{font-size:11px;color:var(--muted);width:28px;flex-shrink:0}
+    .mood-bar-track{flex:1;height:28px;background:var(--bg3);border-radius:8px;overflow:hidden}
+    .mood-bar-fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;font-size:11px;color:white;font-weight:600;transition:width 1s ease}
+    .mood-emoji{font-size:14px;margin-left:6px}
+    .symptom-dots{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+    .sym-dot{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .mini-chart-wrap{margin-top:16px;background:var(--bg3);border-radius:12px;padding:12px}
+    .mini-chart-label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px}
+
+    /* PCOS DARK */
+    .pcos-dark{padding:80px 5%;background:var(--dark-section);color:var(--dark-text);text-align:center}
+    .pcos-dark h2{font-family:'DM Serif Display',serif;font-size:clamp(26px,3vw,42px);color:white;line-height:1.25;margin-bottom:14px}
+    .pcos-dark h2 span{color:var(--teal)}
+    .pcos-dark>p{font-size:15px;color:rgba(255,255,255,.65);max-width:520px;margin:0 auto 48px;line-height:1.7}
+    .pcos-symptoms-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:900px;margin:0 auto 52px}
+    .pcos-sym-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px 18px;text-align:left;transition:all .3s}
+    .pcos-sym-item:hover{background:rgba(59,191,163,.12);border-color:rgba(59,191,163,.4)}
+    .pcos-sym-emoji{font-size:24px;margin-bottom:8px;display:block}
+    .pcos-sym-name{font-size:14px;font-weight:600;color:white;margin-bottom:4px}
+    .pcos-sym-desc{font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
+    .facts-row{display:flex;justify-content:center;gap:52px;flex-wrap:wrap;padding-top:40px;border-top:1px solid rgba(255,255,255,.08)}
+    .fact-item{text-align:center}
+    .fact-num{font-family:'DM Serif Display',serif;font-size:40px;color:var(--teal);line-height:1}
+    .fact-desc{font-size:12px;color:rgba(255,255,255,.55);margin-top:6px}
+
+    /* FAQ */
+    .faq-section{padding:80px 5%;background:var(--bg)}
+    .faq-wrap{max-width:720px;margin:52px auto 0}
+    .faq-item{border-bottom:1px solid var(--border)}
+    .faq-q{width:100%;padding:20px 0;display:flex;align-items:center;justify-content:space-between;background:transparent;border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;text-align:left;gap:16px;transition:color .2s}
+    .faq-q:hover{color:var(--teal-dark)}
+    .faq-icon{width:28px;height:28px;flex-shrink:0;background:var(--teal-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--teal-dark);transition:transform .3s}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;font-size:14px;color:var(--muted);line-height:1.7}
+    .faq-a.open{max-height:200px;padding-bottom:18px}
+    .faq-item.open .faq-icon{transform:rotate(45deg)}
+
+    /* CTA */
+    .cta-section{padding:80px 5%;background:linear-gradient(135deg,var(--teal-dark),#1d7a66);text-align:center;color:white}
+    .cta-section h2{font-family:'DM Serif Display',serif;font-size:clamp(26px,3vw,40px);margin-bottom:14px}
+    .cta-section p{font-size:15px;opacity:.82;max-width:460px;margin:0 auto 36px;line-height:1.65}
+    .cta-btn{padding:16px 40px;background:var(--orange);color:white;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;box-shadow:0 8px 28px rgba(0,0,0,.22);transition:all .25s}
+    .cta-btn:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.3)}
+
+    /* FOOTER */
+    footer{padding:36px 5%;background:var(--plum);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-logo{font-family:'DM Serif Display',serif;font-size:20px;color:white}
+    .footer-links{display:flex;gap:24px;list-style:none;align-items:center;flex-wrap:wrap}
+    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:13px}
+    .footer-links a:hover{color:var(--teal)}
+    .footer-links span{color:rgba(255,255,255,.7);font-size:13px}
+    .footer-copy{font-size:12px;color:rgba(255,255,255,.35)}
+
+    /* Go to Top */
+    .go-top-btn{
+      display:flex;align-items:center;gap:6px;
+      padding:8px 18px;border-radius:50px;
+      border:1.5px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.08);
+      color:rgba(255,255,255,.75);
+      font-family:'DM Sans',sans-serif;
+      font-size:13px;font-weight:500;
+      cursor:pointer;transition:all .25s;
+    }
+    .go-top-btn:hover{background:rgba(59,191,163,.25);border-color:var(--teal);color:white}
+
+    /* HOW IT WORKS */
+    .step-card{text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:28px 20px;box-shadow:var(--card-shadow);transition:all .3s}
+    .step-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.1)}
+
+    /* ═══ RESPONSIVE ════════════════════════════════════════════════ */
+    @media(max-width:860px){
+      /* Show hamburger, hide desktop nav & CTA */
+      .hamburger{display:flex}
+      .nav-center{display:none}
+      .nav-right .lang-toggle,
+      .nav-right .theme-btn,
+      .nav-right .nav-start-btn{display:none}
+
+      /* Hero */
+      .hero{grid-template-columns:1fr;text-align:center}
+      .hero p,.hero-desc{margin-left:auto;margin-right:auto}
+      .hero-btns{justify-content:center}
+      .hero-trust{justify-content:center}
+      .hero-img-side{justify-content:center;order:-1}
+      .hero-photo-wrap{max-width:340px}
+      .chip1,.chip2,.chip3{display:none}
+
+      .symptoms-layout,.chat-layout,.charts-layout{grid-template-columns:1fr}
+      .charts-info{order:1}.charts-visual{order:2}
+      .stat-strip{gap:28px}
+      .facts-row{gap:28px}
+      footer{flex-direction:column;text-align:center;align-items:center}
+      .footer-links{justify-content:center}
+    }
+
+    @media(max-width:480px){
+      .pcos-symptoms-list{grid-template-columns:1fr 1fr}
+      .symptoms-grid{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
 <body>
 
-<!-- ══════ NAVBAR ═══════════════════════════════════════════════════════ -->
+<!-- ══════ NAVBAR ════════════════════════════════════════════════════ -->
 <nav>
   <a href="/" class="nav-logo">
     <div class="nav-logo-icon">🌸</div>
     <span class="nav-logo-text">OvaTrack</span>
   </a>
 
+  <!-- Desktop center links -->
   <ul class="nav-center">
     <li><a href="#features" data-en="Features" data-hi="फीचर्स">Features</a></li>
-    <li><a href="#chatbot" data-en="AI Chatbot" data-hi="AI चैटबॉट">AI Chatbot</a></li>
-    <li><a href="#faq" data-en="FAQ" data-hi="सवाल">FAQ</a></li>
+    <li><a href="#chatbot"  data-en="AI Chatbot" data-hi="AI चैटबॉट">AI Chatbot</a></li>
+    <li><a href="#faq"      data-en="FAQ" data-hi="सवाल">FAQ</a></li>
     <li><a href="/learn-pcos" data-en="Learn About PCOS" data-hi="PCOS के बारे में जानें">Learn About PCOS</a></li>
   </ul>
 
+  <!-- Desktop right controls -->
   <div class="nav-right">
-    <!-- Language Toggle -->
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
       <button class="lang-btn" onclick="setLang('hi')">हिं</button>
     </div>
-
-    <!-- Dark/Light Mode Toggle -->
     <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle dark mode">🌙</button>
-      
     {% if logged_in %}
       <a href="/app" class="nav-start-btn" data-en="Go to App →" data-hi="ऐप पर जाएं →">Go to App →</a>
     {% else %}
       <a href="/register" class="nav-start-btn" data-en="Get Started Free" data-hi="मुफ्त शुरू करें">Get Started Free</a>
     {% endif %}
-
   </div>
+
+  <!-- Mobile hamburger -->
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- ══════ HERO ════════════════════════════════════════════════════════ -->
+<!-- ══════ MOBILE MENU DRAWER ════════════════════════════════════════ -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul class="mobile-nav-links">
+    <li><a href="#features" onclick="closeMenu()" data-en="Features" data-hi="फीचर्स">Features</a></li>
+    <li><a href="#chatbot"  onclick="closeMenu()" data-en="AI Chatbot" data-hi="AI चैटबॉट">AI Chatbot</a></li>
+    <li><a href="#faq"      onclick="closeMenu()" data-en="FAQ" data-hi="सवाल">FAQ</a></li>
+    <li><a href="/learn-pcos" data-en="Learn About PCOS" data-hi="PCOS के बारे में जानें">Learn About PCOS</a></li>
+    {% if logged_in %}
+      <li><a href="/app"    data-en="Go to App →" data-hi="ऐप पर जाएं →">Go to App →</a></li>
+      <li><a href="/logout" data-en="Log Out" data-hi="लॉग आउट">Log Out</a></li>
+    {% else %}
+      <li><a href="/login"    data-en="Log In" data-hi="लॉगिन">Log In</a></li>
+      <li><a href="/register" data-en="Sign Up Free" data-hi="मुफ्त साइन अप">Sign Up Free</a></li>
+    {% endif %}
+  </ul>
+  <div class="mobile-controls">
+    <!-- Language toggle -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('hi')">हिं</button>
+    </div>
+    <!-- Theme toggle -->
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn-mobile">🌙</button>
+    <!-- CTA -->
+    {% if logged_in %}
+      <a href="/app" class="mobile-cta" data-en="Go to Dashboard →" data-hi="डैशबोर्ड पर जाएं →">Go to Dashboard →</a>
+    {% else %}
+      <a href="/register" class="mobile-cta" data-en="Get Started Free" data-hi="मुफ्त शुरू करें">Get Started Free</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══════ HERO ════════════════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-bg-blob blob1"></div>
   <div class="hero-bg-blob blob2"></div>
 
-  <div class="hero-content" style="padding: 80px 0 80px 5%;">
+  <div class="hero-content" style="padding:80px 0 80px 5%">
     <div class="hero-badge">
       <div class="badge-dot"></div>
       <span data-en="🔬 Clinically-Backed AI Platform" data-hi="🔬 क्लिनिकली-समर्थित AI प्लेटफॉर्म">🔬 Clinically-Backed AI Platform</span>
     </div>
-
     <h1 data-en="Understand Your Hormonal Health with <span>Scientific Accuracy</span> and Support."
         data-hi="<span>वैज्ञानिक सटीकता</span> के साथ अपने हार्मोनल स्वास्थ्य को समझें।">
       Understand Your Hormonal Health with <span>Scientific Accuracy</span> and Support.
     </h1>
-
     <p class="hero-desc"
        data-en="A clinically-backed, secure AI platform for PCOS risk assessment, cycle tracking, and personalized health insights you can discuss with your doctor."
        data-hi="PCOS जोखिम मूल्यांकन, चक्र ट्रैकिंग और व्यक्तिगत स्वास्थ्य जानकारी के लिए एक सुरक्षित AI प्लेटफॉर्म।">
       A clinically-backed, secure AI platform for PCOS risk assessment, cycle tracking, and personalized health insights you can discuss with your doctor.
     </p>
-
     <div class="hero-btns">
       {% if logged_in %}
-        <a href="/app" class="btn-primary"
-           data-en="Go to My Dashboard →" data-hi="मेरे डैशबोर्ड पर जाएं →">Go to My Dashboard →</a>
+        <a href="/app" class="btn-primary" data-en="Go to My Dashboard →" data-hi="मेरे डैशबोर्ड पर जाएं →">Go to My Dashboard →</a>
       {% else %}
-        <a href="/register" class="btn-primary"
-           data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
+        <a href="/register" class="btn-primary" data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
       {% endif %}
       <a href="#how-it-works" class="btn-outline" data-en="How It Works" data-hi="यह कैसे काम करता है">How It Works</a>
     </div>
-
-    <!--<div class="hero-btns">
-      <a href="/register" class="btn-primary" data-en="Start Secure Assessment Today" data-hi="आज मूल्यांकन शुरू करें">Start Secure Assessment Today</a>
-      <a href="#how-it-works" class="btn-outline" data-en="How It Works" data-hi="यह कैसे काम करता है">How It Works</a>
-    </div>-->
-
     <div class="hero-trust">
       <div class="trust-chip">🔒 <span data-en="Private & Encrypted" data-hi="निजी और एन्क्रिप्टेड">Private & Encrypted</span></div>
       <div class="trust-chip">🤖 <span data-en="AI-Powered" data-hi="AI-संचालित">AI-Powered</span></div>
@@ -917,690 +408,308 @@
     </div>
   </div>
 
-  <!-- HERO IMAGE — Real Photo -->
   <div class="hero-img-side">
     <div class="hero-photo-wrap">
       <img src="/static/hero_women.png" alt="Three women with AI health technology" class="hero-photo">
-
-      <!-- Floating chips -->
-      <div class="photo-chip chip1">
-        <div class="chip-dot"></div>
-        <span data-en="AI Analysis" data-hi="AI विश्लेषण">AI Analysis</span>
-      </div>
-      <div class="photo-chip chip2">
-        <div class="chip-dot"></div>
-        <span data-en="PCOS Detection" data-hi="PCOS पहचान">PCOS Detection</span>
-      </div>
-      <div class="photo-chip chip3">
-        <div class="chip-dot"></div>
-        <span data-en="Cycle Tracking" data-hi="चक्र ट्रैकिंग">Cycle Tracking</span>
-      </div>
-
+      <div class="photo-chip chip1"><div class="chip-dot"></div><span data-en="AI Analysis" data-hi="AI विश्लेषण">AI Analysis</span></div>
+      <div class="photo-chip chip2"><div class="chip-dot"></div><span data-en="PCOS Detection" data-hi="PCOS पहचान">PCOS Detection</span></div>
+      <div class="photo-chip chip3"><div class="chip-dot"></div><span data-en="Cycle Tracking" data-hi="चक्र ट्रैकिंग">Cycle Tracking</span></div>
       <div class="photo-bottom-tag">🌸 <span data-en="1 in 10 women live with PCOS" data-hi="10 में से 1 महिला PCOS के साथ जीती है">1 in 10 women live with PCOS</span></div>
     </div>
   </div>
 </section>
 
-<!-- ══════ STAT STRIP ════════════════════════════════════════════════ -->
+<!-- ══════ STAT STRIP ════════════════════════════════════════════ -->
 <div class="stat-strip">
-  <div class="stat-item">
-    <div class="stat-num">1 in 10</div>
-    <div class="stat-lbl" data-en="Women live with PCOS" data-hi="महिलाएं PCOS के साथ जीती हैं">Women live with PCOS</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">70%</div>
-    <div class="stat-lbl" data-en="Cases go undiagnosed" data-hi="मामले बिना पहचाने रह जाते हैं">Cases go undiagnosed</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">AI-Powered</div>
-    <div class="stat-lbl" data-en="Risk assessment engine" data-hi="जोखिम मूल्यांकन इंजन">Risk assessment engine</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">Free</div>
-    <div class="stat-lbl" data-en="Always & forever" data-hi="हमेशा और हमेशा के लिए">Always & forever</div>
-  </div>
+  <div class="stat-item"><div class="stat-num">1 in 10</div><div class="stat-lbl" data-en="Women live with PCOS" data-hi="महिलाएं PCOS के साथ जीती हैं">Women live with PCOS</div></div>
+  <div class="stat-item"><div class="stat-num">70%</div><div class="stat-lbl" data-en="Cases go undiagnosed" data-hi="मामले बिना पहचाने रह जाते हैं">Cases go undiagnosed</div></div>
+  <div class="stat-item"><div class="stat-num">AI-Powered</div><div class="stat-lbl" data-en="Risk assessment engine" data-hi="जोखिम मूल्यांकन इंजन">Risk assessment engine</div></div>
+  <div class="stat-item"><div class="stat-num">Free</div><div class="stat-lbl" data-en="Always & forever" data-hi="हमेशा और हमेशा के लिए">Always & forever</div></div>
 </div>
 
-<!-- ══════ PCOS SYMPTOMS — RELATE SECTION ════════════════════════════ -->
+<!-- ══════ SYMPTOMS ═══════════════════════════════════════════════ -->
 <section class="section" id="symptoms">
   <div class="symptoms-layout">
     <div class="symptom-intro">
       <div class="sec-badge" data-en="✦ Do You Relate?" data-hi="✦ क्या आप भी ऐसा महसूस करती हैं?">✦ Do You Relate?</div>
-      <h2 data-en="These symptoms might be <em>telling you something.</em>"
-          data-hi="ये लक्षण आपको कुछ <em>बता रहे हैं।</em>">
-        These symptoms might be <em>telling you something.</em>
-      </h2>
-      <p data-en="Millions of women live with PCOS without ever knowing it. These everyday struggles are often dismissed — but they're real, valid, and treatable."
-         data-hi="लाखों महिलाएं PCOS के साथ जीती हैं बिना जाने। ये रोजमर्रा की तकलीफें अक्सर नजरअंदाज की जाती हैं — लेकिन ये असली हैं और इलाज संभव है।">
-        Millions of women live with PCOS without ever knowing it. These everyday struggles are often dismissed — but they're real, valid, and treatable.
-      </p>
-
+      <h2 data-en="These symptoms might be <em>telling you something.</em>" data-hi="ये लक्षण आपको कुछ <em>बता रहे हैं।</em>">These symptoms might be <em>telling you something.</em></h2>
+      <p data-en="Millions of women live with PCOS without ever knowing it. These everyday struggles are often dismissed — but they're real, valid, and treatable." data-hi="लाखों महिलाएं PCOS के साथ जीती हैं बिना जाने। ये रोजमर्रा की तकलीफें अक्सर नजरअंदाज की जाती हैं — लेकिन ये असली हैं और इलाज संभव है।">Millions of women live with PCOS without ever knowing it. These everyday struggles are often dismissed — but they're real, valid, and treatable.</p>
       <div class="relate-chips">
         <div class="relate-chip">😔 <span data-en='"My periods are so unpredictable"' data-hi='"मेरे पीरियड्स बहुत अनियमित हैं"'>"My periods are so unpredictable"</span></div>
         <div class="relate-chip">😩 <span data-en='"I feel tired all the time"' data-hi='"मैं हमेशा थकी रहती हूं"'>"I feel tired all the time"</span></div>
         <div class="relate-chip">😤 <span data-en='"My skin keeps breaking out"' data-hi='"मुझे बार-बार मुंहासे होते हैं"'>"My skin keeps breaking out"</span></div>
         <div class="relate-chip">😢 <span data-en='"I struggle to lose weight"' data-hi='"मेरा वजन कम नहीं होता"'>"I struggle to lose weight"</span></div>
       </div>
-
     </div>
-
     <div class="symptoms-grid">
-      <div class="sym-card">
-        <div class="sym-icon">🌊</div>
-        <div class="sym-name" data-en="Irregular Periods" data-hi="अनियमित पीरियड्स">Irregular Periods</div>
-        <div class="sym-desc" data-en="Cycles that come too early, too late, or skip months entirely." data-hi="चक्र जो बहुत जल्दी, देर से आते हैं या महीने छोड़ देते हैं।">Cycles that come too early, too late, or skip months entirely.</div>
-      </div>
-      <div class="sym-card">
-        <div class="sym-icon">⚖️</div>
-        <div class="sym-name" data-en="Weight Gain" data-hi="वजन बढ़ना">Weight Gain</div>
-        <div class="sym-desc" data-en="Unexplained weight gain, especially around the belly area." data-hi="बिना कारण वजन बढ़ना, खासकर पेट के आसपास।">Unexplained weight gain, especially around the belly.</div>
-      </div>
-      <div class="sym-card">
-        <div class="sym-icon">😣</div>
-        <div class="sym-name" data-en="Acne & Oily Skin" data-hi="मुंहासे और तैलीय त्वचा">Acne & Oily Skin</div>
-        <div class="sym-desc" data-en="Hormonal acne that doesn't respond to typical skincare routines." data-hi="हार्मोनल मुंहासे जो सामान्य स्किनकेयर से ठीक नहीं होते।">Hormonal acne that won't respond to typical skincare.</div>
-      </div>
-      <div class="sym-card">
-        <div class="sym-icon">💇</div>
-        <div class="sym-name" data-en="Hair Thinning" data-hi="बाल पतले होना">Hair Thinning</div>
-        <div class="sym-desc" data-en="Noticeable hair loss from the scalp and unwanted facial/body hair." data-hi="सिर से बालों का झड़ना और चेहरे/शरीर पर अनचाहे बाल।">Hair loss from scalp and unwanted facial/body hair.</div>
-      </div>
-      <div class="sym-card">
-        <div class="sym-icon">😴</div>
-        <div class="sym-name" data-en="Constant Fatigue" data-hi="लगातार थकान">Constant Fatigue</div>
-        <div class="sym-desc" data-en="Feeling exhausted no matter how much sleep you get." data-hi="कितनी भी नींद के बाद भी थकान महसूस करना।">Feeling exhausted no matter how much sleep you get.</div>
-      </div>
-      <div class="sym-card">
-        <div class="sym-icon">🧠</div>
-        <div class="sym-name" data-en="Mood Changes" data-hi="मूड में बदलाव">Mood Changes</div>
-        <div class="sym-desc" data-en="Anxiety, depression, or sudden mood swings linked to hormonal imbalance." data-hi="हार्मोनल असंतुलन से जुड़ी चिंता, अवसाद या अचानक मूड बदलना।">Anxiety, depression, or sudden mood swings.</div>
-      </div>
+      <div class="sym-card"><div class="sym-icon">🌊</div><div class="sym-name" data-en="Irregular Periods" data-hi="अनियमित पीरियड्स">Irregular Periods</div><div class="sym-desc" data-en="Cycles that come too early, too late, or skip months entirely." data-hi="चक्र जो बहुत जल्दी, देर से आते हैं या महीने छोड़ देते हैं।">Cycles that come too early, too late, or skip months entirely.</div></div>
+      <div class="sym-card"><div class="sym-icon">⚖️</div><div class="sym-name" data-en="Weight Gain" data-hi="वजन बढ़ना">Weight Gain</div><div class="sym-desc" data-en="Unexplained weight gain, especially around the belly area." data-hi="बिना कारण वजन बढ़ना, खासकर पेट के आसपास।">Unexplained weight gain, especially around the belly.</div></div>
+      <div class="sym-card"><div class="sym-icon">😣</div><div class="sym-name" data-en="Acne & Oily Skin" data-hi="मुंहासे और तैलीय त्वचा">Acne & Oily Skin</div><div class="sym-desc" data-en="Hormonal acne that doesn't respond to typical skincare routines." data-hi="हार्मोनल मुंहासे जो सामान्य स्किनकेयर से ठीक नहीं होते।">Hormonal acne that won't respond to typical skincare.</div></div>
+      <div class="sym-card"><div class="sym-icon">💇</div><div class="sym-name" data-en="Hair Thinning" data-hi="बाल पतले होना">Hair Thinning</div><div class="sym-desc" data-en="Noticeable hair loss from the scalp and unwanted facial/body hair." data-hi="सिर से बालों का झड़ना और चेहरे/शरीर पर अनचाहे बाल।">Hair loss from scalp and unwanted facial/body hair.</div></div>
+      <div class="sym-card"><div class="sym-icon">😴</div><div class="sym-name" data-en="Constant Fatigue" data-hi="लगातार थकान">Constant Fatigue</div><div class="sym-desc" data-en="Feeling exhausted no matter how much sleep you get." data-hi="कितनी भी नींद के बाद भी थकान महसूस करना।">Feeling exhausted no matter how much sleep you get.</div></div>
+      <div class="sym-card"><div class="sym-icon">🧠</div><div class="sym-name" data-en="Mood Changes" data-hi="मूड में बदलाव">Mood Changes</div><div class="sym-desc" data-en="Anxiety, depression, or sudden mood swings linked to hormonal imbalance." data-hi="हार्मोनल असंतुलन से जुड़ी चिंता, अवसाद या अचानक मूड बदलना।">Anxiety, depression, or sudden mood swings.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ══════ FEATURES ════════════════════════════════════════════════════ -->
+<!-- ══════ FEATURES ══════════════════════════════════════════════ -->
 <section class="section section-alt" id="features">
   <div class="sec-badge" data-en="✦ Platform Features" data-hi="✦ प्लेटफॉर्म फीचर्स">✦ Platform Features</div>
   <h2 class="sec-title" data-en="Everything in One Secure Platform" data-hi="एक सुरक्षित प्लेटफॉर्म में सब कुछ">Everything in One Secure Platform</h2>
-  <p class="sec-sub" data-en="From AI risk assessment to daily symptom logging — OvaTrack has everything you need to understand and manage your health."
-     data-hi="AI जोखिम मूल्यांकन से लेकर दैनिक लक्षण लॉगिंग तक — OvaTrack में वह सब कुछ है जो आपको चाहिए।">
-    From AI risk assessment to daily symptom logging — OvaTrack has everything you need.
-  </p>
-
+  <p class="sec-sub" data-en="From AI risk assessment to daily symptom logging — OvaTrack has everything you need to understand and manage your health." data-hi="AI जोखिम मूल्यांकन से लेकर दैनिक लक्षण लॉगिंग तक — OvaTrack में वह सब कुछ है जो आपको चाहिए।">From AI risk assessment to daily symptom logging — OvaTrack has everything you need.</p>
   <div class="features-grid">
-    <div class="feat-card">
-      <div class="feat-icon fi-teal">🔬</div>
-      <h3 data-en="PCOS Risk Detection" data-hi="PCOS जोखिम पहचान">PCOS Risk Detection</h3>
-      <p data-en="Random Forest AI analyses 10 health parameters — age, BMI, cycle, hormonal symptoms — and gives you a precise risk percentage." data-hi="Random Forest AI 10 स्वास्थ्य मापदंडों का विश्लेषण करके आपको सटीक जोखिम प्रतिशत देता है।">Random Forest AI analyses 10 health parameters and gives you a precise risk percentage with feature importance breakdown.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon fi-pink">🩸</div>
-      <h3 data-en="Cycle Length Predictor" data-hi="चक्र लंबाई भविष्यवक्ता">Cycle Length Predictor</h3>
-      <p data-en="Predict your next menstrual cycle length using AI trained on thousands of real cycle records from verified datasets." data-hi="हजारों वास्तविक चक्र रिकॉर्ड पर प्रशिक्षित AI से अपने अगले चक्र की लंबाई का अनुमान लगाएं।">Predict your next cycle length using AI trained on thousands of real cycle records.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon fi-orange">🔔</div>
-      <h3 data-en="Smart Reminders" data-hi="स्मार्ट रिमाइंडर">Smart Reminders</h3>
-      <p data-en="Automatic period reminders, ovulation window alerts, and luteal phase tips — calculated from your own cycle data." data-hi="स्वचालित पीरियड रिमाइंडर, ओव्यूलेशन विंडो अलर्ट, और ल्यूटियल फेज टिप्स।">Automatic period reminders, ovulation alerts, and cycle phase tips calculated from your data.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon fi-purple">📋</div>
-      <h3 data-en="Symptom Tracker" data-hi="लक्षण ट्रैकर">Symptom Tracker</h3>
-      <p data-en="Log mood, pain levels, acne, bloating, fatigue daily. Visualize patterns with charts to share with your doctor." data-hi="रोज मूड, दर्द, मुंहासे, सूजन और थकान लॉग करें। पैटर्न चार्ट के जरिए देखें।">Log mood, pain, acne, and fatigue daily. Visualize patterns with interactive charts.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon fi-blue">💬</div>
-      <h3 data-en="AI Health Chatbot" data-hi="AI स्वास्थ्य चैटबॉट">AI Health Chatbot</h3>
-      <p data-en="Get personalized answers about PCOS, diet, hormones, and your cycle. Context-aware — knows your risk score and period status. Works in Hindi and English." data-hi="PCOS, आहार, हार्मोन के बारे में व्यक्तिगत जवाब पाएं। हिंदी और अंग्रेजी में काम करता है।">Personalized health Q&A that knows your risk score and cycle. Works in Hindi & English.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon fi-green">📊</div>
-      <h3 data-en="Health Dashboard" data-hi="स्वास्थ्य डैशबोर्ड">Health Dashboard</h3>
-      <p data-en="Visual BMI card, animated PCOS risk gauge, feature importance bar chart, symptom history, and prediction timeline — all in one view." data-hi="BMI कार्ड, PCOS जोखिम गेज, फीचर चार्ट, लक्षण इतिहास — सब एक ही जगह।">BMI card, PCOS risk gauge, feature chart, symptom strip, and prediction history.</p>
-    </div>
+    <div class="feat-card"><div class="feat-icon fi-teal">🔬</div><h3 data-en="PCOS Risk Detection" data-hi="PCOS जोखिम पहचान">PCOS Risk Detection</h3><p data-en="Random Forest AI analyses 10 health parameters — age, BMI, cycle, hormonal symptoms — and gives you a precise risk percentage." data-hi="Random Forest AI 10 स्वास्थ्य मापदंडों का विश्लेषण करके आपको सटीक जोखिम प्रतिशत देता है।">Random Forest AI analyses 10 health parameters and gives you a precise risk percentage with feature importance breakdown.</p></div>
+    <div class="feat-card"><div class="feat-icon fi-pink">🩸</div><h3 data-en="Cycle Length Predictor" data-hi="चक्र लंबाई भविष्यवक्ता">Cycle Length Predictor</h3><p data-en="Predict your next menstrual cycle length using AI trained on thousands of real cycle records from verified datasets." data-hi="हजारों वास्तविक चक्र रिकॉर्ड पर प्रशिक्षित AI से अपने अगले चक्र की लंबाई का अनुमान लगाएं।">Predict your next cycle length using AI trained on thousands of real cycle records.</p></div>
+    <div class="feat-card"><div class="feat-icon fi-orange">🔔</div><h3 data-en="Smart Reminders" data-hi="स्मार्ट रिमाइंडर">Smart Reminders</h3><p data-en="Automatic period reminders, ovulation window alerts, and luteal phase tips — calculated from your own cycle data." data-hi="स्वचालित पीरियड रिमाइंडर, ओव्यूलेशन विंडो अलर्ट, और ल्यूटियल फेज टिप्स।">Automatic period reminders, ovulation alerts, and cycle phase tips calculated from your data.</p></div>
+    <div class="feat-card"><div class="feat-icon fi-purple">📋</div><h3 data-en="Symptom Tracker" data-hi="लक्षण ट्रैकर">Symptom Tracker</h3><p data-en="Log mood, pain levels, acne, bloating, fatigue daily. Visualize patterns with charts to share with your doctor." data-hi="रोज मूड, दर्द, मुंहासे, सूजन और थकान लॉग करें। पैटर्न चार्ट के जरिए देखें।">Log mood, pain, acne, and fatigue daily. Visualize patterns with interactive charts.</p></div>
+    <div class="feat-card"><div class="feat-icon fi-blue">💬</div><h3 data-en="AI Health Chatbot" data-hi="AI स्वास्थ्य चैटबॉट">AI Health Chatbot</h3><p data-en="Get personalized answers about PCOS, diet, hormones, and your cycle. Context-aware — knows your risk score and period status. Works in Hindi and English." data-hi="PCOS, आहार, हार्मोन के बारे में व्यक्तिगत जवाब पाएं। हिंदी और अंग्रेजी में काम करता है।">Personalized health Q&A that knows your risk score and cycle. Works in Hindi & English.</p></div>
+    <div class="feat-card"><div class="feat-icon fi-green">📊</div><h3 data-en="Health Dashboard" data-hi="स्वास्थ्य डैशबोर्ड">Health Dashboard</h3><p data-en="Visual BMI card, animated PCOS risk gauge, feature importance bar chart, symptom history, and prediction timeline — all in one view." data-hi="BMI कार्ड, PCOS जोखिम गेज, फीचर चार्ट, लक्षण इतिहास — सब एक ही जगह।">BMI card, PCOS risk gauge, feature chart, symptom strip, and prediction history.</p></div>
   </div>
 </section>
 
-<!-- ══════ CHATBOT FEATURE DETAIL ════════════════════════════════════ -->
+<!-- ══════ CHATBOT FEATURE ════════════════════════════════════════ -->
 <section class="chat-section" id="chatbot">
   <div class="chat-layout">
-
-    <!-- Chat Preview -->
     <div class="chat-preview">
       <div class="chat-header-bar">
         <div class="chat-avatar">🌸</div>
-        <div>
-          <div class="chat-title">OvaTrack AI</div>
-          <div class="chat-status" data-en="Women's health assistant · Online" data-hi="महिला स्वास्थ्य सहायक · ऑनलाइन">Women's health assistant · Online</div>
-        </div>
+        <div><div class="chat-title">OvaTrack AI</div><div class="chat-status" data-en="Women's health assistant · Online" data-hi="महिला स्वास्थ्य सहायक · ऑनलाइन">Women's health assistant · Online</div></div>
       </div>
       <div class="chat-body">
-        <div class="chat-msg-ai" data-en="👋 Hi! I'm your OvaTrack AI assistant. I can see your PCOS risk is 68% (Medium). Want tips to help reduce it naturally?" data-hi="👋 नमस्ते! मैं आपका OvaTrack AI असिस्टेंट हूं। मैं देख सकती हूं कि आपका PCOS जोखिम 68% है। इसे स्वाभाविक रूप से कम करने के टिप्स चाहिए?">
-          👋 Hi! I'm your OvaTrack AI assistant. I can see your PCOS risk is 68% (Medium). Want tips to help reduce it naturally?
-        </div>
+        <div class="chat-msg-ai" data-en="👋 Hi! I'm your OvaTrack AI assistant. I can see your PCOS risk is 68% (Medium). Want tips to help reduce it naturally?" data-hi="👋 नमस्ते! मैं आपका OvaTrack AI असिस्टेंट हूं। आपका PCOS जोखिम 68% है। इसे स्वाभाविक रूप से कम करने के टिप्स चाहिए?">👋 Hi! I'm your OvaTrack AI assistant. I can see your PCOS risk is 68% (Medium). Want tips to help reduce it naturally?</div>
         <div class="chat-msg-user" data-en="Yes please! What diet should I follow?" data-hi="हां! मुझे कौन सी डाइट फॉलो करनी चाहिए?">Yes please! What diet should I follow?</div>
-        <div class="chat-msg-ai" data-en="For PCOS, focus on low-glycemic foods — oats, lentils, vegetables, and lean proteins. Avoid refined sugar and processed carbs. Adding 30 mins of daily movement also significantly helps hormonal balance 🌿" data-hi="PCOS के लिए कम ग्लाइसेमिक खाद्य पदार्थ खाएं — जई, दाल, सब्जियां और लीन प्रोटीन। रिफाइंड चीनी से बचें। रोज 30 मिनट की एक्सरसाइज हार्मोनल संतुलन में मदद करती है 🌿">
-          For PCOS, focus on low-glycemic foods — oats, lentils, vegetables, and lean proteins. Avoid refined sugar and processed carbs. Daily movement of 30 mins also helps hormonal balance 🌿
-        </div>
+        <div class="chat-msg-ai" data-en="For PCOS, focus on low-glycemic foods — oats, lentils, vegetables, and lean proteins. Avoid refined sugar and processed carbs. Adding 30 mins of daily movement also significantly helps hormonal balance 🌿" data-hi="PCOS के लिए कम ग्लाइसेमिक खाद्य पदार्थ खाएं। रिफाइंड चीनी से बचें। रोज 30 मिनट की एक्सरसाइज हार्मोनल संतुलन में मदद करती है 🌿">For PCOS, focus on low-glycemic foods — oats, lentils, vegetables, and lean proteins. Daily movement of 30 mins also helps hormonal balance 🌿</div>
         <div class="chat-msg-user" data-en="What about stress? I feel so overwhelmed." data-hi="तनाव के बारे में क्या? मैं बहुत overwhelmed महसूस करती हूं।">What about stress? I feel so overwhelmed.</div>
-        <div class="chat-msg-ai" data-en="Stress raises cortisol which directly worsens PCOS symptoms. Try 10 mins of deep breathing or yoga daily. Sleep of 7-8 hrs is also critical — it regulates the hormones that control your cycle 💙" data-hi="तनाव कोर्टिसोल बढ़ाता है जो PCOS को बिगाड़ता है। रोज 10 मिनट गहरी सांस या योग लें। 7-8 घंटे की नींद भी बहुत जरूरी है 💙">
-          Stress raises cortisol which directly worsens PCOS. Try 10 mins of deep breathing daily. 7-8 hrs sleep is also critical for hormone regulation 💙
-        </div>
+        <div class="chat-msg-ai" data-en="Stress raises cortisol which directly worsens PCOS. Try 10 mins of deep breathing daily. 7-8 hrs sleep is also critical 💙" data-hi="तनाव कोर्टिसोल बढ़ाता है जो PCOS को बिगाड़ता है। रोज 10 मिनट गहरी सांस या योग लें। 7-8 घंटे की नींद भी बहुत जरूरी है 💙">Stress raises cortisol which directly worsens PCOS. Try 10 mins of deep breathing daily. 7-8 hrs sleep is also critical 💙</div>
       </div>
     </div>
-
-    <!-- Chat Info -->
     <div class="chat-info">
       <div class="sec-badge" data-en="✦ AI Health Assistant" data-hi="✦ AI स्वास्थ्य सहायक">✦ AI Health Assistant</div>
-      <h3 data-en="Your personal health guide — available <em>after you log in</em>"
-          data-hi="आपका व्यक्तिगत स्वास्थ्य गाइड — <em>लॉगिन के बाद उपलब्ध</em>">
-        Your personal health guide — available <em>after you log in</em>
-      </h3>
-      <p data-en="Once you create your account and run your PCOS assessment, our AI chatbot becomes a floating assistant on your dashboard — context-aware and always available."
-         data-hi="अकाउंट बनाने और PCOS मूल्यांकन चलाने के बाद, हमारा AI चैटबॉट आपके डैशबोर्ड पर फ्लोटिंग असिस्टेंट बन जाता है।">
-        Once you create your account and run your PCOS assessment, the AI chatbot becomes a floating assistant on your dashboard — context-aware and always available.
-      </p>
-
+      <h3 data-en="Your personal health guide — available <em>after you log in</em>" data-hi="आपका व्यक्तिगत स्वास्थ्य गाइड — <em>लॉगिन के बाद उपलब्ध</em>">Your personal health guide — available <em>after you log in</em></h3>
+      <p data-en="Once you create your account and run your PCOS assessment, the AI chatbot becomes a floating assistant on your dashboard — context-aware and always available." data-hi="अकाउंट बनाने और PCOS मूल्यांकन चलाने के बाद, हमारा AI चैटबॉट आपके डैशबोर्ड पर फ्लोटिंग असिस्टेंट बन जाता है।">Once you create your account and run your PCOS assessment, the AI chatbot becomes a floating assistant on your dashboard.</p>
       <div class="chat-bullets">
-        <div class="chat-bullet">
-          <div class="bullet-icon">🎯</div>
-          <span data-en="Knows your PCOS risk score, BMI, and cycle data — gives personalised answers, not generic ones." data-hi="आपका PCOS जोखिम, BMI और चक्र डेटा जानता है — व्यक्तिगत जवाब देता है।">Knows your PCOS risk score, BMI, and cycle — gives personalised answers, not generic ones.</span>
-        </div>
-        <div class="chat-bullet">
-          <div class="bullet-icon">🇮🇳</div>
-          <span data-en="Responds in Hindi or English — whichever language you write in." data-hi="हिंदी या अंग्रेजी में जवाब देता है — जो भी भाषा आप लिखें।">Responds in Hindi or English — whichever language you write in.</span>
-        </div>
-        <div class="chat-bullet">
-          <div class="bullet-icon">🔒</div>
-          <span data-en="Private conversations — your questions never leave your session." data-hi="निजी बातचीत — आपके सवाल आपके सेशन से बाहर नहीं जाते।">Private conversations — your questions never leave your session.</span>
-        </div>
-        <div class="chat-bullet">
-          <div class="bullet-icon">💡</div>
-          <span data-en="Ask about PCOS diet, exercise, ovulation, hormones, stress, sleep — anything women's health." data-hi="PCOS आहार, व्यायाम, ओव्यूलेशन, हार्मोन, तनाव, नींद — कुछ भी पूछें।">Ask about PCOS diet, exercise, ovulation, hormones, stress, sleep — anything women's health.</span>
-        </div>
+        <div class="chat-bullet"><div class="bullet-icon">🎯</div><span data-en="Knows your PCOS risk score, BMI, and cycle data — gives personalised answers, not generic ones." data-hi="आपका PCOS जोखिम, BMI और चक्र डेटा जानता है — व्यक्तिगत जवाब देता है।">Knows your PCOS risk score, BMI, and cycle — gives personalised answers, not generic ones.</span></div>
+        <div class="chat-bullet"><div class="bullet-icon">🇮🇳</div><span data-en="Responds in Hindi or English — whichever language you write in." data-hi="हिंदी या अंग्रेजी में जवाब देता है — जो भी भाषा आप लिखें।">Responds in Hindi or English — whichever language you write in.</span></div>
+        <div class="chat-bullet"><div class="bullet-icon">🔒</div><span data-en="Private conversations — your questions never leave your session." data-hi="निजी बातचीत — आपके सवाल आपके सेशन से बाहर नहीं जाते।">Private conversations — your questions never leave your session.</span></div>
+        <div class="chat-bullet"><div class="bullet-icon">💡</div><span data-en="Ask about PCOS diet, exercise, ovulation, hormones, stress, sleep — anything women's health." data-hi="PCOS आहार, व्यायाम, ओव्यूलेशन, हार्मोन, तनाव, नींद — कुछ भी पूछें।">Ask about PCOS diet, exercise, ovulation, hormones, stress, sleep — anything women's health.</span></div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ══════ CHARTS & MOOD TRACKING ════════════════════════════════════ -->
+<!-- ══════ CHARTS ═══════════════════════════════════════════════ -->
 <section class="charts-section" id="tracking">
   <div class="charts-layout">
-
-    <!-- Visual Mockup -->
     <div class="charts-visual">
       <div class="chart-mockup">
         <div class="chart-mockup-title" data-en="📊 Your Mood This Week" data-hi="📊 इस सप्ताह आपका मूड">📊 Your Mood This Week</div>
-
-        <div class="mood-bar-row">
-          <span class="mood-day">Mon</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:80%;background:linear-gradient(90deg,#2e9e6b,#3bbfa3)">Good <span class="mood-emoji">🙂</span></div></div>
-        </div>
-        <div class="mood-bar-row">
-          <span class="mood-day">Tue</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:45%;background:linear-gradient(90deg,#d97706,#f59e0b)">Low <span class="mood-emoji">😕</span></div></div>
-        </div>
-        <div class="mood-bar-row">
-          <span class="mood-day">Wed</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:60%;background:linear-gradient(90deg,#3bbfa3,#2a9980)">Ok <span class="mood-emoji">😐</span></div></div>
-        </div>
-        <div class="mood-bar-row">
-          <span class="mood-day">Thu</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:95%;background:linear-gradient(90deg,#2e9e6b,#3bbfa3)">Great <span class="mood-emoji">😄</span></div></div>
-        </div>
-        <div class="mood-bar-row">
-          <span class="mood-day">Fri</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:30%;background:linear-gradient(90deg,#dc2626,#ef4444)">Bad <span class="mood-emoji">😢</span></div></div>
-        </div>
-        <div class="mood-bar-row">
-          <span class="mood-day">Sat</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:70%;background:linear-gradient(90deg,#3bbfa3,#2a9980)">Good <span class="mood-emoji">🙂</span></div></div>
-        </div>
-        <div class="mood-bar-row">
-          <span class="mood-day">Sun</span>
-          <div class="mood-bar-track"><div class="mood-bar-fill" style="width:85%;background:linear-gradient(90deg,#2e9e6b,#3bbfa3)">Great <span class="mood-emoji">😄</span></div></div>
-        </div>
-
+        <div class="mood-bar-row"><span class="mood-day">Mon</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:80%;background:linear-gradient(90deg,#2e9e6b,#3bbfa3)">Good <span class="mood-emoji">🙂</span></div></div></div>
+        <div class="mood-bar-row"><span class="mood-day">Tue</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:45%;background:linear-gradient(90deg,#d97706,#f59e0b)">Low <span class="mood-emoji">😕</span></div></div></div>
+        <div class="mood-bar-row"><span class="mood-day">Wed</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:60%;background:linear-gradient(90deg,#3bbfa3,#2a9980)">Ok <span class="mood-emoji">😐</span></div></div></div>
+        <div class="mood-bar-row"><span class="mood-day">Thu</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:95%;background:linear-gradient(90deg,#2e9e6b,#3bbfa3)">Great <span class="mood-emoji">😄</span></div></div></div>
+        <div class="mood-bar-row"><span class="mood-day">Fri</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:30%;background:linear-gradient(90deg,#dc2626,#ef4444)">Bad <span class="mood-emoji">😢</span></div></div></div>
+        <div class="mood-bar-row"><span class="mood-day">Sat</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:70%;background:linear-gradient(90deg,#3bbfa3,#2a9980)">Good <span class="mood-emoji">🙂</span></div></div></div>
+        <div class="mood-bar-row"><span class="mood-day">Sun</span><div class="mood-bar-track"><div class="mood-bar-fill" style="width:85%;background:linear-gradient(90deg,#2e9e6b,#3bbfa3)">Great <span class="mood-emoji">😄</span></div></div></div>
         <div class="symptom-dots">
-          <div class="sym-dot"><div class="dot" style="background:#e8537a"></div> Acne</div>
-          <div class="sym-dot"><div class="dot" style="background:#f59e0b"></div> Fatigue</div>
-          <div class="sym-dot"><div class="dot" style="background:#3bbfa3"></div> Bloating</div>
-          <div class="sym-dot"><div class="dot" style="background:#8b5cf6"></div> Headache</div>
-          <div class="sym-dot"><div class="dot" style="background:#ef4444"></div> Pain</div>
+          <div class="sym-dot"><div class="dot" style="background:#e8537a"></div>Acne</div>
+          <div class="sym-dot"><div class="dot" style="background:#f59e0b"></div>Fatigue</div>
+          <div class="sym-dot"><div class="dot" style="background:#3bbfa3"></div>Bloating</div>
+          <div class="sym-dot"><div class="dot" style="background:#8b5cf6"></div>Headache</div>
+          <div class="sym-dot"><div class="dot" style="background:#ef4444"></div>Pain</div>
         </div>
-
         <div class="mini-chart-wrap">
           <div class="mini-chart-label" data-en="Pain Level Trend (0–5)" data-hi="दर्द स्तर ट्रेंड (0–5)">Pain Level Trend (0–5)</div>
-          <svg width="100%" height="60" viewBox="0 0 280 60">
-            <defs>
-              <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#3bbfa3" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#3bbfa3" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <!-- Area fill -->
-            <path d="M0,45 L40,30 L80,40 L120,10 L160,35 L200,20 L240,25 L280,15 L280,60 L0,60 Z"
-                  fill="url(#lineGrad)"/>
-            <!-- Line -->
-            <path d="M0,45 L40,30 L80,40 L120,10 L160,35 L200,20 L240,25 L280,15"
-                  fill="none" stroke="#3bbfa3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- Dots -->
-            <circle cx="0"   cy="45" r="3" fill="#3bbfa3"/>
-            <circle cx="40"  cy="30" r="3" fill="#3bbfa3"/>
-            <circle cx="80"  cy="40" r="3" fill="#3bbfa3"/>
-            <circle cx="120" cy="10" r="4" fill="#e8537a"/>
-            <circle cx="160" cy="35" r="3" fill="#3bbfa3"/>
-            <circle cx="200" cy="20" r="3" fill="#3bbfa3"/>
-            <circle cx="240" cy="25" r="3" fill="#3bbfa3"/>
-            <circle cx="280" cy="15" r="3" fill="#3bbfa3"/>
-          </svg>
+          <svg width="100%" height="60" viewBox="0 0 280 60"><defs><linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3bbfa3" stop-opacity="0.3"/><stop offset="100%" stop-color="#3bbfa3" stop-opacity="0"/></linearGradient></defs><path d="M0,45 L40,30 L80,40 L120,10 L160,35 L200,20 L240,25 L280,15 L280,60 L0,60 Z" fill="url(#lineGrad)"/><path d="M0,45 L40,30 L80,40 L120,10 L160,35 L200,20 L240,25 L280,15" fill="none" stroke="#3bbfa3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="0" cy="45" r="3" fill="#3bbfa3"/><circle cx="40" cy="30" r="3" fill="#3bbfa3"/><circle cx="80" cy="40" r="3" fill="#3bbfa3"/><circle cx="120" cy="10" r="4" fill="#e8537a"/><circle cx="160" cy="35" r="3" fill="#3bbfa3"/><circle cx="200" cy="20" r="3" fill="#3bbfa3"/><circle cx="240" cy="25" r="3" fill="#3bbfa3"/><circle cx="280" cy="15" r="3" fill="#3bbfa3"/></svg>
         </div>
       </div>
     </div>
-
-    <!-- Info -->
     <div class="charts-info">
       <div class="sec-badge" data-en="✦ Visual Health Tracking" data-hi="✦ विजुअल स्वास्थ्य ट्रैकिंग">✦ Visual Health Tracking</div>
-      <h3 data-en="See your <em>patterns</em> through charts & graphs"
-          data-hi="चार्ट और ग्राफ के जरिए अपने <em>पैटर्न</em> देखें">
-        See your <em>patterns</em> through charts & graphs
-      </h3>
-      <p data-en="Log your symptoms daily and watch OvaTrack turn your data into beautiful, easy-to-read charts. Spot hormonal patterns, understand your mood swings, and track pain levels across your cycle — all automatically."
-         data-hi="रोज लक्षण लॉग करें और OvaTrack को आपका डेटा सुंदर, आसानी से पढ़ने योग्य चार्ट में बदलते देखें। हार्मोनल पैटर्न पहचानें, मूड स्विंग समझें।">
-        Log your symptoms daily and watch OvaTrack turn your data into beautiful charts. Spot hormonal patterns, understand mood swings, and track pain across your cycle — automatically.
-      </p>
-
+      <h3 data-en="See your <em>patterns</em> through charts & graphs" data-hi="चार्ट और ग्राफ के जरिए अपने <em>पैटर्न</em> देखें">See your <em>patterns</em> through charts & graphs</h3>
+      <p data-en="Log your symptoms daily and watch OvaTrack turn your data into beautiful charts. Spot hormonal patterns, understand mood swings, and track pain across your cycle — automatically." data-hi="रोज लक्षण लॉग करें और OvaTrack को आपका डेटा सुंदर चार्ट में बदलते देखें। हार्मोनल पैटर्न पहचानें, मूड स्विंग समझें।">Log your symptoms daily and watch OvaTrack turn your data into beautiful charts. Spot hormonal patterns and track pain automatically.</p>
       <div class="chat-bullets">
-        <div class="chat-bullet">
-          <div class="bullet-icon">📈</div>
-          <span data-en="Daily mood bar chart — see your emotional patterns across the week at a glance." data-hi="दैनिक मूड बार चार्ट — सप्ताह भर के भावनात्मक पैटर्न एक नज़र में देखें।">Daily mood bar chart — see your emotional patterns across the week at a glance.</span>
-        </div>
-        <div class="chat-bullet">
-          <div class="bullet-icon">📉</div>
-          <span data-en="Pain trend line chart — track whether symptoms are improving or worsening over time." data-hi="दर्द ट्रेंड लाइन चार्ट — देखें कि लक्षण बेहतर हो रहे हैं या बिगड़ रहे हैं।">Pain trend line chart — track whether symptoms are improving or worsening.</span>
-        </div>
-        <div class="chat-bullet">
-          <div class="bullet-icon">🔬</div>
-          <span data-en="PCOS feature importance chart — understand exactly which factors are driving your AI risk score." data-hi="PCOS फीचर इम्पोर्टेंस चार्ट — जानें कि कौन से कारक आपके AI जोखिम स्कोर को चला रहे हैं।">PCOS feature importance chart — understand which factors drive your risk score.</span>
-        </div>
-        <div class="chat-bullet">
-          <div class="bullet-icon">🩺</div>
-          <span data-en="Share your symptom charts with your doctor for more informed consultations." data-hi="बेहतर परामर्श के लिए अपने लक्षण चार्ट डॉक्टर के साथ शेयर करें।">Share your symptom charts with your doctor for more informed consultations.</span>
-        </div>
+        <div class="chat-bullet"><div class="bullet-icon">📈</div><span data-en="Daily mood bar chart — see your emotional patterns across the week at a glance." data-hi="दैनिक मूड बार चार्ट — सप्ताह भर के भावनात्मक पैटर्न एक नज़र में देखें।">Daily mood bar chart — see your emotional patterns across the week at a glance.</span></div>
+        <div class="chat-bullet"><div class="bullet-icon">📉</div><span data-en="Pain trend line chart — track whether symptoms are improving or worsening over time." data-hi="दर्द ट्रेंड लाइन चार्ट — देखें कि लक्षण बेहतर हो रहे हैं या बिगड़ रहे हैं।">Pain trend line chart — track whether symptoms are improving or worsening.</span></div>
+        <div class="chat-bullet"><div class="bullet-icon">🔬</div><span data-en="PCOS feature importance chart — understand exactly which factors are driving your AI risk score." data-hi="PCOS फीचर इम्पोर्टेंस चार्ट — जानें कि कौन से कारक आपके AI जोखिम स्कोर को चला रहे हैं।">PCOS feature importance chart — understand which factors drive your risk score.</span></div>
+        <div class="chat-bullet"><div class="bullet-icon">🩺</div><span data-en="Share your symptom charts with your doctor for more informed consultations." data-hi="बेहतर परामर्श के लिए अपने लक्षण चार्ट डॉक्टर के साथ शेयर करें।">Share your symptom charts with your doctor for more informed consultations.</span></div>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ══════ PCOS DARK SECTION ══════════════════════════════════════════ -->
+<!-- ══════ PCOS DARK ═══════════════════════════════════════════════ -->
 <section class="pcos-dark">
-  <h2 data-en="We're here to help you <span>navigate PCOS.</span>"
-      data-hi="हम आपकी <span>PCOS से निपटने</span> में मदद के लिए यहां हैं।">
-    We're here to help you <span>navigate PCOS.</span>
-  </h2>
-  <p data-en="Polycystic Ovary Syndrome is one of the most common hormonal disorders. Early awareness makes a real difference."
-     data-hi="पॉलीसिस्टिक ओवरी सिंड्रोम सबसे सामान्य हार्मोनल विकारों में से एक है। शुरुआती जागरूकता से बड़ा फर्क पड़ता है।">
-    Polycystic Ovary Syndrome is one of the most common hormonal disorders. Early awareness makes a real difference.
-  </p>
-
-  <!-- PCOS Symptoms in dark section — relatable for females -->
+  <h2 data-en="We're here to help you <span>navigate PCOS.</span>" data-hi="हम आपकी <span>PCOS से निपटने</span> में मदद के लिए यहां हैं।">We're here to help you <span>navigate PCOS.</span></h2>
+  <p data-en="Polycystic Ovary Syndrome is one of the most common hormonal disorders. Early awareness makes a real difference." data-hi="पॉलीसिस्टिक ओवरी सिंड्रोम सबसे सामान्य हार्मोनल विकारों में से एक है। शुरुआती जागरूकता से बड़ा फर्क पड़ता है।">Polycystic Ovary Syndrome is one of the most common hormonal disorders. Early awareness makes a real difference.</p>
   <div class="pcos-symptoms-list">
-    <div class="pcos-sym-item">
-      <span class="pcos-sym-emoji">🌊</span>
-      <div class="pcos-sym-name" data-en="Irregular Cycles" data-hi="अनियमित चक्र">Irregular Cycles</div>
-      <div class="pcos-sym-desc" data-en="Missing or unpredictable periods are the most common PCOS sign." data-hi="गायब या अप्रत्याशित पीरियड्स PCOS का सबसे आम संकेत है।">Missing or unpredictable periods — the most common PCOS sign.</div>
-    </div>
-    <div class="pcos-sym-item">
-      <span class="pcos-sym-emoji">🧬</span>
-      <div class="pcos-sym-name" data-en="Hormonal Imbalance" data-hi="हार्मोनल असंतुलन">Hormonal Imbalance</div>
-      <div class="pcos-sym-desc" data-en="Elevated androgens cause many of the visible PCOS symptoms." data-hi="एलिवेटेड एंड्रोजेन्स कई दृश्य PCOS लक्षण पैदा करते हैं।">Elevated androgens cause many visible PCOS symptoms.</div>
-    </div>
-    <div class="pcos-sym-item">
-      <span class="pcos-sym-emoji">💉</span>
-      <div class="pcos-sym-name" data-en="Insulin Resistance" data-hi="इंसुलिन प्रतिरोध">Insulin Resistance</div>
-      <div class="pcos-sym-desc" data-en="40% of women with PCOS develop insulin resistance, increasing diabetes risk." data-hi="40% PCOS महिलाओं में इंसुलिन प्रतिरोध विकसित होता है।">40% of PCOS women develop insulin resistance.</div>
-    </div>
-    <div class="pcos-sym-item">
-      <span class="pcos-sym-emoji">🤰</span>
-      <div class="pcos-sym-name" data-en="Fertility Challenges" data-hi="प्रजनन चुनौतियां">Fertility Challenges</div>
-      <div class="pcos-sym-desc" data-en="PCOS is the leading cause of infertility — but it's often treatable with early detection." data-hi="PCOS बांझपन का प्रमुख कारण है — लेकिन जल्दी पता लगाने से इलाज संभव है।">The leading cause of infertility — but treatable with early detection.</div>
-    </div>
+    <div class="pcos-sym-item"><span class="pcos-sym-emoji">🌊</span><div class="pcos-sym-name" data-en="Irregular Cycles" data-hi="अनियमित चक्र">Irregular Cycles</div><div class="pcos-sym-desc" data-en="Missing or unpredictable periods are the most common PCOS sign." data-hi="गायब या अप्रत्याशित पीरियड्स PCOS का सबसे आम संकेत है।">Missing or unpredictable periods — the most common PCOS sign.</div></div>
+    <div class="pcos-sym-item"><span class="pcos-sym-emoji">🧬</span><div class="pcos-sym-name" data-en="Hormonal Imbalance" data-hi="हार्मोनल असंतुलन">Hormonal Imbalance</div><div class="pcos-sym-desc" data-en="Elevated androgens cause many of the visible PCOS symptoms." data-hi="एलिवेटेड एंड्रोजेन्स कई दृश्य PCOS लक्षण पैदा करते हैं।">Elevated androgens cause many visible PCOS symptoms.</div></div>
+    <div class="pcos-sym-item"><span class="pcos-sym-emoji">💉</span><div class="pcos-sym-name" data-en="Insulin Resistance" data-hi="इंसुलिन प्रतिरोध">Insulin Resistance</div><div class="pcos-sym-desc" data-en="40% of women with PCOS develop insulin resistance, increasing diabetes risk." data-hi="40% PCOS महिलाओं में इंसुलिन प्रतिरोध विकसित होता है।">40% of PCOS women develop insulin resistance.</div></div>
+    <div class="pcos-sym-item"><span class="pcos-sym-emoji">🤰</span><div class="pcos-sym-name" data-en="Fertility Challenges" data-hi="प्रजनन चुनौतियां">Fertility Challenges</div><div class="pcos-sym-desc" data-en="PCOS is the leading cause of infertility — but it's often treatable with early detection." data-hi="PCOS बांझपन का प्रमुख कारण है — लेकिन जल्दी पता लगाने से इलाज संभव है।">The leading cause of infertility — but treatable with early detection.</div></div>
   </div>
-
   <div class="facts-row">
-    <div class="fact-item">
-      <div class="fact-num">1 in 10</div>
-      <div class="fact-desc" data-en="Women globally affected" data-hi="महिलाएं वैश्विक रूप से प्रभावित">Women globally affected</div>
-    </div>
-    <div class="fact-item">
-      <div class="fact-num">70%</div>
-      <div class="fact-desc" data-en="Remain undiagnosed for years" data-hi="वर्षों तक बिना निदान के रहती हैं">Remain undiagnosed for years</div>
-    </div>
-    <div class="fact-item">
-      <div class="fact-num">40%</div>
-      <div class="fact-desc" data-en="Develop insulin resistance" data-hi="इंसुलिन प्रतिरोध विकसित करती हैं">Develop insulin resistance</div>
-    </div>
-    <div class="fact-item">
-      <div class="fact-num">3x</div>
-      <div class="fact-desc" data-en="Higher risk of Type 2 diabetes" data-hi="टाइप 2 मधुमेह का अधिक जोखिम">Higher risk of Type 2 diabetes</div>
-    </div>
+    <div class="fact-item"><div class="fact-num">1 in 10</div><div class="fact-desc" data-en="Women globally affected" data-hi="महिलाएं वैश्विक रूप से प्रभावित">Women globally affected</div></div>
+    <div class="fact-item"><div class="fact-num">70%</div><div class="fact-desc" data-en="Remain undiagnosed for years" data-hi="वर्षों तक बिना निदान के रहती हैं">Remain undiagnosed for years</div></div>
+    <div class="fact-item"><div class="fact-num">40%</div><div class="fact-desc" data-en="Develop insulin resistance" data-hi="इंसुलिन प्रतिरोध विकसित करती हैं">Develop insulin resistance</div></div>
+    <div class="fact-item"><div class="fact-num">3x</div><div class="fact-desc" data-en="Higher risk of Type 2 diabetes" data-hi="टाइप 2 मधुमेह का अधिक जोखिम">Higher risk of Type 2 diabetes</div></div>
   </div>
 </section>
 
-<!-- ══════ HOW IT WORKS ═══════════════════════════════════════════════ -->
+<!-- ══════ HOW IT WORKS ════════════════════════════════════════════ -->
 <section class="section" id="how-it-works" style="background:var(--bg3)">
   <div style="text-align:center;margin-bottom:48px">
     <div class="sec-badge" data-en="✦ Simple Process" data-hi="✦ आसान प्रक्रिया">✦ Simple Process</div>
     <h2 class="sec-title" data-en="How OvaTrack Works" data-hi="OvaTrack कैसे काम करती है">How OvaTrack Works</h2>
-    <p class="sec-sub" style="margin:10px auto 0;text-align:center;max-width:480px"
-       data-en="From signup to personalised AI health insights in under 5 minutes."
-       data-hi="साइनअप से AI स्वास्थ्य जानकारी तक — सिर्फ 5 मिनट में।">
-      From signup to personalised AI health insights in under 5 minutes.
-    </p>
+    <p class="sec-sub" style="margin:10px auto 0;text-align:center;max-width:480px" data-en="From signup to personalised AI health insights in under 5 minutes." data-hi="साइनअप से AI स्वास्थ्य जानकारी तक — सिर्फ 5 मिनट में।">From signup to personalised AI health insights in under 5 minutes.</p>
   </div>
-
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;max-width:1000px;margin:0 auto;position:relative">
-    <!-- Connector line (desktop only) -->
-    <div style="position:absolute;top:52px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--teal-light),var(--teal),var(--teal-light));z-index:0;display:none" class="connector-line"></div>
-
-    <div class="step-card">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4);position:relative;z-index:1">1</div>
-      <div style="font-size:32px;margin-bottom:12px">👤</div>
-      <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="Create Free Account" data-hi="मुफ्त अकाउंट बनाएं">Create Free Account</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Sign up in seconds. Your data stays private and encrypted." data-hi="सेकंड में साइन अप करें। डेटा एन्क्रिप्टेड रहता है।">Sign up in seconds. Your data stays private and encrypted.</p>
-    </div>
-
-    <div class="step-card">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4);position:relative;z-index:1">2</div>
-      <div style="font-size:32px;margin-bottom:12px">📝</div>
-      <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="Enter Your Health Data" data-hi="स्वास्थ्य डेटा दर्ज करें">Enter Your Health Data</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Fill in age, weight, height, cycle length, and a few lifestyle questions." data-hi="आयु, वजन, ऊंचाई, चक्र की लंबाई और जीवनशैली प्रश्न भरें।">Fill in age, weight, height, cycle, and lifestyle questions.</p>
-    </div>
-
-    <div class="step-card">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4);position:relative;z-index:1">3</div>
-      <div style="font-size:32px;margin-bottom:12px">🤖</div>
-      <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="AI Analyses Your Data" data-hi="AI आपका डेटा विश्लेषण करती है">AI Analyses Your Data</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Our Random Forest model calculates your PCOS risk score and cycle prediction." data-hi="हमारा Random Forest मॉडल आपका PCOS जोखिम स्कोर और चक्र भविष्यवाणी करता है।">Our ML model calculates PCOS risk score and cycle prediction.</p>
-    </div>
-
-    <div class="step-card">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4);position:relative;z-index:1">4</div>
-      <div style="font-size:32px;margin-bottom:12px">📊</div>
-      <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="See Your Dashboard" data-hi="डैशबोर्ड देखें">See Your Dashboard</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="View risk gauge, BMI card, feature importance chart, and AI recommendations." data-hi="जोखिम गेज, BMI कार्ड, फीचर चार्ट और AI सिफारिशें देखें।">View risk gauge, BMI, feature chart, and recommendations.</p>
-    </div>
-
-    <div class="step-card">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4);position:relative;z-index:1">5</div>
-      <div style="font-size:32px;margin-bottom:12px">💬</div>
-      <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="Track & Chat with AI" data-hi="ट्रैक करें और AI से चैट करें">Track & Chat with AI</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Log symptoms daily, get period reminders, and ask OvaTrack AI health questions." data-hi="रोज लक्षण लॉग करें, पीरियड रिमाइंडर पाएं, और AI से स्वास्थ्य प्रश्न पूछें।">Log symptoms, get period reminders, and chat with OvaTrack AI.</p>
-    </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;max-width:1000px;margin:0 auto">
+    <div class="step-card"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4)">1</div><div style="font-size:32px;margin-bottom:12px">👤</div><h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="Create Free Account" data-hi="मुफ्त अकाउंट बनाएं">Create Free Account</h3><p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Sign up in seconds. Your data stays private and encrypted." data-hi="सेकंड में साइन अप करें। डेटा एन्क्रिप्टेड रहता है।">Sign up in seconds. Your data stays private and encrypted.</p></div>
+    <div class="step-card"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4)">2</div><div style="font-size:32px;margin-bottom:12px">📝</div><h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="Enter Your Health Data" data-hi="स्वास्थ्य डेटा दर्ज करें">Enter Your Health Data</h3><p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Fill in age, weight, height, cycle length, and a few lifestyle questions." data-hi="आयु, वजन, ऊंचाई, चक्र की लंबाई और जीवनशैली प्रश्न भरें।">Fill in age, weight, height, cycle, and lifestyle questions.</p></div>
+    <div class="step-card"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4)">3</div><div style="font-size:32px;margin-bottom:12px">🤖</div><h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="AI Analyses Your Data" data-hi="AI आपका डेटा विश्लेषण करती है">AI Analyses Your Data</h3><p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Our Random Forest model calculates your PCOS risk score and cycle prediction." data-hi="हमारा Random Forest मॉडल आपका PCOS जोखिम स्कोर और चक्र भविष्यवाणी करता है।">Our ML model calculates PCOS risk score and cycle prediction.</p></div>
+    <div class="step-card"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4)">4</div><div style="font-size:32px;margin-bottom:12px">📊</div><h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="See Your Dashboard" data-hi="डैशबोर्ड देखें">See Your Dashboard</h3><p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="View risk gauge, BMI card, feature importance chart, and AI recommendations." data-hi="जोखिम गेज, BMI कार्ड, फीचर चार्ट और AI सिफारिशें देखें।">View risk gauge, BMI, feature chart, and recommendations.</p></div>
+    <div class="step-card"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 20px rgba(59,191,163,.4)">5</div><div style="font-size:32px;margin-bottom:12px">💬</div><h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px" data-en="Track & Chat with AI" data-hi="ट्रैक करें और AI से चैट करें">Track & Chat with AI</h3><p style="font-size:13px;color:var(--muted);line-height:1.6" data-en="Log symptoms daily, get period reminders, and ask OvaTrack AI health questions." data-hi="रोज लक्षण लॉग करें, पीरियड रिमाइंडर पाएं, और AI से स्वास्थ्य प्रश्न पूछें।">Log symptoms, get period reminders, and chat with OvaTrack AI.</p></div>
   </div>
-
 </section>
 
-<!-- ══════ FAQ ══════════════════════════════════════════════════════ -->
+<!-- ══════ FAQ ════════════════════════════════════════════════════ -->
 <section class="faq-section" id="faq">
   <div style="text-align:center">
     <div class="sec-badge" data-en="✦ Common Questions" data-hi="✦ सामान्य सवाल">✦ Common Questions</div>
     <h2 class="sec-title" data-en="Frequently Asked Questions" data-hi="अक्सर पूछे जाने वाले सवाल">Frequently Asked Questions</h2>
   </div>
-
   <div class="faq-wrap">
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span data-en="What is PCOS and how does OvaTrack help detect it?" data-hi="PCOS क्या है और OvaTrack इसे कैसे पहचानता है?">What is PCOS and how does OvaTrack help detect it?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a" data-en="PCOS is a hormonal disorder affecting women of reproductive age. OvaTrack uses a Random Forest AI model trained on real medical data to estimate your risk based on 10 parameters — giving you a percentage score and tailored recommendations."
-           data-hi="PCOS एक हार्मोनल विकार है। OvaTrack वास्तविक चिकित्सा डेटा पर प्रशिक्षित Random Forest AI मॉडल का उपयोग करके 10 मापदंडों के आधार पर आपके जोखिम का अनुमान लगाता है।">
-        PCOS is a hormonal disorder affecting women of reproductive age. OvaTrack uses a Random Forest AI model trained on real medical data to estimate your risk based on 10 parameters — giving you a percentage score and tailored recommendations.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span data-en="Is my health data private and secure?" data-hi="क्या मेरा स्वास्थ्य डेटा निजी और सुरक्षित है?">Is my health data private and secure?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a" data-en="Absolutely. Passwords are SHA-256 hashed and data is stored locally. We never sell or share your data. OvaTrack is designed to give you complete control of your health information."
-           data-hi="बिल्कुल। पासवर्ड SHA-256 हैश किए गए हैं और डेटा स्थानीय रूप से संग्रहीत है। हम आपका डेटा कभी नहीं बेचते या साझा नहीं करते।">
-        Absolutely. Passwords are SHA-256 hashed and data is stored locally. We never sell or share your data. OvaTrack gives you complete control of your health information.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span data-en="Can OvaTrack replace a doctor's diagnosis?" data-hi="क्या OvaTrack डॉक्टर के निदान की जगह ले सकता है?">Can OvaTrack replace a doctor's diagnosis?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a" data-en="No — OvaTrack is an AI screening and awareness tool, not a medical device. Our predictions help you understand your risk and have informed conversations with your gynecologist. Always consult a doctor for clinical diagnosis."
-           data-hi="नहीं — OvaTrack एक AI स्क्रीनिंग टूल है, चिकित्सा उपकरण नहीं। हमारी भविष्यवाणियां आपके जोखिम को समझने में मदद करती हैं। नैदानिक निदान के लिए डॉक्टर से परामर्श करें।">
-        No — OvaTrack is an AI screening tool, not a medical device. Our predictions help you understand your risk. Always consult a doctor for clinical diagnosis.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span data-en="How does the AI chatbot work after login?" data-hi="लॉगिन के बाद AI चैटबॉट कैसे काम करता है?">How does the AI chatbot work after login?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a" data-en="After you log in and run your PCOS assessment, a floating chat button appears on your dashboard. The AI knows your risk score, BMI, cycle data, and upcoming period date — so it gives personalized answers, not generic ones. It works in both Hindi and English."
-           data-hi="लॉगिन के बाद PCOS मूल्यांकन चलाने पर आपके डैशबोर्ड पर एक फ्लोटिंग चैट बटन दिखाई देता है। AI आपका जोखिम स्कोर, BMI, चक्र डेटा जानता है। हिंदी और अंग्रेजी दोनों में काम करता है।">
-        After login and PCOS assessment, a floating chat button appears on your dashboard. The AI knows your risk score, BMI, and cycle — giving personalized answers in Hindi or English.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        <span data-en="Is OvaTrack free to use?" data-hi="क्या OvaTrack मुफ्त में उपयोग करने योग्य है?">Is OvaTrack free to use?</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a" data-en="Yes, completely free. All features — PCOS analysis, cycle prediction, symptom tracker, period reminders, ovulation alerts, and AI chatbot — are available at no cost, always."
-           data-hi="हां, पूरी तरह मुफ्त। PCOS विश्लेषण, चक्र भविष्यवाणी, लक्षण ट्रैकर, पीरियड रिमाइंडर, ओव्यूलेशन अलर्ट और AI चैटबॉट — सब मुफ्त।">
-        Yes, completely free. All features including PCOS analysis, cycle prediction, symptom tracker, period reminders, ovulation alerts, and AI chatbot are always free.
-      </div>
-    </div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span data-en="What is PCOS and how does OvaTrack help detect it?" data-hi="PCOS क्या है और OvaTrack इसे कैसे पहचानता है?">What is PCOS and how does OvaTrack help detect it?</span><span class="faq-icon">+</span></button><div class="faq-a" data-en="PCOS is a hormonal disorder affecting women of reproductive age. OvaTrack uses a Random Forest AI model trained on real medical data to estimate your risk based on 10 parameters — giving you a percentage score and tailored recommendations." data-hi="PCOS एक हार्मोनल विकार है। OvaTrack वास्तविक चिकित्सा डेटा पर प्रशिक्षित Random Forest AI मॉडल का उपयोग करके 10 मापदंडों के आधार पर आपके जोखिम का अनुमान लगाता है।">PCOS is a hormonal disorder affecting women of reproductive age. OvaTrack uses a Random Forest AI model trained on real medical data to estimate your risk based on 10 parameters — giving you a percentage score and tailored recommendations.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span data-en="Is my health data private and secure?" data-hi="क्या मेरा स्वास्थ्य डेटा निजी और सुरक्षित है?">Is my health data private and secure?</span><span class="faq-icon">+</span></button><div class="faq-a" data-en="Absolutely. Passwords are SHA-256 hashed and data is stored locally. We never sell or share your data. OvaTrack gives you complete control of your health information." data-hi="बिल्कुल। पासवर्ड SHA-256 हैश किए गए हैं और डेटा स्थानीय रूप से संग्रहीत है। हम आपका डेटा कभी नहीं बेचते या साझा नहीं करते।">Absolutely. Passwords are SHA-256 hashed and data is stored locally. We never sell or share your data.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span data-en="Can OvaTrack replace a doctor's diagnosis?" data-hi="क्या OvaTrack डॉक्टर के निदान की जगह ले सकता है?">Can OvaTrack replace a doctor's diagnosis?</span><span class="faq-icon">+</span></button><div class="faq-a" data-en="No — OvaTrack is an AI screening tool, not a medical device. Our predictions help you understand your risk. Always consult a doctor for clinical diagnosis." data-hi="नहीं — OvaTrack एक AI स्क्रीनिंग टूल है, चिकित्सा उपकरण नहीं। हमारी भविष्यवाणियां आपके जोखिम को समझने में मदद करती हैं। नैदानिक निदान के लिए डॉक्टर से परामर्श करें।">No — OvaTrack is an AI screening tool, not a medical device. Always consult a doctor for clinical diagnosis.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span data-en="How does the AI chatbot work after login?" data-hi="लॉगिन के बाद AI चैटबॉट कैसे काम करता है?">How does the AI chatbot work after login?</span><span class="faq-icon">+</span></button><div class="faq-a" data-en="After login and PCOS assessment, a floating chat button appears on your dashboard. The AI knows your risk score, BMI, and cycle — giving personalized answers in Hindi or English." data-hi="लॉगिन के बाद PCOS मूल्यांकन चलाने पर आपके डैशबोर्ड पर एक फ्लोटिंग चैट बटन दिखाई देता है। AI आपका जोखिम स्कोर, BMI, चक्र डेटा जानता है। हिंदी और अंग्रेजी दोनों में काम करता है।">After login and PCOS assessment, a floating chat button appears on your dashboard. The AI knows your risk score, BMI, and cycle — giving personalized answers in Hindi or English.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span data-en="Is OvaTrack free to use?" data-hi="क्या OvaTrack मुफ्त में उपयोग करने योग्य है?">Is OvaTrack free to use?</span><span class="faq-icon">+</span></button><div class="faq-a" data-en="Yes, completely free. All features including PCOS analysis, cycle prediction, symptom tracker, period reminders, ovulation alerts, and AI chatbot are always free." data-hi="हां, पूरी तरह मुफ्त। PCOS विश्लेषण, चक्र भविष्यवाणी, लक्षण ट्रैकर, पीरियड रिमाइंडर, ओव्यूलेशन अलर्ट और AI चैटबॉट — सब मुफ्त।">Yes, completely free. All features including PCOS analysis, cycle prediction, symptom tracker, period reminders, ovulation alerts, and AI chatbot are always free.</div></div>
   </div>
 </section>
 
+<!-- ══════ CTA ════════════════════════════════════════════════════ -->
 <section class="cta-section">
   <h2 data-en="Ready to Take Control of Your Health?" data-hi="अपने स्वास्थ्य की जिम्मेदारी लेने के लिए तैयार हैं?">Ready to Take Control of Your Health?</h2>
   <p data-en="Join OvaTrack. Get your PCOS assessment, track your cycle, chat with AI, and understand your body better — all free." data-hi="आज OvaTrack से जुड़ें। PCOS जोखिम मूल्यांकन करें, चक्र ट्रैक करें, AI से चैट करें — सब मुफ्त।">Join OvaTrack. Get your PCOS assessment, track your cycle, chat with AI, and understand your body better — all free.</p>
   {% if logged_in %}
-    <a href="/app" class="cta-btn"
-       data-en="Go to My Dashboard →" data-hi="मेरे डैशबोर्ड पर जाएं →">Go to My Dashboard →</a>
+    <a href="/app" class="cta-btn" data-en="Go to My Dashboard →" data-hi="मेरे डैशबोर्ड पर जाएं →">Go to My Dashboard →</a>
   {% else %}
-    <a href="/register" class="cta-btn"
-       data-en="Create Free Account →" data-hi="मुफ्त अकाउंट बनाएं →">Create Free Account →</a>
+    <a href="/register" class="cta-btn" data-en="Create Free Account →" data-hi="मुफ्त अकाउंट बनाएं →">Create Free Account →</a>
   {% endif %}
 </section>
 
+<!-- ══════ FOOTER ═════════════════════════════════════════════════ -->
 <footer>
   <div class="footer-logo">🌸 OvaTrack</div>
- 
+
   <ul class="footer-links">
     {% if logged_in %}
-      <!-- User IS logged in: show name, Go to App, Log Out -->
-      <li><span style="color:rgba(255,255,255,.7);font-size:13px">👤 {{ user_name }}</span></li>
+      <li><span>👤 {{ user_name }}</span></li>
       <li><a href="/app"    data-en="Go to App"  data-hi="ऐप पर जाएं">Go to App</a></li>
       <li><a href="/logout" data-en="Log Out"    data-hi="लॉग आउट">Log Out</a></li>
     {% else %}
-      <!-- User is NOT logged in: show Log In + Sign Up -->
       <li><a href="/login"    data-en="Log In"   data-hi="लॉगिन">Log In</a></li>
       <li><a href="/register" data-en="Sign Up"  data-hi="साइन अप">Sign Up</a></li>
     {% endif %}
-    <li>
-      <a href="mailto:ovatrack9903@gmail.com"
-         style="display:flex;align-items:center;gap:6px">
-        ✉️ ovatrack9903@gmail.com
-      </a>
-    </li>
+    <li><a href="mailto:ovatrack9903@gmail.com" style="display:flex;align-items:center;gap:6px">✉️ ovatrack9903@gmail.com</a></li>
   </ul>
- 
-  <!-- Go to Top button -->
-  <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
-    style="display:flex;align-items:center;gap:6px;
-           padding:8px 18px;border-radius:50px;
-           border:1.5px solid rgba(255,255,255,.2);
-           background:rgba(255,255,255,.08);
-           color:rgba(255,255,255,.75);
-           font-family:'DM Sans',sans-serif;
-           font-size:13px;font-weight:500;
-           cursor:pointer;transition:all .25s;"
-    onmouseover="this.style.background='rgba(59,191,163,.25)';this.style.borderColor='var(--teal)';this.style.color='white'"
-    onmouseout="this.style.background='rgba(255,255,255,.08)';this.style.borderColor='rgba(255,255,255,.2)';this.style.color='rgba(255,255,255,.75)'"
-    id="go-top-btn">
+
+  <button class="go-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     ↑ <span data-en="Back to Top" data-hi="ऊपर जाएं">Back to Top</span>
   </button>
- 
+
   <div class="footer-copy">© 2025 OvaTrack. Built for PCOS Awareness.</div>
 </footer>
 
-
-<!-- ══════ FINAL CTA ════════════════════════════════════════════════ -->
-<!--<section class="cta-section">
-  <h2 data-en="Ready to Take Control of Your Health?" data-hi="अपने स्वास्थ्य की जिम्मेदारी लेने के लिए तैयार हैं?">Ready to Take Control of Your Health?</h2>
-  <p data-en="Join OvaTrack today. Get your PCOS risk assessment, track your cycle, chat with AI, and start understanding your body better — all for free."
-     data-hi="आज OvaTrack से जुड़ें। PCOS जोखिम मूल्यांकन करें, चक्र ट्रैक करें, AI से चैट करें — सब मुफ्त।">
-    Join OvaTrack. Get your PCOS assessment, track your cycle, chat with AI, and understand your body better — all free.
-  </p>
-  <a href="/register" class="cta-btn" data-en="Create Free Account →" data-hi="मुफ्त अकाउंट बनाएं →">Create Free Account →</a>
-</section>
-
- ══════ FOOTER ═══════════════════════════════════════════════════ -->
-<!--<footer>
-  <div class="footer-logo">🌸 OvaTrack</div>
-  <ul class="footer-links" id="footer-links">
-    <li id="footer-login" style="display:list-item"><a href="/login" data-en="Log In" data-hi="लॉगिन">Log In</a></li>
-    <li id="footer-signup" style="display:list-item"><a href="/register" data-en="Sign Up" data-hi="साइन अप">Sign Up</a></li>
-    <li id="footer-logout" style="display:none"><a href="/logout" data-en="Log Out" data-hi="लॉग आउट">Log Out</a></li>
-    <li><a href="mailto:ovatrack9903@gmail.com" style="display:flex;align-items:center;gap:6px" data-en="✉️ ovatrack9903@gmail.com" data-hi="✉️ ovatrack9903@gmail.com">✉️ ovatrack9903@gmail.com</a></li>
-  </ul>
-  <div class="footer-copy">© 2025 OvaTrack. Built for PCOS Awareness.</div>
-</footer>-->
-
 <script>
-// ══ GLOBAL THEME & LANGUAGE PERSISTENCE ════════════════════════════════
-
-// ── Theme ───────────────────────────────────────────────────────────────
-let isDark = (localStorage.getItem('ova-theme') === 'dark');
-
+// ── THEME ────────────────────────────────────────────────────────────
+let isDark = localStorage.getItem('ova-theme') === 'dark';
 function applyTheme() {
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  document.querySelectorAll('#theme-btn,#theme-btn-mobile').forEach(function(b){
+    if(b) b.textContent = isDark ? '☀️' : '🌙';
+  });
 }
-
 function toggleTheme() {
   isDark = !isDark;
   localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
   applyTheme();
 }
+applyTheme();
 
-
-applyTheme(); // Apply on load immediately
-
-// ══ LANGUAGE ═══════════════════════════════════════════════════════════
+// ── LANGUAGE ─────────────────────────────────────────────────────────
 let currentLang = localStorage.getItem('ova-lang') || 'en';
-
 function applyLang(lang) {
   currentLang = lang;
   localStorage.setItem('ova-lang', lang);
-  document.querySelectorAll('.lang-btn').forEach((b, i) => {
-    b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'hi' && i === 1));
+  document.querySelectorAll('.lang-btn').forEach(function(b, i) {
+    b.classList.toggle('active', (lang==='en' && i%2===0) || (lang==='hi' && i%2===1));
   });
-  document.querySelectorAll('[data-en]').forEach(el => {
-    const txt = el.getAttribute('data-' + lang);
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    var txt = el.getAttribute('data-' + lang);
     if (txt) el.innerHTML = txt;
   });
 }
+function setLang(lang) { applyLang(lang); }
+document.addEventListener('DOMContentLoaded', function() { applyLang(currentLang); });
 
-
-// setLang — called by buttons onclick
-function setLang(lang) {
-  applyLang(lang);
+// ── HAMBURGER MENU ────────────────────────────────────────────────────
+function toggleMenu() {
+  var menu = document.getElementById('mobile-menu');
+  var ham  = document.getElementById('hamburger');
+  var open = menu.classList.contains('open');
+  if (open) { menu.classList.remove('open'); ham.classList.remove('open'); }
+  else       { menu.classList.add('open');    ham.classList.add('open'); }
 }
-
-// Apply saved language on page load
-document.addEventListener('DOMContentLoaded', function() {
-  applyLang(currentLang);
+function closeMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('mobile-menu');
+  var ham  = document.getElementById('hamburger');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !ham.contains(e.target)) {
+    closeMenu();
+  }
 });
 
-// ══ FAQ ════════════════════════════════════════════════════════════════
+// ── FAQ ───────────────────────────────────────────────────────────────
 function toggleFaq(btn) {
-  const item  = btn.parentElement;
-  const ans   = item.querySelector('.faq-a');
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => {
+  var item = btn.parentElement;
+  var ans  = item.querySelector('.faq-a');
+  var isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i) {
     i.classList.remove('open');
     i.querySelector('.faq-a').classList.remove('open');
   });
   if (!isOpen) { item.classList.add('open'); ans.classList.add('open'); }
 }
 
-// ══ SCROLL REVEAL ══════════════════════════════════════════════════════
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity  = '1';
-      e.target.style.transform = 'translateY(0)';
-    }
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
   });
 }, { threshold: 0.08 });
-
-document.querySelectorAll('.feat-card, .sym-card, .pcos-sym-item, .step-card').forEach(el => {
-  el.style.opacity   = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+document.querySelectorAll('.feat-card,.sym-card,.pcos-sym-item,.step-card').forEach(function(el) {
+  el.style.opacity='0'; el.style.transform='translateY(20px)';
+  el.style.transition='opacity 0.5s ease,transform 0.5s ease';
   observer.observe(el);
 });
 
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
+// ── SMOOTH SCROLL ─────────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
     e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var t = document.querySelector(a.getAttribute('href'));
+    if (t) { t.scrollIntoView({ behavior:'smooth', block:'start' }); closeMenu(); }
   });
 });
 
-// ── Detect login state from cookie/session for footer & chatbot btn ──
-(function(){
-  // Simple: try fetching /api/notifications — only works if logged in
-  fetch('/api/notifications', {credentials: 'same-origin'})
-    .then(r => {
-      if(r.ok) {
-        // Logged in — show Logout, hide Login/Signup
-        const li = document.getElementById('footer-login');
-        const ls = document.getElementById('footer-signup');
-        const lo = document.getElementById('footer-logout');
-        if(li) li.style.display = 'none';
-        if(ls) ls.style.display = 'none';
-        if(lo) lo.style.display = 'list-item';
-      } else {
-        // Not logged in — show Login/Signup, hide Logout
-        const li = document.getElementById('footer-login');
-        const ls = document.getElementById('footer-signup');
-        const lo = document.getElementById('footer-logout');
-        if(li) li.style.display = 'list-item';
-        if(ls) ls.style.display = 'list-item';
-        if(lo) lo.style.display = 'none';
-      }
-    }).catch(()=>{
-      // Error = not logged in
-      const lo = document.getElementById('footer-logout');
-      if(lo) lo.style.display = 'none';
-    });
-})();
-
-// Navbar scroll shadow
-window.addEventListener('scroll', () => {
-  const nav = document.querySelector('nav');
-  nav.style.boxShadow = window.scrollY > 20
-    ? '0 2px 24px rgba(0,0,0,0.10)'
-    : '0 1px 20px rgba(0,0,0,0.06)';
+// ── NAVBAR SHADOW ─────────────────────────────────────────────────────
+window.addEventListener('scroll', function() {
+  document.querySelector('nav').style.boxShadow = window.scrollY > 20
+    ? '0 2px 24px rgba(0,0,0,0.10)' : '0 1px 20px rgba(0,0,0,0.06)';
 });
 </script>
 </body>
