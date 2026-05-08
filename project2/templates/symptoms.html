@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>OvaTrack – Symptom Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    (function(){
+      var th = localStorage.getItem('ova-theme') || 'light';
+      var lang = localStorage.getItem('ova-lang') || 'en';
+      document.documentElement.setAttribute('data-theme', th);
+      document.documentElement.setAttribute('data-lang', lang);
+    })();
+  </script>
+
   <style>
     :root{
       --rose:#e8537a;--rose-light:#f9dde5;--rose-dark:#c23d62;--plum:#3d1f4e;--plum-mid:#5c3272;
@@ -20,32 +30,88 @@
       --card-shadow:0 3px 20px rgba(0,0,0,.35);--blob:rgba(232,83,122,.05);
       --form-hdr-bg:linear-gradient(135deg,rgba(232,83,122,.10),rgba(92,50,114,.10));
     }
-    /* Hide lang variants — shown by JS */
+
+    /* Language switching via data-lang attribute — zero flash */
     .lang-en,.lang-hi{display:none}
+    html[data-lang="en"] .lang-en{display:inline}
+    html[data-lang="en"] .lang-en-block{display:block}
+    html[data-lang="hi"] .lang-hi{display:inline}
+    html[data-lang="hi"] .lang-hi-block{display:block}
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
     body::before{content:'';position:fixed;top:-150px;right:-150px;width:500px;height:500px;background:radial-gradient(circle,var(--blob) 0%,transparent 70%);pointer-events:none;z-index:0}
-    header{position:sticky;top:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:var(--header-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
-    .logo{display:flex;align-items:center;gap:10px}
+
+    /* ═══ HEADER ════════════════════════════════════════════════════ */
+    header{
+      position:sticky;top:0;z-index:100;padding:0 32px;height:64px;
+      display:flex;align-items:center;justify-content:space-between;
+      background:var(--header-bg);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);transition:background .3s,border-color .3s;
+    }
+    .logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
     .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
     .logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);transition:color .3s}
+
+    /* Desktop nav right */
     .nav-right{display:flex;align-items:center;gap:10px}
-    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border);transition:all .2s}
+    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;
+      padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+      transition:all .2s;white-space:nowrap}
     .nav-link:hover{border-color:var(--rose);color:var(--rose)}
-    .theme-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .25s}
+    .theme-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);
+      background:var(--bg2);cursor:pointer;display:flex;align-items:center;
+      justify-content:center;font-size:16px;transition:all .25s;flex-shrink:0}
     .theme-btn:hover{border-color:var(--rose)}
+
+    /* ── HAMBURGER (mobile only) ── */
+    .hamburger{
+      display:none;
+      flex-direction:column;justify-content:center;align-items:center;gap:5px;
+      width:38px;height:38px;border-radius:10px;
+      border:1.5px solid var(--border);background:var(--bg2);
+      cursor:pointer;padding:0;transition:all .25s;flex-shrink:0;
+    }
+    .hamburger span{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    /* ── MOBILE MENU DRAWER ── */
+    .mobile-menu{
+      display:none;
+      position:sticky;top:64px;z-index:99;
+      background:var(--header-bg);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);
+      padding:16px 20px 20px;flex-direction:column;
+      box-shadow:0 8px 30px rgba(0,0,0,.10);transition:background .3s;
+    }
+    .mobile-menu.open{display:flex}
+    .mobile-nav-links{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+    .mobile-nav-links a{
+      display:block;padding:11px 0;
+      color:var(--text);text-decoration:none;font-size:15px;font-weight:500;
+      border-bottom:1px solid var(--border);transition:color .2s;
+    }
+    .mobile-nav-links a:hover{color:var(--rose)}
+    .mobile-nav-links li:last-child a{border-bottom:none}
+    .mobile-controls{display:flex;align-items:center;gap:10px;margin-top:4px}
+
+    /* ═══ PAGE ══════════════════════════════════════════════════════ */
     .page{position:relative;z-index:5;max-width:800px;margin:0 auto;padding:28px 20px 60px}
     .page-title{margin-bottom:24px}
     .page-title h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:3px;transition:color .3s}
     .page-title p{font-size:13px;color:var(--muted)}
+
     .success-msg{background:var(--success-light);color:#166534;border:1px solid #86efac;border-radius:12px;padding:12px 18px;font-size:13px;margin-bottom:20px;text-align:center}
     [data-theme="dark"] .success-msg{color:#86efac}
+
     .log-card{background:var(--bg2);border-radius:20px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;margin-bottom:24px;transition:background .3s,border-color .3s}
     .log-card-hdr{padding:20px 28px 16px;border-bottom:1px solid var(--border);background:var(--form-hdr-bg)}
     .log-card-hdr h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:3px;transition:color .3s}
     .log-card-hdr p{font-size:13px;color:var(--muted)}
     .log-body{padding:24px 28px 28px}
+
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
     @media(max-width:500px){.form-row{grid-template-columns:1fr}}
     label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px;transition:color .3s}
@@ -53,8 +119,10 @@
     input[type=date]:focus,input[type=number]:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,83,122,.1);background:var(--bg2)}
     input::placeholder,textarea::placeholder{color:var(--muted);opacity:.6}
     input[type=range]{width:100%;accent-color:var(--rose);height:6px;padding:0;background:transparent;border:none}
+
     .mood-row{margin-bottom:20px}
     .mood-track{display:flex;justify-content:space-between;font-size:22px;margin-top:8px}
+
     .check-section{margin-bottom:20px}
     .check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:8px}
     .check-item{cursor:pointer}
@@ -62,9 +130,11 @@
     .check-box{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;color:var(--muted);transition:all .2s;background:var(--input-bg);display:flex;align-items:center;gap:8px}
     .check-item input[type=checkbox]:checked+.check-box{background:var(--rose-light);border-color:var(--rose);color:var(--rose-dark);font-weight:500}
     [data-theme="dark"] .check-item input[type=checkbox]:checked+.check-box{color:#f9a8c2}
+
     textarea{resize:vertical;min-height:80px}
     .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--rose),var(--plum-mid));color:#fff;border:none;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(232,83,122,.3)}
     .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,83,122,.4)}
+
     .hist-card{background:var(--bg2);border-radius:20px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;transition:background .3s,border-color .3s}
     .hist-hdr{padding:18px 28px 14px;border-bottom:1px solid var(--border)}
     .hist-hdr h2{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:2px;transition:color .3s}
@@ -77,52 +147,71 @@
     .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;background:var(--rose-light);color:var(--rose-dark);margin:1px;font-weight:500}
     [data-theme="dark"] .pill{color:#f9a8c2}
     .no-data{text-align:center;padding:32px;color:var(--muted);font-size:14px}
-  </style>
 
-  <script>
-    // ── SYNCHRONOUS: Apply theme & language BEFORE any render ──────────
-    (function(){
-      // 1. Apply theme immediately
-      var th = localStorage.getItem('ova-theme') || 'light';
-      document.documentElement.setAttribute('data-theme', th);
-
-      // 2. Apply language by adding class to <html> immediately
-      var lang = localStorage.getItem('ova-lang') || 'en';
-      document.documentElement.setAttribute('data-lang', lang);
-    })();
-  </script>
-
-  <style>
-    /* Language switching via attribute — applied before render so no flash */
-    html[data-lang="en"] .lang-en { display: inline; }
-    html[data-lang="en"] .lang-en-block { display: block; }
-    html[data-lang="hi"] .lang-hi { display: inline; }
-    html[data-lang="hi"] .lang-hi-block { display: block; }
-    /* For flex containers */
-    html[data-lang="en"] .lang-en-flex { display: flex; }
-    html[data-lang="hi"] .lang-hi-flex { display: flex; }
+    /* ═══ RESPONSIVE ═════════════════════════════════════════════════ */
+    @media(max-width:600px){
+      .hamburger{display:flex}
+      .nav-right{display:none}
+      header{padding:0 16px}
+      .page{padding:20px 14px 48px}
+      .log-card-hdr,.log-body,.hist-hdr{padding-left:18px;padding-right:18px}
+    }
   </style>
 </head>
 <body>
 
+<!-- ══════ HEADER ════════════════════════════════════════════════════ -->
 <header>
   <div class="logo">
     <div class="logo-icon">🌸</div>
     <div class="logo-text">OvaTrack</div>
   </div>
+
+  <!-- Desktop nav -->
   <div class="nav-right">
     <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    <a href="/go-home" class="nav-link">
+      <span class="lang-en">🏠 Home</span><span class="lang-hi">🏠 होम</span>
+    </a>
     <a href="/dashboard" class="nav-link">
-      <span class="lang-en">← Dashboard</span>
-      <span class="lang-hi">← डैशबोर्ड</span>
+      <span class="lang-en">← Dashboard</span><span class="lang-hi">← डैशबोर्ड</span>
+    </a>
+    <a href="/app" class="nav-link">
+      <span class="lang-en">✦ New Analysis</span><span class="lang-hi">✦ नया विश्लेषण</span>
     </a>
     <a href="/signout" class="nav-link">
-      <span class="lang-en">Sign Out</span>
-      <span class="lang-hi">साइन आउट</span>
+      <span class="lang-en">Sign Out</span><span class="lang-hi">साइन आउट</span>
     </a>
   </div>
+
+  <!-- Mobile hamburger -->
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
+<!-- ══════ MOBILE MENU DRAWER ════════════════════════════════════════ -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul class="mobile-nav-links">
+    <li><a href="/go-home">
+      <span class="lang-en">🏠 Home</span><span class="lang-hi">🏠 होम</span>
+    </a></li>
+    <li><a href="/dashboard">
+      <span class="lang-en">← Dashboard</span><span class="lang-hi">← डैशबोर्ड</span>
+    </a></li>
+    <li><a href="/app">
+      <span class="lang-en">✦ New Analysis</span><span class="lang-hi">✦ नया विश्लेषण</span>
+    </a></li>
+    <li><a href="/signout">
+      <span class="lang-en">Sign Out</span><span class="lang-hi">साइन आउट</span>
+    </a></li>
+  </ul>
+  <div class="mobile-controls">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn-mobile">🌙</button>
+  </div>
+</div>
+
+<!-- ══════ PAGE ═══════════════════════════════════════════════════════ -->
 <div class="page">
   <div class="page-title">
     <h1>
@@ -188,35 +277,19 @@
           <div class="check-grid">
             <label class="check-item">
               <input type="checkbox" name="acne" value="1">
-              <div class="check-box">
-                😣
-                <span class="lang-en">Acne / Pimples</span>
-                <span class="lang-hi">मुंहासे</span>
-              </div>
+              <div class="check-box">😣 <span class="lang-en">Acne / Pimples</span><span class="lang-hi">मुंहासे</span></div>
             </label>
             <label class="check-item">
               <input type="checkbox" name="bloating" value="1">
-              <div class="check-box">
-                🤰
-                <span class="lang-en">Bloating</span>
-                <span class="lang-hi">सूजन</span>
-              </div>
+              <div class="check-box">🤰 <span class="lang-en">Bloating</span><span class="lang-hi">सूजन</span></div>
             </label>
             <label class="check-item">
               <input type="checkbox" name="fatigue" value="1">
-              <div class="check-box">
-                😴
-                <span class="lang-en">Fatigue</span>
-                <span class="lang-hi">थकान</span>
-              </div>
+              <div class="check-box">😴 <span class="lang-en">Fatigue</span><span class="lang-hi">थकान</span></div>
             </label>
             <label class="check-item">
               <input type="checkbox" name="headache" value="1">
-              <div class="check-box">
-                🤕
-                <span class="lang-en">Headache</span>
-                <span class="lang-hi">सिरदर्द</span>
-              </div>
+              <div class="check-box">🤕 <span class="lang-en">Headache</span><span class="lang-hi">सिरदर्द</span></div>
             </label>
           </div>
         </div>
@@ -229,7 +302,7 @@
           <textarea name="notes" id="notes-area"></textarea>
         </div>
 
-        <button type="submit" class="submit-btn" id="submit-btn">
+        <button type="submit" class="submit-btn">
           ✦ <span class="lang-en">Save Today's Log</span><span class="lang-hi">आज का लॉग सहेजें</span>
         </button>
       </form>
@@ -248,6 +321,7 @@
       </p>
     </div>
     {% if logs %}
+    <div style="overflow-x:auto">
       <table>
         <thead>
           <tr>
@@ -274,47 +348,61 @@
                 <span style="color:var(--muted)"><span class="lang-en">None</span><span class="lang-hi">कोई नहीं</span></span>
               {% endif %}
             </td>
-            <td style="color:var(--muted);max-width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
+            <td style="color:var(--muted);max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">
               {{ s.notes or '—' }}
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+    </div>
     {% else %}
-      <div class="no-data">
-        <span class="lang-en">No symptoms logged yet. Use the form above to start tracking.</span>
-        <span class="lang-hi">अभी तक कोई लक्षण लॉग नहीं। ट्रैकिंग शुरू करने के लिए ऊपर का फॉर्म भरें।</span>
-      </div>
+    <div class="no-data">
+      <span class="lang-en">No symptoms logged yet. Use the form above to start tracking.</span>
+      <span class="lang-hi">अभी तक कोई लक्षण लॉग नहीं। ट्रैकिंग शुरू करने के लिए ऊपर का फॉर्म भरें।</span>
+    </div>
     {% endif %}
   </div>
 </div>
 
 <script>
-// ── THEME (synchronous, no flash) ─────────────────────────────────────
+// ── THEME ─────────────────────────────────────────────────────────────
 var isDark = localStorage.getItem('ova-theme') === 'dark';
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  var btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', isDark?'dark':'light');
+  var emoji = isDark?'☀️':'🌙';
+  document.querySelectorAll('#theme-btn,#theme-btn-mobile').forEach(function(b){if(b)b.textContent=emoji;});
 }
-function toggleTheme() {
-  isDark = !isDark;
-  localStorage.setItem('ova-theme', isDark ? 'dark' : 'light');
+function toggleTheme(){
+  isDark=!isDark;
+  localStorage.setItem('ova-theme',isDark?'dark':'light');
   applyTheme();
 }
 applyTheme();
 
-// ── LANGUAGE (synchronous via data-lang attribute set in <head>) ───────
-// The CSS already shows/hides .lang-en / .lang-hi via [data-lang] attribute
-// Just sync the textarea placeholder
+// ── HAMBURGER ─────────────────────────────────────────────────────────
+function toggleMenu(){
+  var menu=document.getElementById('mobile-menu');
+  var ham=document.getElementById('hamburger');
+  if(menu.classList.contains('open')){menu.classList.remove('open');ham.classList.remove('open');}
+  else{menu.classList.add('open');ham.classList.add('open');}
+}
+document.addEventListener('click',function(e){
+  var menu=document.getElementById('mobile-menu');
+  var ham=document.getElementById('hamburger');
+  if(menu&&menu.classList.contains('open')&&!menu.contains(e.target)&&!ham.contains(e.target)){
+    menu.classList.remove('open');ham.classList.remove('open');
+  }
+});
+
+// ── NOTES PLACEHOLDER ─────────────────────────────────────────────────
 (function(){
-  var lang = localStorage.getItem('ova-lang') || 'en';
-  var notes = document.getElementById('notes-area');
-  if (notes) {
-    notes.placeholder = lang === 'hi'
-      ? 'कोई भी अन्य लक्षण, भावनाएं या टिप्पणियां...'
-      : 'Any other symptoms, feelings, or observations...';
+  var lang=localStorage.getItem('ova-lang')||'en';
+  var notes=document.getElementById('notes-area');
+  if(notes){
+    notes.placeholder=lang==='hi'
+      ?'कोई भी अन्य लक्षण, भावनाएं या टिप्पणियां...'
+      :'Any other symptoms, feelings, or observations...';
   }
 })();
 </script>
